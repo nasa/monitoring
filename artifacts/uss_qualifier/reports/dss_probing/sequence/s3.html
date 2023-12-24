@@ -3,66 +3,77 @@
 <head>
   <meta charset="UTF-8">
   <title>s3 - ASTM NetRID DSS: ISA Expiry</title>
-  <style>
-    body {
-      margin: 0;
-      color: #24292f;
-      background-color: #ffffff;
-      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
-      font-size: 16px;
-      line-height: 1.5;
-      word-wrap: break-word;
-    }
-    table {
-      border-spacing: 0;
-      border-collapse: collapse;
-      width: max-content;
-      max-width: 100%;
-      overflow: auto;
-    }
-    tr {
-      border-top: 1px solid hsla(210,18%,87%,1);
-    }
-    table tr:nth-child(2n) {
-      background-color: #f6f8fa;
-    }
-    td {
-      padding: 6px 6px;
-      vertical-align: top;
-      border: 1px solid #d0d7de;
-    }
-    th {
-      padding: 6px 6px;
-      text-align: left;
-      background-color: rgb(230, 230, 230);
-      border: 1px solid #d0d7de;
-    }
-    a {
-      background-color: transparent;
-      color: #0969da;
-      text-decoration: none;
-    }
-    h2 {
-      margin-block-end: 0.1em;
-    }
-    .sticky_cell_value {
-      position: sticky;
-      top: 0px;
-      z-index: 0;
-    }
-    .pass_result {
-      background-color: rgb(192, 255, 192);
-    }
-    .fail_result {
-      background-color: rgb(255, 192, 192);
-    }
-    .not_tested {
-      background-color: rgb(192, 192, 192);
-    }
-    .failed_check_summary {
-      font-style: italic;
-    }
-  </style>
+<style>
+  body {
+    margin: 0;
+    color: #24292f;
+    background-color: #ffffff;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+    font-size: 16px;
+    line-height: 1.5;
+    word-wrap: break-word;
+  }
+  table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    width: max-content;
+    max-width: 100%;
+    overflow: auto;
+  }
+  tr {
+    border-top: 1px solid hsla(210,18%,87%,1);
+  }
+  table tr:nth-child(2n) {
+    background-color: #f6f8fa;
+  }
+  td {
+    padding: 6px 6px;
+    vertical-align: top;
+    border: 1px solid #d0d7de;
+  }
+  th {
+    padding: 6px 6px;
+    text-align: left;
+    background-color: rgb(230, 230, 230);
+    border: 1px solid #d0d7de;
+    height: 40px;
+  }
+  a {
+    background-color: transparent;
+    color: #0969da;
+    text-decoration: none;
+  }
+  h2 {
+    margin-block-end: 0.1em;
+  }
+  p {
+    margin-top: 0.1em;
+    margin-bottom: 0.1em;
+  }
+  .sticky_cell_value {
+    position: sticky;
+    top: 0px; // 40px
+    z-index: 0;
+  }
+  .pass_result {
+    background-color: rgb(192, 255, 192);
+  }
+  .fail_result {
+    background-color: rgb(255, 192, 192);
+  }
+  .info_result {
+    background-color: rgb(255, 255, 192);
+  }
+  .not_tested {
+    background-color: rgb(192, 192, 192);
+  }
+  .skipped_explanation {
+    font-style: italic;
+  }
+  .failed_check_summary {
+    font-style: italic;
+  }
+</style>
     <style>
     ul, ul ul, ul li {
       margin: 0;
@@ -91,7 +102,7 @@
 </head>
 <body>
 <div>
-    <h2><a href="https://github.com/interuss/monitoring/blob/ab3770f6a39ee1fd7061a35227f86d93eca25bf0/monitoring/uss_qualifier/scenarios/astm/netrid/v19/dss/isa_expiry.md">ASTM NetRID DSS: ISA Expiry</a></h2>
+    <h2><a href="https://github.com/interuss/monitoring/blob/4ace2569c7c44a03c1a51364c6be7b08d5b6233a/monitoring/uss_qualifier/scenarios/astm/netrid/v19/dss/isa_expiry.md">ASTM NetRID DSS: ISA Expiry</a></h2>
   <h3>scenarios.astm.netrid.v19.dss.ISAExpiry</h3>
   <table>
     <tr class="header_row">
@@ -105,17 +116,19 @@
 
             <tr id="e1">
                 <td rowspan="2"><span class="sticky_cell_value">
-                    <a href="https://github.com/interuss/monitoring/blob/ab3770f6a39ee1fd7061a35227f86d93eca25bf0/monitoring/uss_qualifier/scenarios/astm/netrid/v19/dss/isa_expiry.md#setup-test-case">Setup</a>
+                    <a href="https://github.com/interuss/monitoring/blob/4ace2569c7c44a03c1a51364c6be7b08d5b6233a/monitoring/uss_qualifier/scenarios/astm/netrid/v19/dss/isa_expiry.md#setup-test-case">Setup</a>
                 </span></td>
                 <td rowspan="2"><span class="sticky_cell_value">
-                    <a href="https://github.com/interuss/monitoring/blob/ab3770f6a39ee1fd7061a35227f86d93eca25bf0/monitoring/uss_qualifier/scenarios/astm/netrid/v19/dss/test_steps/clean_workspace.md#ensure-clean-workspace-test-step-fragment">Ensure clean workspace</a>
+                    <a href="https://github.com/interuss/monitoring/blob/4ace2569c7c44a03c1a51364c6be7b08d5b6233a/monitoring/uss_qualifier/scenarios/astm/netrid/v19/dss/test_steps/clean_workspace.md#ensure-clean-workspace-test-step-fragment">Ensure clean workspace</a>
                 </span></td>
               <td><a href="#e1">1</a></td>
                 <td>&#x1F310;</td>
                 <td>
-                  GET dss.uss1.localutm
                     <div id="e1query">
       <ul>
+      <li class="collapseable">
+        <div class="node_key">GET dss.uss1.localutm 404</div>:
+        <div class="node_value">      <ul>
       <li class="collapseable">
         <div class="node_key">request</div>:
         <div class="node_value">      <ul>
@@ -131,7 +144,7 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">initiated_at</div>:
-        <div class="node_value">    2023-12-24T05:45:46.524968Z
+        <div class="node_value">    2023-12-24T05:46:15.387724Z
 </div>
       </li>
       <li class="collapseable">
@@ -159,7 +172,7 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">Authorization</div>:
-        <div class="node_value">    Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJkc3MudXNzMS5sb2NhbHV0bSIsImV4cCI6MTcwMzQwMDM0NiwiaXNzIjoiZHVtbXkiLCJzY29wZSI6ImRzcy5yZWFkLmlkZW50aWZpY2F0aW9uX3NlcnZpY2VfYXJlYXMiLCJzdWIiOiJ1c3NfcXVhbGlmaWVyIn0.REDACTED
+        <div class="node_value">    Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJkc3MudXNzMS5sb2NhbHV0bSIsImV4cCI6MTcwMzQwMDM3NSwiaXNzIjoiZHVtbXkiLCJzY29wZSI6ImRzcy5yZWFkLmlkZW50aWZpY2F0aW9uX3NlcnZpY2VfYXJlYXMiLCJzdWIiOiJ1c3NfcXVhbGlmaWVyIn0.REDACTED
 </div>
       </li>
   </ul>
@@ -167,12 +180,12 @@
 </div>
       </li>
       <li class="not_collapseable">
-        <div class="node_key">json</div>:
+        <div class="node_key">body</div>:
         <div class="node_value">    None
 </div>
       </li>
       <li class="not_collapseable">
-        <div class="node_key">body</div>:
+        <div class="node_key">json</div>:
         <div class="node_value">    None
 </div>
       </li>
@@ -198,7 +211,7 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">Date</div>:
-        <div class="node_value">    Sun, 24 Dec 2023 05:45:46 GMT
+        <div class="node_value">    Sun, 24 Dec 2023 05:46:15 GMT
 </div>
       </li>
       <li class="not_collapseable">
@@ -212,12 +225,12 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">elapsed_s</div>:
-        <div class="node_value">    0.001043
+        <div class="node_value">    0.000959
 </div>
       </li>
       <li class="not_collapseable">
         <div class="node_key">reported</div>:
-        <div class="node_value">    2023-12-24T05:45:46.526500Z
+        <div class="node_value">    2023-12-24T05:46:15.389073Z
 </div>
       </li>
       <li class="collapseable">
@@ -225,7 +238,7 @@
         <div class="node_value">      <ul>
       <li class="not_collapseable">
         <div class="node_key">message</div>:
-        <div class="node_value">    ISA 00000171-e36d-40be-d38b-eca6ca350000 not found (E:577c27c8-e53f-448f-9be8-3cd0cec56af7)
+        <div class="node_value">    ISA 00000171-e36d-40be-d38b-eca6ca350000 not found (E:1af7d646-f71a-4e6c-9fdc-7814e6b5d98b)
 </div>
       </li>
   </ul>
@@ -248,6 +261,10 @@
       </li>
   </ul>
 
+</div>
+      </li>
+  </ul>
+
   </div>
 
                 </td>
@@ -263,17 +280,19 @@
             </tr>
             <tr id="e3">
                 <td rowspan="6"><span class="sticky_cell_value">
-                    <a href="https://github.com/interuss/monitoring/blob/ab3770f6a39ee1fd7061a35227f86d93eca25bf0/monitoring/uss_qualifier/scenarios/astm/netrid/v19/dss/isa_expiry.md#isa-expiry-test-case">ISA Expiry</a>
+                    <a href="https://github.com/interuss/monitoring/blob/4ace2569c7c44a03c1a51364c6be7b08d5b6233a/monitoring/uss_qualifier/scenarios/astm/netrid/v19/dss/isa_expiry.md#isa-expiry-test-case">ISA Expiry</a>
                 </span></td>
                 <td rowspan="6"><span class="sticky_cell_value">
-                    <a href="https://github.com/interuss/monitoring/blob/ab3770f6a39ee1fd7061a35227f86d93eca25bf0/monitoring/uss_qualifier/scenarios/astm/netrid/v19/dss/isa_expiry.md#isa-expiry-test-step">ISA Expiry</a>
+                    <a href="https://github.com/interuss/monitoring/blob/4ace2569c7c44a03c1a51364c6be7b08d5b6233a/monitoring/uss_qualifier/scenarios/astm/netrid/v19/dss/isa_expiry.md#isa-expiry-test-step">ISA Expiry</a>
                 </span></td>
               <td><a href="#e3">3</a></td>
                 <td>&#x1F310;</td>
                 <td>
-                  PUT dss.uss1.localutm
                     <div id="e3query">
       <ul>
+      <li class="collapseable">
+        <div class="node_key">PUT dss.uss1.localutm 200</div>:
+        <div class="node_value">      <ul>
       <li class="collapseable">
         <div class="node_key">request</div>:
         <div class="node_value">      <ul>
@@ -289,7 +308,7 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">initiated_at</div>:
-        <div class="node_value">    2023-12-24T05:45:46.527527Z
+        <div class="node_value">    2023-12-24T05:46:15.390268Z
 </div>
       </li>
       <li class="collapseable">
@@ -327,7 +346,7 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">Authorization</div>:
-        <div class="node_value">    Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJkc3MudXNzMS5sb2NhbHV0bSIsImV4cCI6MTcwMzQwMDM0NiwiaXNzIjoiZHVtbXkiLCJzY29wZSI6ImRzcy53cml0ZS5pZGVudGlmaWNhdGlvbl9zZXJ2aWNlX2FyZWFzIiwic3ViIjoidXNzX3F1YWxpZmllciJ9.REDACTED
+        <div class="node_value">    Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJkc3MudXNzMS5sb2NhbHV0bSIsImV4cCI6MTcwMzQwMDM3NSwiaXNzIjoiZHVtbXkiLCJzY29wZSI6ImRzcy53cml0ZS5pZGVudGlmaWNhdGlvbl9zZXJ2aWNlX2FyZWFzIiwic3ViIjoidXNzX3F1YWxpZmllciJ9.REDACTED
 </div>
       </li>
   </ul>
@@ -441,12 +460,12 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">time_start</div>:
-        <div class="node_value">    2023-12-24T05:45:46.526876Z
+        <div class="node_value">    2023-12-24T05:46:15.389441Z
 </div>
       </li>
       <li class="not_collapseable">
         <div class="node_key">time_end</div>:
-        <div class="node_value">    2023-12-24T05:45:51.526876Z
+        <div class="node_value">    2023-12-24T05:46:20.389441Z
 </div>
       </li>
   </ul>
@@ -460,7 +479,7 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">request_id</div>:
-        <div class="node_value">    7c67c175-ceff-4b63-a9e9-e24d64137dbe
+        <div class="node_value">    279164ef-2845-4589-99c2-627755c1ab45
 </div>
       </li>
   </ul>
@@ -494,7 +513,7 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">Date</div>:
-        <div class="node_value">    Sun, 24 Dec 2023 05:45:46 GMT
+        <div class="node_value">    Sun, 24 Dec 2023 05:46:15 GMT
 </div>
       </li>
       <li class="not_collapseable">
@@ -508,12 +527,12 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">elapsed_s</div>:
-        <div class="node_value">    0.00487
+        <div class="node_value">    0.004323
 </div>
       </li>
       <li class="not_collapseable">
         <div class="node_key">reported</div>:
-        <div class="node_value">    2023-12-24T05:45:46.532822Z
+        <div class="node_value">    2023-12-24T05:46:15.395026Z
 </div>
       </li>
       <li class="collapseable">
@@ -541,17 +560,17 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">time_start</div>:
-        <div class="node_value">    2023-12-24T05:45:46.526876Z
+        <div class="node_value">    2023-12-24T05:46:15.389441Z
 </div>
       </li>
       <li class="not_collapseable">
         <div class="node_key">time_end</div>:
-        <div class="node_value">    2023-12-24T05:45:51.526876Z
+        <div class="node_value">    2023-12-24T05:46:20.389441Z
 </div>
       </li>
       <li class="not_collapseable">
         <div class="node_key">version</div>:
-        <div class="node_value">    1f8tea3i62k3o
+        <div class="node_value">    1f8teauebkqng
 </div>
       </li>
       <li class="not_collapseable">
@@ -583,6 +602,10 @@
       </li>
   </ul>
 
+</div>
+      </li>
+  </ul>
+
   </div>
 
                 </td>
@@ -600,9 +623,11 @@
               <td><a href="#e5">5</a></td>
                 <td>&#x1F310;</td>
                 <td>
-                  GET dss.uss1.localutm
                     <div id="e5query">
       <ul>
+      <li class="collapseable">
+        <div class="node_key">GET dss.uss1.localutm 200</div>:
+        <div class="node_value">      <ul>
       <li class="collapseable">
         <div class="node_key">request</div>:
         <div class="node_value">      <ul>
@@ -618,7 +643,7 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">initiated_at</div>:
-        <div class="node_value">    2023-12-24T05:45:51.535156Z
+        <div class="node_value">    2023-12-24T05:46:20.397106Z
 </div>
       </li>
       <li class="collapseable">
@@ -646,7 +671,7 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">Authorization</div>:
-        <div class="node_value">    Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJkc3MudXNzMS5sb2NhbHV0bSIsImV4cCI6MTcwMzQwMDM0NiwiaXNzIjoiZHVtbXkiLCJzY29wZSI6ImRzcy5yZWFkLmlkZW50aWZpY2F0aW9uX3NlcnZpY2VfYXJlYXMiLCJzdWIiOiJ1c3NfcXVhbGlmaWVyIn0.REDACTED
+        <div class="node_value">    Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJkc3MudXNzMS5sb2NhbHV0bSIsImV4cCI6MTcwMzQwMDM3NSwiaXNzIjoiZHVtbXkiLCJzY29wZSI6ImRzcy5yZWFkLmlkZW50aWZpY2F0aW9uX3NlcnZpY2VfYXJlYXMiLCJzdWIiOiJ1c3NfcXVhbGlmaWVyIn0.REDACTED
 </div>
       </li>
   </ul>
@@ -654,12 +679,12 @@
 </div>
       </li>
       <li class="not_collapseable">
-        <div class="node_key">json</div>:
+        <div class="node_key">body</div>:
         <div class="node_value">    None
 </div>
       </li>
       <li class="not_collapseable">
-        <div class="node_key">body</div>:
+        <div class="node_key">json</div>:
         <div class="node_value">    None
 </div>
       </li>
@@ -685,7 +710,7 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">Date</div>:
-        <div class="node_value">    Sun, 24 Dec 2023 05:45:51 GMT
+        <div class="node_value">    Sun, 24 Dec 2023 05:46:20 GMT
 </div>
       </li>
       <li class="not_collapseable">
@@ -699,12 +724,12 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">elapsed_s</div>:
-        <div class="node_value">    0.001772
+        <div class="node_value">    0.001862
 </div>
       </li>
       <li class="not_collapseable">
         <div class="node_key">reported</div>:
-        <div class="node_value">    2023-12-24T05:45:51.537530Z
+        <div class="node_value">    2023-12-24T05:46:20.399696Z
 </div>
       </li>
       <li class="collapseable">
@@ -737,6 +762,10 @@
       </li>
   </ul>
 
+</div>
+      </li>
+  </ul>
+
   </div>
 
                 </td>
@@ -754,9 +783,11 @@
               <td><a href="#e7">7</a></td>
                 <td>&#x1F310;</td>
                 <td>
-                  GET dss.uss1.localutm
                     <div id="e7query">
       <ul>
+      <li class="collapseable">
+        <div class="node_key">GET dss.uss1.localutm 200</div>:
+        <div class="node_value">      <ul>
       <li class="collapseable">
         <div class="node_key">request</div>:
         <div class="node_value">      <ul>
@@ -772,7 +803,7 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">initiated_at</div>:
-        <div class="node_value">    2023-12-24T05:45:51.538072Z
+        <div class="node_value">    2023-12-24T05:46:20.400238Z
 </div>
       </li>
       <li class="collapseable">
@@ -800,7 +831,7 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">Authorization</div>:
-        <div class="node_value">    Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJkc3MudXNzMS5sb2NhbHV0bSIsImV4cCI6MTcwMzQwMDM0NiwiaXNzIjoiZHVtbXkiLCJzY29wZSI6ImRzcy5yZWFkLmlkZW50aWZpY2F0aW9uX3NlcnZpY2VfYXJlYXMiLCJzdWIiOiJ1c3NfcXVhbGlmaWVyIn0.REDACTED
+        <div class="node_value">    Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJkc3MudXNzMS5sb2NhbHV0bSIsImV4cCI6MTcwMzQwMDM3NSwiaXNzIjoiZHVtbXkiLCJzY29wZSI6ImRzcy5yZWFkLmlkZW50aWZpY2F0aW9uX3NlcnZpY2VfYXJlYXMiLCJzdWIiOiJ1c3NfcXVhbGlmaWVyIn0.REDACTED
 </div>
       </li>
   </ul>
@@ -808,12 +839,12 @@
 </div>
       </li>
       <li class="not_collapseable">
-        <div class="node_key">json</div>:
+        <div class="node_key">body</div>:
         <div class="node_value">    None
 </div>
       </li>
       <li class="not_collapseable">
-        <div class="node_key">body</div>:
+        <div class="node_key">json</div>:
         <div class="node_value">    None
 </div>
       </li>
@@ -839,7 +870,7 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">Date</div>:
-        <div class="node_value">    Sun, 24 Dec 2023 05:45:51 GMT
+        <div class="node_value">    Sun, 24 Dec 2023 05:46:20 GMT
 </div>
       </li>
       <li class="not_collapseable">
@@ -853,12 +884,12 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">elapsed_s</div>:
-        <div class="node_value">    0.000997
+        <div class="node_value">    0.001036
 </div>
       </li>
       <li class="not_collapseable">
         <div class="node_key">reported</div>:
-        <div class="node_value">    2023-12-24T05:45:51.539450Z
+        <div class="node_value">    2023-12-24T05:46:20.401735Z
 </div>
       </li>
       <li class="collapseable">
@@ -879,17 +910,17 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">time_start</div>:
-        <div class="node_value">    2023-12-24T05:45:46.526876Z
+        <div class="node_value">    2023-12-24T05:46:15.389441Z
 </div>
       </li>
       <li class="not_collapseable">
         <div class="node_key">time_end</div>:
-        <div class="node_value">    2023-12-24T05:45:51.526876Z
+        <div class="node_value">    2023-12-24T05:46:20.389441Z
 </div>
       </li>
       <li class="not_collapseable">
         <div class="node_key">version</div>:
-        <div class="node_value">    1f8tea3i62k3o
+        <div class="node_value">    1f8teauebkqng
 </div>
       </li>
       <li class="not_collapseable">
@@ -917,6 +948,10 @@
       <li class="not_collapseable">
         <div class="node_key">participant_id</div>:
         <div class="node_value">    uss1
+</div>
+      </li>
+  </ul>
+
 </div>
       </li>
   </ul>

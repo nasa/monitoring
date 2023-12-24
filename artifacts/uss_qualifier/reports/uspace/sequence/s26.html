@@ -3,66 +3,77 @@
 <head>
   <meta charset="UTF-8">
   <title>s26 - Flight authorisation validation</title>
-  <style>
-    body {
-      margin: 0;
-      color: #24292f;
-      background-color: #ffffff;
-      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
-      font-size: 16px;
-      line-height: 1.5;
-      word-wrap: break-word;
-    }
-    table {
-      border-spacing: 0;
-      border-collapse: collapse;
-      width: max-content;
-      max-width: 100%;
-      overflow: auto;
-    }
-    tr {
-      border-top: 1px solid hsla(210,18%,87%,1);
-    }
-    table tr:nth-child(2n) {
-      background-color: #f6f8fa;
-    }
-    td {
-      padding: 6px 6px;
-      vertical-align: top;
-      border: 1px solid #d0d7de;
-    }
-    th {
-      padding: 6px 6px;
-      text-align: left;
-      background-color: rgb(230, 230, 230);
-      border: 1px solid #d0d7de;
-    }
-    a {
-      background-color: transparent;
-      color: #0969da;
-      text-decoration: none;
-    }
-    h2 {
-      margin-block-end: 0.1em;
-    }
-    .sticky_cell_value {
-      position: sticky;
-      top: 0px;
-      z-index: 0;
-    }
-    .pass_result {
-      background-color: rgb(192, 255, 192);
-    }
-    .fail_result {
-      background-color: rgb(255, 192, 192);
-    }
-    .not_tested {
-      background-color: rgb(192, 192, 192);
-    }
-    .failed_check_summary {
-      font-style: italic;
-    }
-  </style>
+<style>
+  body {
+    margin: 0;
+    color: #24292f;
+    background-color: #ffffff;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+    font-size: 16px;
+    line-height: 1.5;
+    word-wrap: break-word;
+  }
+  table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    width: max-content;
+    max-width: 100%;
+    overflow: auto;
+  }
+  tr {
+    border-top: 1px solid hsla(210,18%,87%,1);
+  }
+  table tr:nth-child(2n) {
+    background-color: #f6f8fa;
+  }
+  td {
+    padding: 6px 6px;
+    vertical-align: top;
+    border: 1px solid #d0d7de;
+  }
+  th {
+    padding: 6px 6px;
+    text-align: left;
+    background-color: rgb(230, 230, 230);
+    border: 1px solid #d0d7de;
+    height: 40px;
+  }
+  a {
+    background-color: transparent;
+    color: #0969da;
+    text-decoration: none;
+  }
+  h2 {
+    margin-block-end: 0.1em;
+  }
+  p {
+    margin-top: 0.1em;
+    margin-bottom: 0.1em;
+  }
+  .sticky_cell_value {
+    position: sticky;
+    top: 0px; // 40px
+    z-index: 0;
+  }
+  .pass_result {
+    background-color: rgb(192, 255, 192);
+  }
+  .fail_result {
+    background-color: rgb(255, 192, 192);
+  }
+  .info_result {
+    background-color: rgb(255, 255, 192);
+  }
+  .not_tested {
+    background-color: rgb(192, 192, 192);
+  }
+  .skipped_explanation {
+    font-style: italic;
+  }
+  .failed_check_summary {
+    font-style: italic;
+  }
+</style>
     <style>
     ul, ul ul, ul li {
       margin: 0;
@@ -91,7 +102,7 @@
 </head>
 <body>
 <div>
-    <h2><a href="https://github.com/interuss/monitoring/blob/ab3770f6a39ee1fd7061a35227f86d93eca25bf0/monitoring/uss_qualifier/scenarios/uspace/flight_auth/validation.md">Flight authorisation validation</a></h2>
+    <h2><a href="https://github.com/interuss/monitoring/blob/4ace2569c7c44a03c1a51364c6be7b08d5b6233a/monitoring/uss_qualifier/scenarios/uspace/flight_auth/validation.md">Flight authorisation validation</a></h2>
   <h3>scenarios.uspace.flight_auth.Validation</h3>
   <table>
     <tr class="header_row">
@@ -113,17 +124,19 @@
           </tr>
             <tr id="e2">
                 <td rowspan="3"><span class="sticky_cell_value">
-                    <a href="https://github.com/interuss/monitoring/blob/ab3770f6a39ee1fd7061a35227f86d93eca25bf0/monitoring/uss_qualifier/scenarios/uspace/flight_auth/validation.md#attempt-invalid-flights-test-case">Attempt invalid flights</a>
+                    <a href="https://github.com/interuss/monitoring/blob/4ace2569c7c44a03c1a51364c6be7b08d5b6233a/monitoring/uss_qualifier/scenarios/uspace/flight_auth/validation.md#attempt-invalid-flights-test-case">Attempt invalid flights</a>
                 </span></td>
                 <td rowspan="3"><span class="sticky_cell_value">
-                    <a href="https://github.com/interuss/monitoring/blob/ab3770f6a39ee1fd7061a35227f86d93eca25bf0/monitoring/uss_qualifier/scenarios/uspace/flight_auth/validation.md#inject-invalid-flight-intents-test-step">Inject invalid flight intents</a>
+                    <a href="https://github.com/interuss/monitoring/blob/4ace2569c7c44a03c1a51364c6be7b08d5b6233a/monitoring/uss_qualifier/scenarios/uspace/flight_auth/validation.md#inject-invalid-flight-intents-test-step">Inject invalid flight intents</a>
                 </span></td>
               <td><a href="#e2">2</a></td>
                 <td>&#x1F310;</td>
                 <td>
-                  PUT scdsc.uss1.localutm
                     <div id="e2query">
       <ul>
+      <li class="collapseable">
+        <div class="node_key">PUT scdsc.uss1.localutm 200</div>:
+        <div class="node_value">      <ul>
       <li class="collapseable">
         <div class="node_key">request</div>:
         <div class="node_value">      <ul>
@@ -134,12 +147,12 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">url</div>:
-        <div class="node_value">    http://scdsc.uss1.localutm/flight_planning/v1/flight_plans/a8c32add-7854-45e9-b259-068d2cd00b26
+        <div class="node_value">    http://scdsc.uss1.localutm/flight_planning/v1/flight_plans/b3ebfe6d-9f90-40c0-885c-a0a35f96a7fd
 </div>
       </li>
       <li class="not_collapseable">
         <div class="node_key">initiated_at</div>:
-        <div class="node_value">    2023-12-24T05:54:27.250983Z
+        <div class="node_value">    2023-12-24T05:54:52.567250Z
 </div>
       </li>
       <li class="collapseable">
@@ -177,7 +190,7 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">Authorization</div>:
-        <div class="node_value">    Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJzY2RzYy51c3MxLmxvY2FsdXRtIiwiZXhwIjoxNzAzNDAwODM3LCJpc3MiOiJkdW1teSIsInNjb3BlIjoiaW50ZXJ1c3MuZmxpZ2h0X3BsYW5uaW5nLnBsYW4iLCJzdWIiOiJ1c3NfcXVhbGlmaWVyIn0.REDACTED
+        <div class="node_value">    Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJzY2RzYy51c3MxLmxvY2FsdXRtIiwiZXhwIjoxNzAzNDAwODYyLCJpc3MiOiJkdW1teSIsInNjb3BlIjoiaW50ZXJ1c3MuZmxpZ2h0X3BsYW5uaW5nLnBsYW4iLCJzdWIiOiJ1c3NfcXVhbGlmaWVyIn0.REDACTED
 </div>
       </li>
   </ul>
@@ -330,7 +343,7 @@
         <div class="node_value">      <ul>
       <li class="not_collapseable">
         <div class="node_key">value</div>:
-        <div class="node_value">    2023-12-24T05:53:55.449850Z
+        <div class="node_value">    2023-12-24T05:54:20.942610Z
 </div>
       </li>
       <li class="not_collapseable">
@@ -347,7 +360,7 @@
         <div class="node_value">      <ul>
       <li class="not_collapseable">
         <div class="node_key">value</div>:
-        <div class="node_value">    2023-12-24T05:58:55.449850Z
+        <div class="node_value">    2023-12-24T05:59:20.942610Z
 </div>
       </li>
       <li class="not_collapseable">
@@ -460,7 +473,7 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">request_id</div>:
-        <div class="node_value">    1fdb61ab-16e6-461d-9e32-25d20e4e3c44
+        <div class="node_value">    3d516fe9-cf97-4108-89d6-bd4157d81af2
 </div>
       </li>
   </ul>
@@ -494,7 +507,7 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">Date</div>:
-        <div class="node_value">    Sun, 24 Dec 2023 05:54:27 GMT
+        <div class="node_value">    Sun, 24 Dec 2023 05:54:52 GMT
 </div>
       </li>
       <li class="not_collapseable">
@@ -518,12 +531,12 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">elapsed_s</div>:
-        <div class="node_value">    0.038542
+        <div class="node_value">    0.039381
 </div>
       </li>
       <li class="not_collapseable">
         <div class="node_key">reported</div>:
-        <div class="node_value">    2023-12-24T05:54:27.290153Z
+        <div class="node_value">    2023-12-24T05:54:52.607242Z
 </div>
       </li>
       <li class="collapseable">
@@ -536,7 +549,7 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">flight_id</div>:
-        <div class="node_value">    a8c32add-7854-45e9-b259-068d2cd00b26
+        <div class="node_value">    b3ebfe6d-9f90-40c0-885c-a0a35f96a7fd
 </div>
       </li>
       <li class="not_collapseable">
@@ -581,12 +594,16 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">query_type</div>:
-        <div class="node_value">    QueryType.InterUSSFlightPlanningV1UpsertFlightPlan
+        <div class="node_value">    interuss.automated_testing.flight_planning.v1.UpsertFlightPlan
 </div>
       </li>
       <li class="not_collapseable">
         <div class="node_key">participant_id</div>:
         <div class="node_value">    uss1
+</div>
+      </li>
+  </ul>
+
 </div>
       </li>
   </ul>
@@ -614,17 +631,19 @@
             </tr>
             <tr id="e5">
                 <td rowspan="3"><span class="sticky_cell_value">
-                    <a href="https://github.com/interuss/monitoring/blob/ab3770f6a39ee1fd7061a35227f86d93eca25bf0/monitoring/uss_qualifier/scenarios/uspace/flight_auth/validation.md#plan-valid-flight-test-case">Plan valid flight</a>
+                    <a href="https://github.com/interuss/monitoring/blob/4ace2569c7c44a03c1a51364c6be7b08d5b6233a/monitoring/uss_qualifier/scenarios/uspace/flight_auth/validation.md#plan-valid-flight-test-case">Plan valid flight</a>
                 </span></td>
                 <td rowspan="3"><span class="sticky_cell_value">
-                    <a href="https://github.com/interuss/monitoring/blob/ab3770f6a39ee1fd7061a35227f86d93eca25bf0/monitoring/uss_qualifier/scenarios/flight_planning/plan_flight_intent.md#plan-flight-test-step-fragment">Plan valid flight intent</a>
+                    <a href="https://github.com/interuss/monitoring/blob/4ace2569c7c44a03c1a51364c6be7b08d5b6233a/monitoring/uss_qualifier/scenarios/flight_planning/plan_flight_intent.md#plan-flight-test-step-fragment">Plan valid flight intent</a>
                 </span></td>
               <td><a href="#e5">5</a></td>
                 <td>&#x1F310;</td>
                 <td>
-                  PUT scdsc.uss1.localutm
                     <div id="e5query">
       <ul>
+      <li class="collapseable">
+        <div class="node_key">PUT scdsc.uss1.localutm 200</div>:
+        <div class="node_value">      <ul>
       <li class="collapseable">
         <div class="node_key">request</div>:
         <div class="node_value">      <ul>
@@ -635,12 +654,12 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">url</div>:
-        <div class="node_value">    http://scdsc.uss1.localutm/flight_planning/v1/flight_plans/4399a34d-7d2a-4ee2-b6c3-3ff6490279cb
+        <div class="node_value">    http://scdsc.uss1.localutm/flight_planning/v1/flight_plans/1d0fa70a-44e2-4905-b068-0ed2f451bb71
 </div>
       </li>
       <li class="not_collapseable">
         <div class="node_key">initiated_at</div>:
-        <div class="node_value">    2023-12-24T05:54:27.292629Z
+        <div class="node_value">    2023-12-24T05:54:52.609521Z
 </div>
       </li>
       <li class="collapseable">
@@ -678,7 +697,7 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">Authorization</div>:
-        <div class="node_value">    Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJzY2RzYy51c3MxLmxvY2FsdXRtIiwiZXhwIjoxNzAzNDAwODM3LCJpc3MiOiJkdW1teSIsInNjb3BlIjoiaW50ZXJ1c3MuZmxpZ2h0X3BsYW5uaW5nLnBsYW4iLCJzdWIiOiJ1c3NfcXVhbGlmaWVyIn0.REDACTED
+        <div class="node_value">    Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJzY2RzYy51c3MxLmxvY2FsdXRtIiwiZXhwIjoxNzAzNDAwODYyLCJpc3MiOiJkdW1teSIsInNjb3BlIjoiaW50ZXJ1c3MuZmxpZ2h0X3BsYW5uaW5nLnBsYW4iLCJzdWIiOiJ1c3NfcXVhbGlmaWVyIn0.REDACTED
 </div>
       </li>
   </ul>
@@ -831,7 +850,7 @@
         <div class="node_value">      <ul>
       <li class="not_collapseable">
         <div class="node_key">value</div>:
-        <div class="node_value">    2023-12-24T05:53:55.452906Z
+        <div class="node_value">    2023-12-24T05:54:20.945498Z
 </div>
       </li>
       <li class="not_collapseable">
@@ -848,7 +867,7 @@
         <div class="node_value">      <ul>
       <li class="not_collapseable">
         <div class="node_key">value</div>:
-        <div class="node_value">    2023-12-24T05:58:55.452906Z
+        <div class="node_value">    2023-12-24T05:59:20.945498Z
 </div>
       </li>
       <li class="not_collapseable">
@@ -961,7 +980,7 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">request_id</div>:
-        <div class="node_value">    43132764-c495-491c-bcc4-9504b349472b
+        <div class="node_value">    da850df5-710e-4780-802d-1abbea2332f6
 </div>
       </li>
   </ul>
@@ -995,7 +1014,7 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">Date</div>:
-        <div class="node_value">    Sun, 24 Dec 2023 05:54:27 GMT
+        <div class="node_value">    Sun, 24 Dec 2023 05:54:52 GMT
 </div>
       </li>
       <li class="not_collapseable">
@@ -1019,12 +1038,12 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">elapsed_s</div>:
-        <div class="node_value">    0.121625
+        <div class="node_value">    0.214409
 </div>
       </li>
       <li class="not_collapseable">
         <div class="node_key">reported</div>:
-        <div class="node_value">    2023-12-24T05:54:27.414899Z
+        <div class="node_value">    2023-12-24T05:54:52.824486Z
 </div>
       </li>
       <li class="collapseable">
@@ -1037,7 +1056,7 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">flight_id</div>:
-        <div class="node_value">    4399a34d-7d2a-4ee2-b6c3-3ff6490279cb
+        <div class="node_value">    1d0fa70a-44e2-4905-b068-0ed2f451bb71
 </div>
       </li>
       <li class="not_collapseable">
@@ -1083,12 +1102,16 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">query_type</div>:
-        <div class="node_value">    QueryType.InterUSSFlightPlanningV1UpsertFlightPlan
+        <div class="node_value">    interuss.automated_testing.flight_planning.v1.UpsertFlightPlan
 </div>
       </li>
       <li class="not_collapseable">
         <div class="node_key">participant_id</div>:
         <div class="node_value">    uss1
+</div>
+      </li>
+  </ul>
+
 </div>
       </li>
   </ul>

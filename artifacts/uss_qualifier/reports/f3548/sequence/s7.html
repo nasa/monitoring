@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>s7 - ASTM F3548-21 UTM DSS interoperability</title>
+  <title>s7 - ASTM SCD DSS: Subscription Validation</title>
 <style>
   body {
     margin: 0;
@@ -102,8 +102,8 @@
 </head>
 <body>
 <div>
-    <h2><a href="https://github.com/interuss/monitoring/blob/4bac544dde3256ab89f70e1620f96ef7917bb5cf/monitoring/uss_qualifier/scenarios/astm/utm/dss_interoperability.md">ASTM F3548-21 UTM DSS interoperability</a></h2>
-  <h3>scenarios.astm.utm.DSSInteroperability</h3>
+    <h2><a href="https://github.com/interuss/monitoring/blob/80475ac6f2244f5b2ec9b30a5b035f19ca57f3f8/monitoring/uss_qualifier/scenarios/astm/utm/dss/subscription_validation.md">ASTM SCD DSS: Subscription Validation</a></h2>
+  <h3>scenarios.astm.utm.dss.SubscriptionValidation</h3>
     <h4>
       <a href="./s7.kml">KML visualization</a>
     </h4>
@@ -113,40 +113,21 @@
       <th>Step</th>
       <th colspan="3">Event</th>
         <th>
-            uss1
-        </th>
-        <th>
             uss2
         </th>
     </tr>
 
             <tr id="e1">
-                <td rowspan="8"><span class="sticky_cell_value">
-                    <a href="https://github.com/interuss/monitoring/blob/4bac544dde3256ab89f70e1620f96ef7917bb5cf/monitoring/uss_qualifier/scenarios/astm/utm/dss_interoperability.md#prerequisites-test-case">Prerequisites</a>
+                <td rowspan="4"><span class="sticky_cell_value">
+                    <a href="https://github.com/interuss/monitoring/blob/80475ac6f2244f5b2ec9b30a5b035f19ca57f3f8/monitoring/uss_qualifier/scenarios/astm/utm/dss/subscription_validation.md#setup-test-case">Setup</a>
                 </span></td>
-                <td rowspan="8"><span class="sticky_cell_value">
-                    <a href="https://github.com/interuss/monitoring/blob/4bac544dde3256ab89f70e1620f96ef7917bb5cf/monitoring/uss_qualifier/scenarios/astm/utm/dss_interoperability.md#test-environment-requirements-test-step">Test environment requirements</a>
+                <td rowspan="4"><span class="sticky_cell_value">
+                    <a href="https://github.com/interuss/monitoring/blob/80475ac6f2244f5b2ec9b30a5b035f19ca57f3f8/monitoring/uss_qualifier/scenarios/astm/utm/dss/clean_workspace.md#ensure-clean-workspace-test-step-fragment">Ensure clean workspace</a>
                 </span></td>
               <td><a href="#e1">1</a></td>
-                <td>&#x1F4D3;</td>
-                <td colspan="3">
-                  <code>uss2_private_address</code>: DSS instance (URL: http://dss.uss2.localutm, netloc: dss.uss2.localutm, resolved IP: 172.18.0.3) is declared as explicitly having a private address, skipping check
-                </td>
-            </tr>
-            <tr id="e2">
-              <td><a href="#e2">2</a></td>
-                <td>&#x2705;</td>
-                <td class="pass_result">
-                  DSS instance is publicly addressable
-                </td>
-                    <td></td>
-                    <td class="pass_result">&#x2705;</td>
-            </tr>
-            <tr id="e3">
-              <td><a href="#e3">3</a></td>
                 <td>&#x1F310;</td>
                 <td>
-                    <div id="e3query">
+                    <div id="e1query">
       <ul>
       <li class="collapseable">
         <div class="node_key">POST dss.uss2.localutm 200</div>:
@@ -161,12 +142,12 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">url</div>:
-        <div class="node_value">    http://dss.uss2.localutm/dss/v1/operational_intent_references/query
+        <div class="node_value">    http://dss.uss2.localutm/dss/v1/subscriptions/query
 </div>
       </li>
       <li class="not_collapseable">
         <div class="node_key">initiated_at</div>:
-        <div class="node_value">    2024-01-31T22:52:22.825553Z
+        <div class="node_value">    2024-02-01T21:45:32.733522Z
 </div>
       </li>
       <li class="collapseable">
@@ -194,7 +175,7 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">Content-Length</div>:
-        <div class="node_value">    422
+        <div class="node_value">    460
 </div>
       </li>
       <li class="not_collapseable">
@@ -204,7 +185,7 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">Authorization</div>:
-        <div class="node_value">    Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJkc3MudXNzMi5sb2NhbHV0bSIsImV4cCI6MTcwNjc0NTE0MiwiaXNzIjoiZHVtbXkiLCJzY29wZSI6InV0bS5zdHJhdGVnaWNfY29vcmRpbmF0aW9uIiwic3ViIjoidXNzX3F1YWxpZmllciJ9.REDACTED
+        <div class="node_value">    Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJkc3MudXNzMi5sb2NhbHV0bSIsImV4cCI6MTcwNjgyNzUzMiwiaXNzIjoiZHVtbXkiLCJzY29wZSI6InV0bS5zdHJhdGVnaWNfY29vcmRpbmF0aW9uIiwic3ViIjoidXNzX3F1YWxpZmllciJ9.REDACTED
 </div>
       </li>
   </ul>
@@ -355,13 +336,23 @@
 
 </div>
       </li>
+      <li class="not_collapseable">
+        <div class="node_key">time_end</div>:
+        <div class="node_value">    None
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">time_start</div>:
+        <div class="node_value">    None
+</div>
+      </li>
   </ul>
 
 </div>
       </li>
       <li class="not_collapseable">
         <div class="node_key">request_id</div>:
-        <div class="node_value">    2160eecc-2a23-4fea-ac14-4667abd08cf2
+        <div class="node_value">    5b350c2e-9e0e-489d-bd0d-e18c44969cc6
 </div>
       </li>
   </ul>
@@ -395,12 +386,12 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">Date</div>:
-        <div class="node_value">    Wed, 31 Jan 2024 22:52:22 GMT
+        <div class="node_value">    Thu, 01 Feb 2024 21:45:32 GMT
 </div>
       </li>
       <li class="not_collapseable">
         <div class="node_key">Content-Length</div>:
-        <div class="node_value">    37
+        <div class="node_value">    21
 </div>
       </li>
   </ul>
@@ -409,19 +400,19 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">elapsed_s</div>:
-        <div class="node_value">    0.005275
+        <div class="node_value">    0.002863
 </div>
       </li>
       <li class="not_collapseable">
         <div class="node_key">reported</div>:
-        <div class="node_value">    2024-01-31T22:52:22.831278Z
+        <div class="node_value">    2024-02-01T21:45:32.736889Z
 </div>
       </li>
       <li class="collapseable">
         <div class="node_key">json</div>:
         <div class="node_value">      <ul>
       <li class="collapseable">
-        <div class="node_key">operational_intent_references</div>:
+        <div class="node_key">subscriptions</div>:
         <div class="node_value">      <ul>
   </ul>
 
@@ -442,7 +433,7 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">query_type</div>:
-        <div class="node_value">    astm.f3548.v21.dss.queryOperationalIntentReferences
+        <div class="node_value">    astm.f3548.v21.dss.querySubscriptions
 </div>
       </li>
       <li class="not_collapseable">
@@ -459,59 +450,210 @@
   </div>
 
                 </td>
-                    <td></td>
                     <td>&#x1F310;</td>
             </tr>
-            <tr id="e4">
-              <td><a href="#e4">4</a></td>
+            <tr id="e2">
+              <td><a href="#e2">2</a></td>
                 <td>&#x2705;</td>
                 <td class="pass_result">
-                  DSS instance is reachable
-                </td>
-                    <td></td>
-                    <td class="pass_result">&#x2705;</td>
-            </tr>
-            <tr id="e5">
-              <td><a href="#e5">5</a></td>
-                <td>&#x1F4D3;</td>
-                <td colspan="3">
-                  <code>uss1_private_address</code>: DSS instance (URL: http://dss.uss1.localutm, netloc: dss.uss1.localutm, resolved IP: 172.18.0.3) is declared as explicitly having a private address, skipping check
-                </td>
-            </tr>
-            <tr id="e6">
-              <td><a href="#e6">6</a></td>
-                <td>&#x2705;</td>
-                <td class="pass_result">
-                  DSS instance is publicly addressable
+                  Successful subscription search query
                 </td>
                     <td class="pass_result">&#x2705;</td>
-                    <td></td>
             </tr>
-            <tr id="e7">
-              <td><a href="#e7">7</a></td>
+            <tr id="e3">
+              <td><a href="#e3">3</a></td>
                 <td>&#x1F310;</td>
                 <td>
-                    <div id="e7query">
+                    <div id="e3query">
       <ul>
       <li class="collapseable">
-        <div class="node_key">POST dss.uss1.localutm 200</div>:
+        <div class="node_key">GET dss.uss2.localutm 404</div>:
         <div class="node_value">      <ul>
       <li class="collapseable">
         <div class="node_key">request</div>:
         <div class="node_value">      <ul>
       <li class="not_collapseable">
         <div class="node_key">method</div>:
-        <div class="node_value">    POST
+        <div class="node_value">    GET
 </div>
       </li>
       <li class="not_collapseable">
         <div class="node_key">url</div>:
-        <div class="node_value">    http://dss.uss1.localutm/dss/v1/operational_intent_references/query
+        <div class="node_value">    http://dss.uss2.localutm/dss/v1/subscriptions/0000017a-e36d-40be-d38b-eca6ca350000
 </div>
       </li>
       <li class="not_collapseable">
         <div class="node_key">initiated_at</div>:
-        <div class="node_value">    2024-01-31T22:52:22.831897Z
+        <div class="node_value">    2024-02-01T21:45:32.737040Z
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">headers</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">User-Agent</div>:
+        <div class="node_value">    python-requests/2.31.0
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">Accept-Encoding</div>:
+        <div class="node_value">    gzip, deflate, br
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">Accept</div>:
+        <div class="node_value">    */*
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">Connection</div>:
+        <div class="node_value">    keep-alive
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">Authorization</div>:
+        <div class="node_value">    Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJkc3MudXNzMi5sb2NhbHV0bSIsImV4cCI6MTcwNjgyNzUzMiwiaXNzIjoiZHVtbXkiLCJzY29wZSI6InV0bS5zdHJhdGVnaWNfY29vcmRpbmF0aW9uIiwic3ViIjoidXNzX3F1YWxpZmllciJ9.REDACTED
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">json</div>:
+        <div class="node_value">    None
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">body</div>:
+        <div class="node_value">    None
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">response</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">code</div>:
+        <div class="node_value">    404
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">headers</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">Content-Type</div>:
+        <div class="node_value">    application/json; charset=utf-8
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">Date</div>:
+        <div class="node_value">    Thu, 01 Feb 2024 21:45:32 GMT
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">Content-Length</div>:
+        <div class="node_value">    115
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">elapsed_s</div>:
+        <div class="node_value">    0.001672
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">reported</div>:
+        <div class="node_value">    2024-02-01T21:45:32.739133Z
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">json</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">message</div>:
+        <div class="node_value">    Subscription 0000017a-e36d-40be-d38b-eca6ca350000 not found (E:d3e9f704-32d9-4dd8-8979-258bf49d7999)
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">body</div>:
+        <div class="node_value">    None
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">query_type</div>:
+        <div class="node_value">    astm.f3548.v21.dss.getSubscription
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">participant_id</div>:
+        <div class="node_value">    uss2
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+  </ul>
+
+  </div>
+
+                </td>
+                    <td>&#x1F310;</td>
+            </tr>
+            <tr id="e4">
+              <td><a href="#e4">4</a></td>
+                <td>&#x2705;</td>
+                <td class="pass_result">
+                  Subscription can be queried by ID
+                </td>
+                    <td class="pass_result">&#x2705;</td>
+            </tr>
+            <tr id="e5">
+                <td rowspan="6"><span class="sticky_cell_value">
+                    <a href="https://github.com/interuss/monitoring/blob/80475ac6f2244f5b2ec9b30a5b035f19ca57f3f8/monitoring/uss_qualifier/scenarios/astm/utm/dss/subscription_validation.md#subscription-validation-test-case">Subscription Validation</a>
+                </span></td>
+                <td rowspan="6"><span class="sticky_cell_value">
+                    <a href="https://github.com/interuss/monitoring/blob/80475ac6f2244f5b2ec9b30a5b035f19ca57f3f8/monitoring/uss_qualifier/scenarios/astm/utm/dss/subscription_validation.md#subscription-duration-limitations-test-step">Subscription duration limitations</a>
+                </span></td>
+              <td><a href="#e5">5</a></td>
+                <td>&#x1F310;</td>
+                <td>
+                    <div id="e5query">
+      <ul>
+      <li class="collapseable">
+        <div class="node_key">PUT dss.uss2.localutm 400</div>:
+        <div class="node_value">      <ul>
+      <li class="collapseable">
+        <div class="node_key">request</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">method</div>:
+        <div class="node_value">    PUT
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">url</div>:
+        <div class="node_value">    http://dss.uss2.localutm/dss/v1/subscriptions/0000017a-e36d-40be-d38b-eca6ca350000
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">initiated_at</div>:
+        <div class="node_value">    2024-02-01T21:45:32.740187Z
 </div>
       </li>
       <li class="collapseable">
@@ -539,7 +681,7 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">Content-Length</div>:
-        <div class="node_value">    422
+        <div class="node_value">    679
 </div>
       </li>
       <li class="not_collapseable">
@@ -549,7 +691,7 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">Authorization</div>:
-        <div class="node_value">    Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJkc3MudXNzMS5sb2NhbHV0bSIsImV4cCI6MTcwNjc0NTE0MiwiaXNzIjoiZHVtbXkiLCJzY29wZSI6InV0bS5zdHJhdGVnaWNfY29vcmRpbmF0aW9uIiwic3ViIjoidXNzX3F1YWxpZmllciJ9.REDACTED
+        <div class="node_value">    Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJkc3MudXNzMi5sb2NhbHV0bSIsImV4cCI6MTcwNjgyNzUzMiwiaXNzIjoiZHVtbXkiLCJzY29wZSI6InV0bS5zdHJhdGVnaWNfY29vcmRpbmF0aW9uIiwic3ViIjoidXNzX3F1YWxpZmllciJ9.REDACTED
 </div>
       </li>
   </ul>
@@ -560,7 +702,7 @@
         <div class="node_key">json</div>:
         <div class="node_value">      <ul>
       <li class="collapseable">
-        <div class="node_key">area_of_interest</div>:
+        <div class="node_key">extents</div>:
         <div class="node_value">      <ul>
       <li class="collapseable">
         <div class="node_key">volume</div>:
@@ -593,12 +735,12 @@
         <div class="node_value">      <ul>
       <li class="not_collapseable">
         <div class="node_key">lat</div>:
-        <div class="node_value">    37.2148
+        <div class="node_value">    37.1853
 </div>
       </li>
       <li class="not_collapseable">
         <div class="node_key">lng</div>:
-        <div class="node_value">    -80.614
+        <div class="node_value">    -80.544
 </div>
       </li>
   </ul>
@@ -627,12 +769,12 @@
         <div class="node_value">      <ul>
       <li class="not_collapseable">
         <div class="node_key">lat</div>:
-        <div class="node_value">    37.1853
+        <div class="node_value">    37.2148
 </div>
       </li>
       <li class="not_collapseable">
         <div class="node_key">lng</div>:
-        <div class="node_value">    -80.544
+        <div class="node_value">    -80.614
 </div>
       </li>
   </ul>
@@ -691,8 +833,74 @@
 
 </div>
       </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">time_start</div>:
+        <div class="node_value">      <ul>
       <li class="not_collapseable">
-        <div class="node_key">outline_circle</div>:
+        <div class="node_key">value</div>:
+        <div class="node_value">    2024-02-01T21:44:32.739339Z
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">format</div>:
+        <div class="node_value">    RFC3339
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">time_end</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">value</div>:
+        <div class="node_value">    2024-02-02T21:54:32.739339Z
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">format</div>:
+        <div class="node_value">    RFC3339
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">uss_base_url</div>:
+        <div class="node_value">    https://uss_qualifier.test.utm/dummy_base_url
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">notify_for_operational_intents</div>:
+        <div class="node_value">    True
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">notify_for_constraints</div>:
+        <div class="node_value">    False
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">request_id</div>:
+        <div class="node_value">    00fdf110-ffa4-4132-9923-28ae4ec1ce30
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">body</div>:
         <div class="node_value">    None
 </div>
       </li>
@@ -700,13 +908,360 @@
 
 </div>
       </li>
+      <li class="collapseable">
+        <div class="node_key">response</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">code</div>:
+        <div class="node_value">    400
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">headers</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">Content-Type</div>:
+        <div class="node_value">    application/json; charset=utf-8
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">Date</div>:
+        <div class="node_value">    Thu, 01 Feb 2024 21:45:32 GMT
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">Content-Length</div>:
+        <div class="node_value">    92
+</div>
+      </li>
   </ul>
 
 </div>
       </li>
       <li class="not_collapseable">
+        <div class="node_key">elapsed_s</div>:
+        <div class="node_value">    0.001826
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">reported</div>:
+        <div class="node_value">    2024-02-01T21:45:32.742477Z
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">json</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">message</div>:
+        <div class="node_value">    Subscription window exceeds 24 hours (E:1fbf1ea2-ead0-4eed-b5f0-66d62cc36083)
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">body</div>:
+        <div class="node_value">    None
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">query_type</div>:
+        <div class="node_value">    astm.f3548.v21.dss.createSubscription
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">participant_id</div>:
+        <div class="node_value">    uss2
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+  </ul>
+
+  </div>
+
+                </td>
+                    <td>&#x1F310;</td>
+            </tr>
+            <tr id="e6">
+              <td><a href="#e6">6</a></td>
+                <td>&#x2705;</td>
+                <td class="pass_result">
+                  Don't create a too long subscription
+                </td>
+                    <td class="pass_result">&#x2705;</td>
+            </tr>
+            <tr id="e7">
+              <td><a href="#e7">7</a></td>
+                <td>&#x1F310;</td>
+                <td>
+                    <div id="e7query">
+      <ul>
+      <li class="collapseable">
+        <div class="node_key">PUT dss.uss2.localutm 200</div>:
+        <div class="node_value">      <ul>
+      <li class="collapseable">
+        <div class="node_key">request</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">method</div>:
+        <div class="node_value">    PUT
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">url</div>:
+        <div class="node_value">    http://dss.uss2.localutm/dss/v1/subscriptions/0000017a-e36d-40be-d38b-eca6ca350000
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">initiated_at</div>:
+        <div class="node_value">    2024-02-01T21:45:32.743335Z
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">headers</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">User-Agent</div>:
+        <div class="node_value">    python-requests/2.31.0
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">Accept-Encoding</div>:
+        <div class="node_value">    gzip, deflate, br
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">Accept</div>:
+        <div class="node_value">    */*
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">Connection</div>:
+        <div class="node_value">    keep-alive
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">Content-Length</div>:
+        <div class="node_value">    679
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">Content-Type</div>:
+        <div class="node_value">    application/json
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">Authorization</div>:
+        <div class="node_value">    Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJkc3MudXNzMi5sb2NhbHV0bSIsImV4cCI6MTcwNjgyNzUzMiwiaXNzIjoiZHVtbXkiLCJzY29wZSI6InV0bS5zdHJhdGVnaWNfY29vcmRpbmF0aW9uIiwic3ViIjoidXNzX3F1YWxpZmllciJ9.REDACTED
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">json</div>:
+        <div class="node_value">      <ul>
+      <li class="collapseable">
+        <div class="node_key">extents</div>:
+        <div class="node_value">      <ul>
+      <li class="collapseable">
+        <div class="node_key">volume</div>:
+        <div class="node_value">      <ul>
+      <li class="collapseable">
+        <div class="node_key">outline_polygon</div>:
+        <div class="node_value">      <ul>
+      <li class="collapseable">
+        <div class="node_key">vertices</div>:
+        <div class="node_value">      <ul>
+      <li class="collapseable">
+        <div class="node_key">item_1</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">lat</div>:
+        <div class="node_value">    37.1853
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">lng</div>:
+        <div class="node_value">    -80.614
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">item_2</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">lat</div>:
+        <div class="node_value">    37.1853
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">lng</div>:
+        <div class="node_value">    -80.544
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">item_3</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">lat</div>:
+        <div class="node_value">    37.2148
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">lng</div>:
+        <div class="node_value">    -80.544
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">item_4</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">lat</div>:
+        <div class="node_value">    37.2148
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">lng</div>:
+        <div class="node_value">    -80.614
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">altitude_lower</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">value</div>:
+        <div class="node_value">    0.0
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">reference</div>:
+        <div class="node_value">    W84
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">units</div>:
+        <div class="node_value">    M
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">altitude_upper</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">value</div>:
+        <div class="node_value">    3048.0
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">reference</div>:
+        <div class="node_value">    W84
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">units</div>:
+        <div class="node_value">    M
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">time_start</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">value</div>:
+        <div class="node_value">    2024-02-01T21:44:32.739339Z
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">format</div>:
+        <div class="node_value">    RFC3339
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">time_end</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">value</div>:
+        <div class="node_value">    2024-02-02T21:44:32.739339Z
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">format</div>:
+        <div class="node_value">    RFC3339
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">uss_base_url</div>:
+        <div class="node_value">    https://uss_qualifier.test.utm/dummy_base_url
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">notify_for_operational_intents</div>:
+        <div class="node_value">    True
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">notify_for_constraints</div>:
+        <div class="node_value">    False
+</div>
+      </li>
+      <li class="not_collapseable">
         <div class="node_key">request_id</div>:
-        <div class="node_value">    55f1a69b-50c9-48cf-9f9a-0f55ae31cb1f
+        <div class="node_value">    b72f658f-edfe-4c2f-874c-850049d2bc82
 </div>
       </li>
   </ul>
@@ -740,12 +1295,12 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">Date</div>:
-        <div class="node_value">    Wed, 31 Jan 2024 22:52:22 GMT
+        <div class="node_value">    Thu, 01 Feb 2024 21:45:32 GMT
 </div>
       </li>
       <li class="not_collapseable">
         <div class="node_key">Content-Length</div>:
-        <div class="node_value">    37
+        <div class="node_value">    517
 </div>
       </li>
   </ul>
@@ -754,17 +1309,100 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">elapsed_s</div>:
-        <div class="node_value">    0.002148
+        <div class="node_value">    0.006014
 </div>
       </li>
       <li class="not_collapseable">
         <div class="node_key">reported</div>:
-        <div class="node_value">    2024-01-31T22:52:22.834482Z
+        <div class="node_value">    2024-02-01T21:45:32.749917Z
 </div>
       </li>
       <li class="collapseable">
         <div class="node_key">json</div>:
         <div class="node_value">      <ul>
+      <li class="collapseable">
+        <div class="node_key">subscription</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">id</div>:
+        <div class="node_value">    0000017a-e36d-40be-d38b-eca6ca350000
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">version</div>:
+        <div class="node_value">    mVFxRN6QNQfrIInfsZ0RA1Aggb46xNnluFoBNTnC-W0_
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">notification_index</div>:
+        <div class="node_value">    0
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">time_start</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">value</div>:
+        <div class="node_value">    2024-02-01T21:44:32.739339Z
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">format</div>:
+        <div class="node_value">    RFC3339
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">time_end</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">value</div>:
+        <div class="node_value">    2024-02-02T21:44:32.739339Z
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">format</div>:
+        <div class="node_value">    RFC3339
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">uss_base_url</div>:
+        <div class="node_value">    https://uss_qualifier.test.utm/dummy_base_url
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">notify_for_operational_intents</div>:
+        <div class="node_value">    True
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">notify_for_constraints</div>:
+        <div class="node_value">    False
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">implicit_subscription</div>:
+        <div class="node_value">    False
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">dependent_operational_intents</div>:
+        <div class="node_value">      <ul>
+  </ul>
+
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
       <li class="collapseable">
         <div class="node_key">operational_intent_references</div>:
         <div class="node_value">      <ul>
@@ -787,12 +1425,12 @@
       </li>
       <li class="not_collapseable">
         <div class="node_key">query_type</div>:
-        <div class="node_value">    astm.f3548.v21.dss.queryOperationalIntentReferences
+        <div class="node_value">    astm.f3548.v21.dss.createSubscription
 </div>
       </li>
       <li class="not_collapseable">
         <div class="node_key">participant_id</div>:
-        <div class="node_value">    uss1
+        <div class="node_value">    uss2
 </div>
       </li>
   </ul>
@@ -805,16 +1443,383 @@
 
                 </td>
                     <td>&#x1F310;</td>
-                    <td></td>
             </tr>
             <tr id="e8">
               <td><a href="#e8">8</a></td>
                 <td>&#x2705;</td>
                 <td class="pass_result">
-                  DSS instance is reachable
+                  Accept a subscription of maximal duration
                 </td>
                     <td class="pass_result">&#x2705;</td>
-                    <td></td>
+            </tr>
+            <tr id="e9">
+              <td><a href="#e9">9</a></td>
+                <td>&#x1F310;</td>
+                <td>
+                    <div id="e9query">
+      <ul>
+      <li class="collapseable">
+        <div class="node_key">PUT dss.uss2.localutm 400</div>:
+        <div class="node_value">      <ul>
+      <li class="collapseable">
+        <div class="node_key">request</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">method</div>:
+        <div class="node_value">    PUT
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">url</div>:
+        <div class="node_value">    http://dss.uss2.localutm/dss/v1/subscriptions/0000017a-e36d-40be-d38b-eca6ca350000/mVFxRN6QNQfrIInfsZ0RA1Aggb46xNnluFoBNTnC-W0_
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">initiated_at</div>:
+        <div class="node_value">    2024-02-01T21:45:32.751509Z
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">headers</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">User-Agent</div>:
+        <div class="node_value">    python-requests/2.31.0
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">Accept-Encoding</div>:
+        <div class="node_value">    gzip, deflate, br
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">Accept</div>:
+        <div class="node_value">    */*
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">Connection</div>:
+        <div class="node_value">    keep-alive
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">Content-Length</div>:
+        <div class="node_value">    679
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">Content-Type</div>:
+        <div class="node_value">    application/json
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">Authorization</div>:
+        <div class="node_value">    Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJkc3MudXNzMi5sb2NhbHV0bSIsImV4cCI6MTcwNjgyNzUzMiwiaXNzIjoiZHVtbXkiLCJzY29wZSI6InV0bS5zdHJhdGVnaWNfY29vcmRpbmF0aW9uIiwic3ViIjoidXNzX3F1YWxpZmllciJ9.REDACTED
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">json</div>:
+        <div class="node_value">      <ul>
+      <li class="collapseable">
+        <div class="node_key">extents</div>:
+        <div class="node_value">      <ul>
+      <li class="collapseable">
+        <div class="node_key">volume</div>:
+        <div class="node_value">      <ul>
+      <li class="collapseable">
+        <div class="node_key">outline_polygon</div>:
+        <div class="node_value">      <ul>
+      <li class="collapseable">
+        <div class="node_key">vertices</div>:
+        <div class="node_value">      <ul>
+      <li class="collapseable">
+        <div class="node_key">item_1</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">lat</div>:
+        <div class="node_value">    37.1853
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">lng</div>:
+        <div class="node_value">    -80.614
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">item_2</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">lat</div>:
+        <div class="node_value">    37.1853
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">lng</div>:
+        <div class="node_value">    -80.544
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">item_3</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">lat</div>:
+        <div class="node_value">    37.2148
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">lng</div>:
+        <div class="node_value">    -80.544
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">item_4</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">lat</div>:
+        <div class="node_value">    37.2148
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">lng</div>:
+        <div class="node_value">    -80.614
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">altitude_lower</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">value</div>:
+        <div class="node_value">    0.0
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">reference</div>:
+        <div class="node_value">    W84
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">units</div>:
+        <div class="node_value">    M
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">altitude_upper</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">value</div>:
+        <div class="node_value">    3048.0
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">reference</div>:
+        <div class="node_value">    W84
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">units</div>:
+        <div class="node_value">    M
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">time_start</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">value</div>:
+        <div class="node_value">    2024-02-01T21:44:32.739339Z
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">format</div>:
+        <div class="node_value">    RFC3339
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">time_end</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">value</div>:
+        <div class="node_value">    2024-02-02T21:54:32.739339Z
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">format</div>:
+        <div class="node_value">    RFC3339
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">uss_base_url</div>:
+        <div class="node_value">    https://uss_qualifier.test.utm/dummy_base_url
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">notify_for_operational_intents</div>:
+        <div class="node_value">    True
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">notify_for_constraints</div>:
+        <div class="node_value">    False
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">request_id</div>:
+        <div class="node_value">    86c8bd55-5dc9-462a-bde6-5e9bcbf577a5
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">body</div>:
+        <div class="node_value">    None
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">response</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">code</div>:
+        <div class="node_value">    400
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">headers</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">Content-Type</div>:
+        <div class="node_value">    application/json; charset=utf-8
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">Date</div>:
+        <div class="node_value">    Thu, 01 Feb 2024 21:45:32 GMT
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">Content-Length</div>:
+        <div class="node_value">    92
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">elapsed_s</div>:
+        <div class="node_value">    0.00263
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">reported</div>:
+        <div class="node_value">    2024-02-01T21:45:32.754706Z
+</div>
+      </li>
+      <li class="collapseable">
+        <div class="node_key">json</div>:
+        <div class="node_value">      <ul>
+      <li class="not_collapseable">
+        <div class="node_key">message</div>:
+        <div class="node_value">    Subscription window exceeds 24 hours (E:0a8e5814-17b3-4cd4-8864-ca5eff2f035a)
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">body</div>:
+        <div class="node_value">    None
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">query_type</div>:
+        <div class="node_value">    astm.f3548.v21.dss.updateSubscription
+</div>
+      </li>
+      <li class="not_collapseable">
+        <div class="node_key">participant_id</div>:
+        <div class="node_value">    uss2
+</div>
+      </li>
+  </ul>
+
+</div>
+      </li>
+  </ul>
+
+  </div>
+
+                </td>
+                    <td>&#x1F310;</td>
+            </tr>
+            <tr id="e10">
+              <td><a href="#e10">10</a></td>
+                <td>&#x2705;</td>
+                <td class="pass_result">
+                  Don't mutate a subscription to be too long
+                </td>
+                    <td class="pass_result">&#x2705;</td>
             </tr>
   </table>
 </div>
@@ -848,8 +1853,11 @@
       }
     }
 
+      addShowHide(document.getElementById("e1query"));
       addShowHide(document.getElementById("e3query"));
+      addShowHide(document.getElementById("e5query"));
       addShowHide(document.getElementById("e7query"));
+      addShowHide(document.getElementById("e9query"));
   </script>
 
 </body>

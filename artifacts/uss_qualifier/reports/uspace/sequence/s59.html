@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>s59 - ASTM F3411-22a NetRID aggregate checks</title>
+<style>
+  body {
+    margin: 0;
+    color: #24292f;
+    background-color: #ffffff;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+    font-size: 16px;
+    line-height: 1.5;
+    word-wrap: break-word;
+  }
+  table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    width: max-content;
+    max-width: 100%;
+    overflow: auto;
+  }
+  tr {
+    border-top: 1px solid hsla(210,18%,87%,1);
+  }
+  table tr:nth-child(2n) {
+    background-color: #f6f8fa;
+  }
+  td {
+    padding: 6px 6px;
+    vertical-align: top;
+    border: 1px solid #d0d7de;
+  }
+  th {
+    padding: 6px 6px;
+    text-align: left;
+    background-color: rgb(230, 230, 230);
+    border: 1px solid #d0d7de;
+    height: 40px;
+  }
+  a {
+    background-color: transparent;
+    color: #0969da;
+    text-decoration: none;
+  }
+  h2 {
+    margin-block-end: 0.1em;
+  }
+  p {
+    margin-top: 0.1em;
+    margin-bottom: 0.1em;
+  }
+  .sticky_cell_value {
+    position: sticky;
+    top: 0px; // 40px
+    z-index: 0;
+  }
+  .pass_result {
+    background-color: rgb(192, 255, 192);
+  }
+  .fail_result {
+    background-color: rgb(255, 192, 192);
+  }
+  .info_result {
+    background-color: rgb(255, 255, 192);
+  }
+  .not_tested {
+    background-color: rgb(192, 192, 192);
+  }
+  .skipped_explanation {
+    font-style: italic;
+  }
+  .failed_check_summary {
+    font-style: italic;
+  }
+  .minor_note {
+    font-style: italic;
+    font-size: 10px;
+  }
+</style>
+    <style>
+    ul, ul ul, ul li {
+      margin: 0;
+      padding: 0;
+      list-style-type: none;
+    }
+    ul ul { padding-left: 0.3em; }
+    ul li {
+      padding-left: 14px;
+    }
+    li div {
+      display: inline;
+    }
+    .collapseable>.node_key:hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .collapsed>.node_key {
+      color: blue;
+    }
+    .node_key {
+      font-weight: bold;
+    }
+  </style>
+
+</head>
+<body>
+<div>
+    <h2><a href="https://github.com/interuss/monitoring/blob/cd5f5457a4957a2702a4c25ba582ec4b0d52b5d8/monitoring/uss_qualifier/scenarios/astm/netrid/v22a/aggregate_checks.md">ASTM F3411-22a NetRID aggregate checks</a></h2>
+  <h3>scenarios.astm.netrid.v22a.AggregateChecks</h3>
+    <h4>
+      <a href="./s59.kml">KML visualization</a>
+    </h4>
+  <table>
+    <tr class="header_row">
+      <th>Case</th>
+      <th>Step</th>
+      <th colspan="3">Event</th>
+        <th>
+            uss1
+        </th>
+    </tr>
+
+          <tr id="e1">
+              <td rowspan="5" colspan="2"></td>
+            <td><a href="#e1">1</a></td>
+            <td>&#x1F4D3;</td>
+            <td colspan="2">
+              <code>participants</code>: {&#x27;http://v22a.ridsp.uss1.localutm/ridsp/injection&#x27;: &#x27;uss1&#x27;, &#x27;http://v22a.riddp.uss1.localutm/riddp/observation&#x27;: &#x27;uss1&#x27;, &#x27;http://v19.ridsp.uss2.localutm/ridsp/injection&#x27;: &#x27;uss2&#x27;, &#x27;http://v19.riddp.uss3.localutm/riddp/observation&#x27;: &#x27;uss3&#x27;}
+            </td>
+          </tr>
+          <tr id="e2">
+            <td><a href="#e2">2</a></td>
+            <td>&#x1F4D3;</td>
+            <td colspan="2">
+              <code>nb_queries</code>: 1807
+            </td>
+          </tr>
+          <tr id="e3">
+            <td><a href="#e3">3</a></td>
+            <td>&#x1F4D3;</td>
+            <td colspan="2">
+              <code>service_providers</code>: configured service providers: uss1 - http://v22a.ridsp.uss1.localutm/ridsp/injection
+            </td>
+          </tr>
+          <tr id="e4">
+            <td><a href="#e4">4</a></td>
+            <td>&#x1F4D3;</td>
+            <td colspan="2">
+              <code>observer</code>: configured observer: uss1 - http://v22a.riddp.uss1.localutm/riddp/observation
+            </td>
+          </tr>
+          <tr id="e5">
+            <td><a href="#e5">5</a></td>
+            <td>&#x1F4D3;</td>
+            <td colspan="2">
+              <code>debug_usses</code>: debug mode usses: {&#x27;uss2&#x27;, &#x27;uss3&#x27;, &#x27;uss1&#x27;}
+            </td>
+          </tr>
+            <tr id="e10">
+                <td rowspan="10"><span class="sticky_cell_value">
+                    <a href="https://github.com/interuss/monitoring/blob/cd5f5457a4957a2702a4c25ba582ec4b0d52b5d8/monitoring/uss_qualifier/scenarios/astm/netrid/v22a/aggregate_checks.md#performance-of-display-providers-requests-test-case">Performance of Display Providers requests</a>
+                </span></td>
+                <td rowspan="6"><span class="sticky_cell_value">
+                    <a href="https://github.com/interuss/monitoring/blob/cd5f5457a4957a2702a4c25ba582ec4b0d52b5d8/monitoring/uss_qualifier/scenarios/astm/netrid/v22a/aggregate_checks.md#performance-of-/display_data-requests-test-step">Performance of /display_data requests</a>
+                </span></td>
+              <td><a href="#e10">10</a></td>
+                <td>&#x2705;</td>
+                <td class="pass_result">
+                  Performance of /display_data initial requests
+                </td>
+                    <td class="pass_result">&#x2705;</td>
+            </tr>
+            <tr id="e11">
+              <td><a href="#e11">11</a></td>
+                <td>&#x2705;</td>
+                <td class="pass_result">
+                  Performance of /display_data subsequent requests
+                </td>
+                    <td class="pass_result">&#x2705;</td>
+            </tr>
+            <tr id="e12">
+              <td><a href="#e12">12</a></td>
+                <td>&#x1F4D3;</td>
+                <td colspan="2">
+                  <code>uss1/display_data</code>: percentiles on 42 relevant queries (24 different URLs, 33 initial queries, 9 subsequent queries): init 95th: 0.0586; init 99th: 0.0595; subsequent 95th: 0.051; subsequent 99th: 0.0511
+                </td>
+            </tr>
+            <tr id="e13">
+              <td><a href="#e13">13</a></td>
+                <td>&#x1F4D3;</td>
+                <td colspan="2">
+                  <code>uss1/display_data details</code>: Initial durations: [0.005625, 0.023094, 0.004641, 0.02251, 0.034014, 0.029577, 0.048895, 0.051037, 0.039781, 0.039561, 0.047219, 0.045058, 0.051609, 0.049309, 0.051134, 0.051142, 0.052255, 0.058429, 0.053591, 0.05136, 0.049855, 0.059078, 0.051092, 0.037036, 0.035521, 0.03165, 0.033741, 0.026379, 0.02614, 0.00448, 0.004107, 0.005816, 0.004966] subsequent durations: [0.050336, 0.050975, 0.046966, 0.041059, 0.050826, 0.04964, 0.049724, 0.045677, 0.040041]
+                </td>
+            </tr>
+            <tr id="e14">
+              <td><a href="#e14">14</a></td>
+                <td>&#x1F4D3;</td>
+                <td colspan="2">
+                  <code>uss2/display_data</code>: skipped check: no relevant queries
+                </td>
+            </tr>
+            <tr id="e15">
+              <td><a href="#e15">15</a></td>
+                <td>&#x1F4D3;</td>
+                <td colspan="2">
+                  <code>uss3/display_data</code>: skipped check: no relevant queries
+                </td>
+            </tr>
+            <tr id="e19">
+                <td rowspan="4"><span class="sticky_cell_value">
+                    <a href="https://github.com/interuss/monitoring/blob/cd5f5457a4957a2702a4c25ba582ec4b0d52b5d8/monitoring/uss_qualifier/scenarios/astm/netrid/v22a/aggregate_checks.md#performance-of-/display_data/<flight_id>-requests-test-step">Performance of /display_data/<flight_id> requests</a>
+                </span></td>
+              <td><a href="#e19">19</a></td>
+                <td>&#x2705;</td>
+                <td class="pass_result">
+                  Performance of /display_data/<flight_id> requests
+                </td>
+                    <td class="pass_result">&#x2705;</td>
+            </tr>
+            <tr id="e20">
+              <td><a href="#e20">20</a></td>
+                <td>&#x1F4D3;</td>
+                <td colspan="2">
+                  <code>uss1/display_data/&lt;flight_id&gt;</code>: uss1/display_data/&lt;flight_id&gt; stats computed on 1 queries 95th percentile: 0.0179s, 99th percentile: 0.0179s
+                </td>
+            </tr>
+            <tr id="e21">
+              <td><a href="#e21">21</a></td>
+                <td>&#x1F4D3;</td>
+                <td colspan="2">
+                  <code>uss2/display_data/&lt;flight_id&gt;</code>: skipped check: no relevant queries
+                </td>
+            </tr>
+            <tr id="e22">
+              <td><a href="#e22">22</a></td>
+                <td>&#x1F4D3;</td>
+                <td colspan="2">
+                  <code>uss3/display_data/&lt;flight_id&gt;</code>: skipped check: no relevant queries
+                </td>
+            </tr>
+            <tr id="e26">
+                <td rowspan="5"><span class="sticky_cell_value">
+                    <a href="https://github.com/interuss/monitoring/blob/cd5f5457a4957a2702a4c25ba582ec4b0d52b5d8/monitoring/uss_qualifier/scenarios/astm/netrid/v22a/aggregate_checks.md#performance-of-service-providers-requests-test-case">Performance of Service Providers requests</a>
+                </span></td>
+                <td rowspan="5"><span class="sticky_cell_value">
+                    <a href="https://github.com/interuss/monitoring/blob/cd5f5457a4957a2702a4c25ba582ec4b0d52b5d8/monitoring/uss_qualifier/scenarios/astm/netrid/v22a/aggregate_checks.md#performance-of-/flights?view-requests-test-step">Performance of /flights?view requests</a>
+                </span></td>
+              <td><a href="#e26">26</a></td>
+                <td>&#x2705;</td>
+                <td class="pass_result">
+                  95th percentile response time
+                </td>
+                    <td class="pass_result">&#x2705;</td>
+            </tr>
+            <tr id="e27">
+              <td><a href="#e27">27</a></td>
+                <td>&#x2705;</td>
+                <td class="pass_result">
+                  99th percentile response time
+                </td>
+                    <td class="pass_result">&#x2705;</td>
+            </tr>
+            <tr id="e28">
+              <td><a href="#e28">28</a></td>
+                <td>&#x1F4D3;</td>
+                <td colspan="2">
+                  <code>uss1/flights</code>: percentiles on 36 relevant queries: 95th: 0.0179; 99th: 0.022
+                </td>
+            </tr>
+            <tr id="e29">
+              <td><a href="#e29">29</a></td>
+                <td>&#x1F4D3;</td>
+                <td colspan="2">
+                  <code>uss2/flights</code>: skipped check: no relevant queries
+                </td>
+            </tr>
+            <tr id="e30">
+              <td><a href="#e30">30</a></td>
+                <td>&#x1F4D3;</td>
+                <td colspan="2">
+                  <code>uss3/flights</code>: skipped check: no relevant queries
+                </td>
+            </tr>
+            <tr id="e35">
+                <td rowspan="4"><span class="sticky_cell_value">
+                    <a href="https://github.com/interuss/monitoring/blob/cd5f5457a4957a2702a4c25ba582ec4b0d52b5d8/monitoring/uss_qualifier/scenarios/astm/netrid/v22a/aggregate_checks.md#verify-https-is-in-use-test-case">Verify https is in use</a>
+                </span></td>
+                <td rowspan="4"><span class="sticky_cell_value">
+                    <a href="https://github.com/interuss/monitoring/blob/cd5f5457a4957a2702a4c25ba582ec4b0d52b5d8/monitoring/uss_qualifier/scenarios/astm/netrid/v22a/aggregate_checks.md#verify-https-is-in-use-test-step">Verify https is in use</a>
+                </span></td>
+              <td><a href="#e35">35</a></td>
+                <td>&#x1F4D3;</td>
+                <td colspan="2">
+                  <code>https-check</code>: participant uss1 is in local debug mode, skipping HTTPS check
+                </td>
+            </tr>
+            <tr id="e36">
+              <td><a href="#e36">36</a></td>
+                <td>&#x1F4D3;</td>
+                <td colspan="2">
+                  <code>https-check_1</code>: participant uss2 is in local debug mode, skipping HTTPS check
+                </td>
+            </tr>
+            <tr id="e37">
+              <td><a href="#e37">37</a></td>
+                <td>&#x1F4D3;</td>
+                <td colspan="2">
+                  <code>https-check_2</code>: participant uss3 is in local debug mode, skipping HTTPS check
+                </td>
+            </tr>
+            <tr id="e38">
+              <td><a href="#e38">38</a></td>
+                <td>&#x1F4D3;</td>
+                <td colspan="2">
+                  <code>unattributed-queries</code>: Found unattributed queries:
+  * POST https://example.interuss.org/uss/identification_service_areas/239da115-3b5b-4a6a-adcc-d99b965cb931
+  * POST https://example.interuss.org/uss/identification_service_areas/09b732d0-05bc-4ba6-ac38-9b211cde2223
+  * POST https://example.interuss.org/uss/identification_service_areas/09b732d0-05bc-4ba6-ac38-9b211cde2223
+  * POST https://example.interuss.org/uss/identification_service_areas/a19a190c-7e44-42b4-be25-c05ea67bec33
+  * POST https://example.interuss.org/uss/identification_service_areas/146929f6-451b-4ce2-875d-55563d1c5fc4
+  * POST https://example.interuss.org/uss/identification_service_areas/146929f6-451b-4ce2-875d-55563d1c5fc4
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights?view=46.94729024551317%2C7.447272457011133%2C47.00349994487253%2C7.503482156350528&amp;recent_positions_duration=60
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights?view=46.949538633487535%2C7.449520844984709%2C47.001251556898154%2C7.501233768376951&amp;recent_positions_duration=60
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights?view=46.968275199940656%2C7.468257411431174%2C46.98251499044503%2C7.482497201930487&amp;recent_positions_duration=60
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights?view=46.96092287026643%2C7.429499739808289%2C46.989617143936826%2C7.519929680355905&amp;recent_positions_duration=60
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights?view=46.96082658108981%2C7.42975621652364%2C46.989814502575534%2C7.519984850596038&amp;recent_positions_duration=60
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights?view=46.963817128450295%2C7.428109134470157%2C46.98685979941743%2C7.521947616279637&amp;recent_positions_duration=60
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights?view=46.966557297544014%2C7.427029482368587%2C46.98412880224834%2C7.523377605591611&amp;recent_positions_duration=60
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights?view=46.968136119126754%2C7.4266116721906466%2C46.982549980665596%2C7.524079125992304&amp;recent_positions_duration=60
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights?view=46.968349820123684%2C7.426568822442941%2C46.982336279668665%2C7.524169937385946&amp;recent_positions_duration=60
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights?view=46.968349820123684%2C7.426568822442941%2C46.982336279668665%2C7.524169937385946&amp;recent_positions_duration=60
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights?view=46.968349820123684%2C7.426568822442941%2C46.982336279668665%2C7.524169937385946&amp;recent_positions_duration=60
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights?view=46.968349820123684%2C7.426568822442941%2C46.982336279668665%2C7.524169937385946&amp;recent_positions_duration=60
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights?view=46.968349820123684%2C7.426568822442941%2C46.982336279668665%2C7.524169937385946&amp;recent_positions_duration=60
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights?view=46.968349820123684%2C7.426568822442941%2C46.982336279668665%2C7.524169937385946&amp;recent_positions_duration=60
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights?view=46.968349820123684%2C7.426568822442941%2C46.982336279668665%2C7.524169937385946&amp;recent_positions_duration=60
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights?view=46.968349820123684%2C7.426568822442941%2C46.982336279668665%2C7.524169937385946&amp;recent_positions_duration=60
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights?view=46.968349820123684%2C7.426568822442941%2C46.982336279668665%2C7.524169937385946&amp;recent_positions_duration=60
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights?view=46.97037234654279%2C7.426198643234727%2C46.980408453743735%2C7.524838564993854&amp;recent_positions_duration=60
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights?view=46.97366177116523%2C7.425872755848017%2C46.97721242936898%2C7.525467559327828&amp;recent_positions_duration=60
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights?view=46.97353791900501%2C7.426068260066406%2C46.97734798251405%2C7.5256424818166066&amp;recent_positions_duration=60
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights?view=46.94729024551317%2C7.447272457011133%2C47.00349994487253%2C7.503482156350528&amp;recent_positions_duration=60
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights?view=46.949538633487535%2C7.449520844984709%2C47.001251556898154%2C7.501233768376951&amp;recent_positions_duration=60
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights?view=46.968275199940656%2C7.468257411431174%2C46.98251499044503%2C7.482497201930487&amp;recent_positions_duration=60
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights?view=46.96092287026643%2C7.429499739808289%2C46.989617143936826%2C7.519929680355905&amp;recent_positions_duration=60
+  * GET http://v22a.ridsp.uss1.localutm/mock/ridsp/v2/uss/flights/d50598bc-638a-4f52-bf3f-dd85595fb52e/details
+                </td>
+            </tr>
+  </table>
+</div>
+  <script>
+    function showHide(node) {
+      var value = node.querySelector(".node_value");
+      if (node.classList.contains("collapsed")) {
+        node.classList.remove("collapsed");
+        for (var i = 0; i < value.children.length; i++) {
+          value.children[i].style.display = "block";
+        }
+      } else {
+        node.classList.add("collapsed");
+        for (var i = 0; i < value.children.length; i++) {
+          value.children[i].style.display = "none";
+        }
+      }
+    }
+
+    function addShowHide(node) {
+      if (node.classList.contains("collapseable")) {
+        let key = node.querySelector(".node_key");
+        key.addEventListener("click", function () { showHide(node); });
+        let values = node.querySelector(".node_value ul");
+        if (values.children.length > 3) {
+          showHide(node);
+        }
+      }
+      for (var i = 0; i < node.children.length; i++) {
+        addShowHide(node.children[i]);
+      }
+    }
+
+  </script>
+
+</body>
+</html>

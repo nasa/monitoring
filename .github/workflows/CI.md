@@ -1,4 +1,4 @@
-# [Continuous integration](ci.yml)
+# [Continuous integration](ci_cm.yml)
 
 ## Overview
 

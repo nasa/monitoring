@@ -38,6 +38,7 @@ from uas_standards.astm.f3548.v21.api import (
     ConstraintReference,
     QueryConstraintReferenceParameters,
     QueryConstraintReferencesResponse,
+    UUIDv7Format,
 )
 from uas_standards.astm.f3548.v21.constants import Scope
 
@@ -51,11 +52,6 @@ from monitoring.monitorlib.mutate.scd import MutatedSubscription
 from monitoring.uss_qualifier.resources.communications import AuthAdapterResource
 from monitoring.uss_qualifier.resources.resource import Resource
 
-# A base URL for a USS that is not expected to be ever called
-# Used in scenarios where we mimic the behavior of a USS and need to provide a base URL.
-# As the area used for tests is cleared before the tests, there is no need to have this URL be reachable.
-DUMMY_USS_BASE_URL = "https://dummy.uss"
-
 
 class DSSInstanceSpecification(ImplicitDict):
     participant_id: str
@@ -66,6 +62,9 @@ class DSSInstanceSpecification(ImplicitDict):
 
     base_url: str
     """Base URL for the DSS instance according to the ASTM F3548-21 API"""
+
+    supports_ovn_request: Optional[bool]
+    """Whether this DSS instance supports the optional extension not part of the original F3548 standard API allowing a USS to request a specific OVN when creating or updating an operational intent."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(**kwargs)
@@ -261,6 +260,8 @@ class DSSInstance(object):
         ovn: Optional[str] = None,
         subscription_id: Optional[str] = None,
         force_query_scopes: Optional[Scope] = None,
+        force_no_implicit_subscription: bool = False,
+        requested_ovn_suffix: Optional[UUIDv7Format] = None,
     ) -> Tuple[OperationalIntentReference, List[SubscriberToNotify], Query,]:
         """
         Create or update an operational intent.
@@ -271,6 +272,8 @@ class DSSInstance(object):
 
         Scenarios that wish to test the behavior of the DSS when an incorrect scope is used can force the scope
         to be with the 'force_query_scope' parameter.
+
+        If 'force_no_implicit_subscription' is True, no implicit subscription will be requested under any circumstance.
 
         Returns:
              the operational intent reference created or updated, the subscribers to notify, the query
@@ -313,8 +316,9 @@ class DSSInstance(object):
             uss_base_url=base_url,
             subscription_id=subscription_id,
             new_subscription=ImplicitSubscriptionParameters(uss_base_url=base_url)
-            if subscription_id is None
+            if subscription_id is None and force_no_implicit_subscription is False
             else None,
+            requested_ovn_suffix=requested_ovn_suffix,
         )
         query = query_and_describe(
             self.client,
@@ -674,6 +678,7 @@ class DSSInstance(object):
         """
         Retrieve a subscription from the DSS, using only its ID
         """
+        # TODO should be migrated to the pattern where failures raise a QueryError
         self._uses_scope(Scope.StrategicCoordination)
         return fetch.get_subscription(
             self.client,
@@ -698,8 +703,10 @@ class DSSInstanceResource(Resource[DSSInstanceSpecification]):
     def __init__(
         self,
         specification: DSSInstanceSpecification,
+        resource_origin: str,
         auth_adapter: AuthAdapterResource,
     ):
+        super(DSSInstanceResource, self).__init__(specification, resource_origin)
         self._specification = specification
         self._auth_adapter = auth_adapter
 
@@ -716,6 +723,15 @@ class DSSInstanceResource(Resource[DSSInstanceSpecification]):
     @property
     def base_url(self) -> str:
         return self._specification.base_url
+
+    @property
+    def supports_ovn_request(self) -> bool:
+        return (
+            self._specification.supports_ovn_request
+            if self._specification.has_field_with_value("supports_ovn_request")
+            and self._specification.supports_ovn_request is not None
+            else False
+        )
 
     def get_authorized_scope_not_in(self, ignored_scopes: List[str]) -> Optional[Scope]:
         """Returns a scope that this DSS Resource is allowed to use but that is not any of the ones that are passed
@@ -785,12 +801,15 @@ class DSSInstancesResource(Resource[DSSInstancesSpecification]):
     def __init__(
         self,
         specification: DSSInstancesSpecification,
+        resource_origin: str,
         auth_adapter: AuthAdapterResource,
     ):
+        super(DSSInstancesResource, self).__init__(specification, resource_origin)
         self.dss_instances = [
             DSSInstanceResource(
                 specification=s,
+                resource_origin=f"instance {i + 1} in {resource_origin}",
                 auth_adapter=auth_adapter,
             )
-            for s in specification.dss_instances
+            for i, s in enumerate(specification.dss_instances)
         ]

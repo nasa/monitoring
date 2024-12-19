@@ -109,7 +109,7 @@ class OIRSynchronization(TestScenario):
         self._oir_params = self._planning_area.get_new_operational_intent_ref_params(
             key=[],
             state=OperationalIntentState.Accepted,
-            uss_base_url=self._planning_area.base_url,
+            uss_base_url=self._planning_area.get_base_url(),
             time_start=datetime.now() - timedelta(seconds=10),
             time_end=datetime.now() + timedelta(minutes=45),
             subscription_id=None,
@@ -196,10 +196,6 @@ class OIRSynchronization(TestScenario):
 
         # Make sure the OIR ID we are going to use is available
         test_step_fragments.cleanup_op_intent(self, self._dss, self._oir_id)
-        # Start by dropping any active subs we might own and that could interfere
-        test_step_fragments.cleanup_active_subs(
-            self, self._dss, self._planning_area_volume4d.to_f3548v21()
-        )
 
     def _create_oir_with_params(
         self, creation_params: PutOperationalIntentReferenceParameters

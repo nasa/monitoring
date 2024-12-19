@@ -10,7 +10,7 @@ from implicitdict import ImplicitDict
 from loguru import logger
 import yaml
 
-from monitoring.monitorlib.dicts import remove_elements
+from monitoring.monitorlib.dicts import remove_elements, get_element_or_default
 from monitoring.monitorlib.versioning import get_code_version, get_commit_hash
 from monitoring.uss_qualifier.configurations.configuration import (
     USSQualifierConfiguration,
@@ -73,6 +73,13 @@ def parseArgs() -> argparse.Namespace:
         help="JSON string containing runtime metadata to record in the test run report (if specified).",
     )
 
+    parser.add_argument(
+        "--disallow-unredacted",
+        type=bool,
+        default=False,
+        help="When true, do not run a test configuration which would produce unredacted sensitive information in its artifacts",
+    )
+
     return parser.parse_args()
 
 
@@ -115,7 +122,9 @@ def execute_test_run(
         and config.execution.stop_when_resource_not_created
     )
     resources = create_resources(
-        config.resources.resource_declarations, stop_when_not_created
+        config.resources.resource_declarations,
+        "top-level resource pool",
+        stop_when_not_created,
     )
 
     logger.info("Instantiating top-level test suite action")
@@ -138,6 +147,24 @@ def execute_test_run(
     )
 
 
+def raise_for_unredacted_information(config: USSQualifierConfiguration) -> None:
+    """Raises a ValueError if the provided configuration would produce or display unredacted information."""
+
+    required_values = {
+        "v1.artifacts.globally_expanded_report.redact_access_tokens": True,
+        "v1.artifacts.raw_report.redact_access_tokens": True,
+        "v1.artifacts.report_html.redact_access_tokens": True,
+        "v1.artifacts.sequence_view.redact_access_tokens": True,
+    }
+
+    for json_address, required_value in required_values.items():
+        actual_value = get_element_or_default(config, json_address, required_value)
+        if actual_value != required_value:
+            raise ValueError(
+                f"Configuration element {json_address} must be {required_value} to disallow unredacted information, but was instead set to {actual_value}"
+            )
+
+
 def run_config(
     config_name: str,
     config_output: str,
@@ -145,6 +172,7 @@ def run_config(
     exit_before_execution: bool,
     output_path: Optional[str],
     runtime_metadata: Optional[dict],
+    disallow_unredacted: bool,
 ):
     config_src = load_dict_with_references(config_name)
 
@@ -190,6 +218,9 @@ def run_config(
         logger.info("Exiting because --exit-before-execution specified.")
         return
 
+    if disallow_unredacted:
+        raise_for_unredacted_information(whole_config)
+
     config: USSQualifierConfigurationV1 = whole_config.v1
 
     if config.artifacts and not output_path:
@@ -204,7 +235,7 @@ def run_config(
         report.runtime_metadata = runtime_metadata
 
     if config.artifacts:
-        generate_artifacts(report, config.artifacts, output_path)
+        generate_artifacts(report, config.artifacts, output_path, disallow_unredacted)
 
     if "validation" in config and config.validation:
         logger.info(f"Validating test run report for configuration '{config_name}'")
@@ -225,6 +256,8 @@ def main() -> int:
     )
     if runtime_metadata is not None and not isinstance(runtime_metadata, dict):
         raise ValueError("--runtime-metadata must specify a JSON dictionary")
+
+    disallow_unredacted = args.disallow_unredacted
 
     config_names = str(args.config).split(",")
 
@@ -252,6 +285,7 @@ def main() -> int:
             args.exit_before_execution,
             output_path,
             runtime_metadata,
+            disallow_unredacted,
         )
         if exit_code != os.EX_OK:
             return exit_code

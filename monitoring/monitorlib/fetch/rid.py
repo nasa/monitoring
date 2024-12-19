@@ -11,7 +11,11 @@ import uas_standards.astm.f3411.v22a.constants
 import yaml
 from implicitdict import ImplicitDict, StringBasedDateTime
 from uas_standards.astm.f3411 import v19, v22a
-from uas_standards.astm.f3411.v22a.api import RIDHeight
+from uas_standards.astm.f3411.v22a.api import (
+    RIDHeight,
+    HorizontalAccuracy,
+    VerticalAccuracy,
+)
 from yaml.representer import Representer
 
 from monitoring.monitorlib import fetch, rid_v1, rid_v2, geo
@@ -153,18 +157,42 @@ class Position(ImplicitDict):
 
     height: Optional[RIDHeight]
 
+    accuracy_v: Optional[
+        VerticalAccuracy
+    ]  # Note: we use the enum defined in the v2 API as it is equivalent (and thus compatible) to the v19 one
+    """Vertical error that is likely to be present in this reported position"""
+
+    accuracy_h: Optional[
+        HorizontalAccuracy
+    ]  # Note: we use the enum defined in the v2 API as it is equivalent (and thus compatible) to the v19 one
+    """Horizontal error that is likely to be present in this reported position."""
+
     @staticmethod
     def from_v19_rid_aircraft_position(
         p: v19.api.RIDAircraftPosition, t: v19.api.StringBasedDateTime
     ) -> Position:
-        return Position(lat=p.lat, lng=p.lng, alt=p.alt, time=t.datetime, height=None)
+        return Position(
+            lat=p.lat,
+            lng=p.lng,
+            alt=p.alt,
+            time=t.datetime,
+            height=None,
+            accuracy_v=p.accuracy_v if "accuracy_v" in p else None,
+            accuracy_h=p.accuracy_h if "accuracy_h" in p else None,
+        )
 
     @staticmethod
     def from_v22a_rid_aircraft_position(
         p: v22a.api.RIDAircraftPosition, t: v22a.api.StringBasedDateTime
     ) -> Position:
         return Position(
-            lat=p.lat, lng=p.lng, alt=p.alt, time=t.datetime, height=p.get("height")
+            lat=p.lat,
+            lng=p.lng,
+            alt=p.alt,
+            time=t.datetime,
+            height=p.get("height"),
+            accuracy_v=p.accuracy_v if "accuracy_v" in p else None,
+            accuracy_h=p.accuracy_h if "accuracy_h" in p else None,
         )
 
 
@@ -313,6 +341,38 @@ class Flight(ImplicitDict):
         else:
             raise NotImplementedError(
                 f"Cannot retrieve speed using RID version {self.rid_version}"
+            )
+
+    @property
+    def timestamp_accuracy(self) -> Optional[float]:
+        if self.rid_version == RIDVersion.f3411_19:
+            if not self.v19_value.has_field_with_value("current_state"):
+                return None
+            return self.v19_value.current_state.timestamp_accuracy
+        elif self.rid_version == RIDVersion.f3411_22a:
+            if not self.v22a_value.has_field_with_value("current_state"):
+                return None
+            return self.v22a_value.current_state.timestamp_accuracy
+        else:
+            raise NotImplementedError(
+                f"Cannot retrieve speed using RID version {self.rid_version}"
+            )
+
+    @property
+    def aircraft_type(
+        self,
+    ) -> Optional[Union[v19.api.RIDAircraftType, v22a.api.UAType]]:
+        if self.rid_version == RIDVersion.f3411_19:
+            if not self.v19_value.has_field_with_value("aircraft_type"):
+                return None
+            return self.v19_value.aircraft_type
+        elif self.rid_version == RIDVersion.f3411_22a:
+            if not self.v22a_value.has_field_with_value("aircraft_type"):
+                return None
+            return self.v22a_value.aircraft_type
+        else:
+            raise NotImplementedError(
+                f"Cannot retrieve aircraft_type using RID version {self.rid_version}"
             )
 
     def errors(self) -> List[str]:

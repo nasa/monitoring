@@ -17,10 +17,15 @@
     <th><a href="../README.md#checked-in">Checked in</a></th>
   </tr>
   <tr>
-    <td rowspan="87" style="vertical-align:top;"><a href="../../requirements/astm/f3411/v22a.md">astm<br>.f3411<br>.v22a</a></td>
+    <td rowspan="100" style="vertical-align:top;"><a href="../../requirements/astm/f3411/v22a.md">astm<br>.f3411<br>.v22a</a></td>
     <td><a href="../../requirements/astm/f3411/v22a.md">DSS0010</a></td>
     <td>Implemented</td>
     <td><a href="../../scenarios/astm/netrid/v22a/dss/token_validation.md">ASTM NetRID DSS: Token Validation</a></td>
+  </tr>
+  <tr>
+    <td><a href="../../requirements/astm/f3411/v22a.md">DSS0020</a></td>
+    <td>Implemented</td>
+    <td><a href="../../scenarios/astm/netrid/v22a/dss/endpoint_encryption.md">ASTM NetRID DSS: Endpoint encryption</a></td>
   </tr>
   <tr>
     <td><a href="../../requirements/astm/f3411/v22a.md">DSS0030</a></td>
@@ -50,7 +55,7 @@
   <tr>
     <td><a href="../../requirements/astm/f3411/v22a.md">DSS0030,e</a></td>
     <td>Implemented</td>
-    <td><a href="../../scenarios/astm/netrid/v22a/dss/heavy_traffic_concurrent.md">ASTM NetRID DSS: Concurrent Requests</a><br><a href="../../scenarios/astm/netrid/v22a/dss/isa_expiry.md">ASTM NetRID DSS: ISA Expiry</a><br><a href="../../scenarios/astm/netrid/v22a/dss/isa_subscription_interactions.md">ASTM NetRID DSS: ISA Subscription Interactions</a><br><a href="../../scenarios/astm/netrid/v22a/dss/isa_simple.md">ASTM NetRID DSS: Simple ISA</a><br><a href="../../scenarios/astm/netrid/v22a/dss/isa_validation.md">ASTM NetRID DSS: Submitted ISA Validations</a><br><a href="../../scenarios/astm/netrid/v22a/dss/subscription_simple.md">ASTM NetRID DSS: Subscription Simple</a><br><a href="../../scenarios/astm/netrid/v22a/dss/subscription_validation.md">ASTM NetRID DSS: Subscription Validation</a><br><a href="../../scenarios/astm/netrid/v22a/dss/token_validation.md">ASTM NetRID DSS: Token Validation</a></td>
+    <td><a href="../../scenarios/astm/netrid/v22a/dss_interoperability.md">ASTM F3411-22a NetRID DSS interoperability</a><br><a href="../../scenarios/astm/netrid/v22a/dss/heavy_traffic_concurrent.md">ASTM NetRID DSS: Concurrent Requests</a><br><a href="../../scenarios/astm/netrid/v22a/dss/isa_expiry.md">ASTM NetRID DSS: ISA Expiry</a><br><a href="../../scenarios/astm/netrid/v22a/dss/isa_subscription_interactions.md">ASTM NetRID DSS: ISA Subscription Interactions</a><br><a href="../../scenarios/astm/netrid/v22a/dss/isa_simple.md">ASTM NetRID DSS: Simple ISA</a><br><a href="../../scenarios/astm/netrid/v22a/dss/isa_validation.md">ASTM NetRID DSS: Submitted ISA Validations</a><br><a href="../../scenarios/astm/netrid/v22a/dss/subscription_simple.md">ASTM NetRID DSS: Subscription Simple</a><br><a href="../../scenarios/astm/netrid/v22a/dss/subscription_validation.md">ASTM NetRID DSS: Subscription Validation</a><br><a href="../../scenarios/astm/netrid/v22a/dss/token_validation.md">ASTM NetRID DSS: Token Validation</a></td>
   </tr>
   <tr>
     <td><a href="../../requirements/astm/f3411/v22a.md">DSS0030,f</a></td>
@@ -83,6 +88,11 @@
     <td><a href="../../scenarios/astm/netrid/v22a/dss/crdb_access.md">ASTM NetRID DSS: Direct CRDB access</a></td>
   </tr>
   <tr>
+    <td><a href="../../requirements/astm/f3411/v22a.md">DSS0130,1</a></td>
+    <td>Implemented</td>
+    <td><a href="../../scenarios/astm/netrid/v22a/dss_interoperability.md">ASTM F3411-22a NetRID DSS interoperability</a></td>
+  </tr>
+  <tr>
     <td><a href="../../requirements/astm/f3411/v22a.md">DSS0130,2,a</a></td>
     <td>Implemented</td>
     <td><a href="../../scenarios/astm/netrid/v22a/dss_interoperability.md">ASTM F3411-22a NetRID DSS interoperability</a></td>
@@ -99,6 +109,11 @@
   </tr>
   <tr>
     <td><a href="../../requirements/astm/f3411/v22a.md">DSS0130,2,d</a></td>
+    <td>Implemented</td>
+    <td><a href="../../scenarios/astm/netrid/v22a/dss_interoperability.md">ASTM F3411-22a NetRID DSS interoperability</a></td>
+  </tr>
+  <tr>
+    <td><a href="../../requirements/astm/f3411/v22a.md">DSS0130,2,e</a></td>
     <td>Implemented</td>
     <td><a href="../../scenarios/astm/netrid/v22a/dss_interoperability.md">ASTM F3411-22a NetRID DSS interoperability</a></td>
   </tr>
@@ -174,7 +189,7 @@
   </tr>
   <tr>
     <td><a href="../../requirements/astm/f3411/v22a.md">DSS0130,A2-6-1,3c</a></td>
-    <td>Implemented + TODO</td>
+    <td>Implemented</td>
     <td><a href="../../scenarios/astm/netrid/v22a/dss_interoperability.md">ASTM F3411-22a NetRID DSS interoperability</a></td>
   </tr>
   <tr>
@@ -233,6 +248,16 @@
     <td><a href="../../scenarios/astm/netrid/v22a/aggregate_checks.md">ASTM F3411-22a NetRID aggregate checks</a></td>
   </tr>
   <tr>
+    <td><a href="../../requirements/astm/f3411/v22a.md">NET0250</a></td>
+    <td>Implemented</td>
+    <td><a href="../../scenarios/astm/netrid/v22a/nominal_behavior.md">ASTM NetRID nominal behavior</a></td>
+  </tr>
+  <tr>
+    <td><a href="../../requirements/astm/f3411/v22a.md">NET0260,NearRealTime</a></td>
+    <td>Implemented</td>
+    <td><a href="../../scenarios/astm/netrid/v22a/nominal_behavior.md">ASTM NetRID nominal behavior</a></td>
+  </tr>
+  <tr>
     <td><a href="../../requirements/astm/f3411/v22a.md">NET0260,NetSpDataResponseTime95thPercentile</a></td>
     <td>Implemented</td>
     <td><a href="../../scenarios/astm/netrid/v22a/aggregate_checks.md">ASTM F3411-22a NetRID aggregate checks</a></td>
@@ -263,7 +288,42 @@
     <td><a href="../../scenarios/astm/netrid/v22a/nominal_behavior.md">ASTM NetRID nominal behavior</a></td>
   </tr>
   <tr>
+    <td><a href="../../requirements/astm/f3411/v22a.md">NET0260,Table1,14</a></td>
+    <td>Implemented</td>
+    <td><a href="../../scenarios/astm/netrid/v22a/nominal_behavior.md">ASTM NetRID nominal behavior</a></td>
+  </tr>
+  <tr>
+    <td><a href="../../requirements/astm/f3411/v22a.md">NET0260,Table1,16</a></td>
+    <td>Implemented</td>
+    <td><a href="../../scenarios/astm/netrid/v22a/nominal_behavior.md">ASTM NetRID nominal behavior</a></td>
+  </tr>
+  <tr>
+    <td><a href="../../requirements/astm/f3411/v22a.md">NET0260,Table1,17</a></td>
+    <td>Implemented</td>
+    <td><a href="../../scenarios/astm/netrid/v22a/nominal_behavior.md">ASTM NetRID nominal behavior</a></td>
+  </tr>
+  <tr>
+    <td><a href="../../requirements/astm/f3411/v22a.md">NET0260,Table1,18</a></td>
+    <td>Implemented</td>
+    <td><a href="../../scenarios/astm/netrid/v22a/nominal_behavior.md">ASTM NetRID nominal behavior</a></td>
+  </tr>
+  <tr>
+    <td><a href="../../requirements/astm/f3411/v22a.md">NET0260,Table1,19</a></td>
+    <td>Implemented</td>
+    <td><a href="../../scenarios/astm/netrid/v22a/nominal_behavior.md">ASTM NetRID nominal behavior</a></td>
+  </tr>
+  <tr>
     <td><a href="../../requirements/astm/f3411/v22a.md">NET0260,Table1,1a</a></td>
+    <td>Implemented</td>
+    <td><a href="../../scenarios/astm/netrid/v22a/nominal_behavior.md">ASTM NetRID nominal behavior</a></td>
+  </tr>
+  <tr>
+    <td><a href="../../requirements/astm/f3411/v22a.md">NET0260,Table1,20</a></td>
+    <td>Implemented</td>
+    <td><a href="../../scenarios/astm/netrid/v22a/nominal_behavior.md">ASTM NetRID nominal behavior</a></td>
+  </tr>
+  <tr>
+    <td><a href="../../requirements/astm/f3411/v22a.md">NET0260,Table1,21</a></td>
     <td>Implemented</td>
     <td><a href="../../scenarios/astm/netrid/v22a/nominal_behavior.md">ASTM NetRID nominal behavior</a></td>
   </tr>
@@ -284,6 +344,11 @@
   </tr>
   <tr>
     <td><a href="../../requirements/astm/f3411/v22a.md">NET0260,Table1,26</a></td>
+    <td>Implemented</td>
+    <td><a href="../../scenarios/astm/netrid/v22a/nominal_behavior.md">ASTM NetRID nominal behavior</a></td>
+  </tr>
+  <tr>
+    <td><a href="../../requirements/astm/f3411/v22a.md">NET0260,Table1,6</a></td>
     <td>Implemented</td>
     <td><a href="../../scenarios/astm/netrid/v22a/nominal_behavior.md">ASTM NetRID nominal behavior</a></td>
   </tr>

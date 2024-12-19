@@ -1,24 +1,14 @@
+import datetime
+
+import math
 from dataclasses import dataclass
-from typing import List, Optional, Dict, Union, Set, Tuple
+from typing import List, Optional, Dict, Union, Set, Tuple, cast
 
 import arrow
-from loguru import logger
-import math
 import s2sphere
+from loguru import logger
 from s2sphere import LatLng, LatLngRect
 
-from monitoring.uss_qualifier.scenarios.astm.netrid.common_dictionary_evaluator import (
-    RIDCommonDictionaryEvaluator,
-)
-
-from monitoring.monitorlib.fetch import Query
-from monitoring.monitorlib.fetch.rid import (
-    all_flights,
-    FetchedFlights,
-    FetchedUSSFlights,
-    Position,
-)
-from monitoring.uss_qualifier.resources.astm.f3411.dss import DSSInstance
 from uas_standards.interuss.automated_testing.rid.v1.observation import (
     Flight,
     GetDisplayDataResponse,
@@ -26,18 +16,30 @@ from uas_standards.interuss.automated_testing.rid.v1.observation import (
 )
 
 from monitoring.monitorlib import fetch, geo, schema_validation
+from monitoring.monitorlib.fetch import Query
+from monitoring.monitorlib.fetch.rid import (
+    all_flights,
+    FetchedFlights,
+    FetchedUSSFlights,
+    Position,
+)
 from monitoring.monitorlib.rid import RIDVersion
 from monitoring.uss_qualifier.common_data_definitions import Severity
+from monitoring.uss_qualifier.configurations.configuration import ParticipantID
+from monitoring.uss_qualifier.resources.astm.f3411.dss import DSSInstance
 from monitoring.uss_qualifier.resources.netrid.evaluation import EvaluationConfiguration
 from monitoring.uss_qualifier.resources.netrid.observers import RIDSystemObserver
+from monitoring.uss_qualifier.scenarios.astm.netrid.common_dictionary_evaluator import (
+    RIDCommonDictionaryEvaluator,
+)
 from monitoring.uss_qualifier.scenarios.astm.netrid.injected_flight_collection import (
     InjectedFlightCollection,
 )
+from monitoring.uss_qualifier.scenarios.astm.netrid.injection import InjectedFlight
 from monitoring.uss_qualifier.scenarios.astm.netrid.virtual_observer import (
     VirtualObserver,
 )
 from monitoring.uss_qualifier.scenarios.scenario import TestScenario
-from monitoring.uss_qualifier.scenarios.astm.netrid.injection import InjectedFlight
 
 
 def _rect_str(rect) -> str:
@@ -49,18 +51,45 @@ def _rect_str(rect) -> str:
     )
 
 
+VERTICAL_SPEED_PRECISION = 0.1
+SPEED_PRECISION = 0.05
+TIMESTAMP_ACCURACY_PRECISION = 0.05
+HEIGHT_PRECISION_M = 1
+
+# SP responses to /flights endpoint's p99 should be below this:
+SP_FLIGHTS_RESPONSE_TIME_TOLERANCE_SEC = 3
+NET_MAX_NEAR_REAL_TIME_DATA_PERIOD_SEC = 60
+_POSITION_TIMESTAMP_MAX_AGE_SEC = (
+    NET_MAX_NEAR_REAL_TIME_DATA_PERIOD_SEC + SP_FLIGHTS_RESPONSE_TIME_TOLERANCE_SEC
+)
+
+
 @dataclass
 class DPObservedFlight(object):
     query: FetchedUSSFlights
-    flight: int
+    flight_index: int
 
     @property
     def id(self) -> str:
-        return self.query.flights[self.flight].id
+        return self.query.flights[self.flight_index].id
 
     @property
     def most_recent_position(self) -> Optional[Position]:
-        return self.query.flights[self.flight].most_recent_position
+        return self.query.flights[self.flight_index].most_recent_position
+
+    @property
+    def flight(self) -> fetch.rid.Flight:
+        return self.query.flights[self.flight_index]
+
+    # TODO we may rather want to expose the whole flight object (self.query.flights[self.flight])
+    #  and let callers access subfields directly (will be handled in separate PR)
+    @property
+    def timestamp_accuracy(self) -> Optional[float]:
+        return self.query.flights[self.flight_index].timestamp_accuracy
+
+    @property
+    def raw_flight(self) -> dict:
+        return self.query.query.response.json["flights"][self.flight_index]
 
 
 ObservationType = Union[Flight, DPObservedFlight]
@@ -156,7 +185,7 @@ def map_fetched_to_injected_flights(
     observed_flights = []
     for uss_query in fetched_flights:
         for f in range(len(uss_query.flights)):
-            observed_flights.append(DPObservedFlight(query=uss_query, flight=f))
+            observed_flights.append(DPObservedFlight(query=uss_query, flight_index=f))
 
     tel_mapping = map_observations_to_injected_flights(
         injected_flights, observed_flights
@@ -469,6 +498,8 @@ class RIDObservationEvaluator(object):
         mapping_by_injection_id: Dict[str, TelemetryMapping],
         verified_sps: Set[str],
     ):
+        """Implements fragment documented in `display_data_evaluator_flight_presence.md`."""
+
         query_timestamps = [q.request.timestamp for q in observation_queries]
         observer_participants = (
             [observer_participant_id] if observer_participant_is_relevant else []
@@ -629,6 +660,8 @@ class RIDObservationEvaluator(object):
         observation: GetDisplayDataResponse,
         query: fetch.Query,
     ):
+        """Implements fragment documented in `display_data_evaluator_clustering.md`."""
+
         with self._test_scenario.check(
             "Minimal display area of clusters", [observer.participant_id]
         ) as check:
@@ -855,8 +888,9 @@ class RIDObservationEvaluator(object):
             set(),
         )
 
-        # Verify that flights queries returned correctly-formatted data
         for mapping in mappings.values():
+            participant_id = mapping.injected_flight.uss_participant_id
+            observed_flight = mapping.observed_flight.flight
             flights_queries = [
                 q
                 for flight_url, q in sp_observation.uss_flight_queries.items()
@@ -864,16 +898,18 @@ class RIDObservationEvaluator(object):
             ]
             if len(flights_queries) != 1:
                 raise RuntimeError(
-                    f"Found {len(flights_queries)} flights queries (instead of the expected 1) for flight {mapping.observed_flight.id} corresponding to injection ID {mapping.injected_flight.flight.injection_id} for {mapping.injected_flight.uss_participant_id}"
+                    f"Found {len(flights_queries)} flights queries (instead of the expected 1) for flight {mapping.observed_flight.id} corresponding to injection ID {mapping.injected_flight.flight.injection_id} for {participant_id}"
                 )
             flights_query = flights_queries[0]
+
+            # Verify that flights queries returned correctly-formatted data
             errors = schema_validation.validate(
                 self._rid_version.openapi_path,
                 self._rid_version.openapi_flights_response_path,
                 flights_query.query.response.json,
             )
             with self._test_scenario.check(
-                "Flights data format", [mapping.injected_flight.uss_participant_id]
+                "Flights data format", participant_id
             ) as check:
                 if errors:
                     check.record_failed(
@@ -886,19 +922,34 @@ class RIDObservationEvaluator(object):
                         ),
                         query_timestamps=[flights_query.query.request.timestamp],
                     )
-            self._common_dictionary_evaluator.evaluate_sp_flights(
-                requested_area,
-                sp_observation,
-                participants=[mapping.injected_flight.uss_participant_id],
+
+            # Check recent positions timings
+            self._evaluate_sp_flight_recent_positions_times(
+                observed_flight,
+                flights_query.query.response.reported.datetime,
+                participant_id,
+            )
+            self._evaluate_sp_flight_recent_positions_crossing_area_boundary(
+                requested_area, observed_flight, participant_id
             )
 
-        # Check that altitudes match for any observed flights matching injected flights
+            # Check flight consistency with common data dictionary
+            self._common_dictionary_evaluator.evaluate_sp_flight(
+                observed_flight,
+                participant_id,
+            )
+
+        # Check that required fields are present and match for any observed flights matching injected flights
         for mapping in mappings.values():
             injected_telemetry = mapping.injected_flight.flight.telemetry[
                 mapping.telemetry_index
             ]
             observed_position = mapping.observed_flight.most_recent_position
             injected_position = injected_telemetry.position
+
+            # TODO all/most checks below (Not only 'alt' but also, speed, etc.) should be moved to the common dictionary evaluator
+            # The intent is to do so in a cleanup step once all fields have been checked.
+            # Tracked in issue https://github.com/interuss/monitoring/issues/842
             if "alt" in observed_position:
                 with self._test_scenario.check(
                     "Service Provider altitude",
@@ -912,6 +963,195 @@ class RIDObservationEvaluator(object):
                             "Altitude reported by Service Provider does not match injected altitude",
                             Severity.Medium,
                             details=f"{mapping.injected_flight.uss_participant_id}'s flight with injection ID {mapping.injected_flight.flight.injection_id} in test {mapping.injected_flight.test_id} had telemetry index {mapping.telemetry_index} at {injected_telemetry.timestamp} with lat={injected_telemetry.position.lat}, lng={injected_telemetry.position.lng}, alt={injected_telemetry.position.alt}, but Service Provider reported lat={observed_position.lat}, lng={observed_position.lng}, alt={observed_position.alt} at {mapping.observed_flight.query.query.request.initiated_at}",
+                        )
+
+            if "accuracy_v" in injected_position:
+                with self._test_scenario.check(
+                    "Service Provider geodetic altitude accuracy",
+                    [mapping.injected_flight.uss_participant_id],
+                ) as check:
+                    if (
+                        "accuracy_v" in observed_position
+                        and injected_position.accuracy_v.value
+                        != observed_position.accuracy_v.value
+                    ):
+                        check.record_failed(
+                            "Injected and observed vertical accuracy do not match",
+                            details=f"{mapping.injected_flight.uss_participant_id}'s flight with injection ID {mapping.injected_flight.flight.injection_id} in test {mapping.injected_flight.test_id} had telemetry index {mapping.telemetry_index} at {injected_telemetry.timestamp} with accuracy_v={injected_position.accuracy_v}, but Service Provider reported accuracy_v={observed_position.accuracy_v}",
+                        )
+
+            if "accuracy_h" in injected_position:
+                with self._test_scenario.check(
+                    "Service Provider horizontal accuracy",
+                    [mapping.injected_flight.uss_participant_id],
+                ) as check:
+                    if (
+                        "accuracy_h" in observed_position
+                        and injected_position.accuracy_h.value
+                        != observed_position.accuracy_h.value
+                    ):
+                        check.record_failed(
+                            "Horizontal accuracy reported by Service Provider does not match injected horizontal accuracy",
+                            details=f"{mapping.injected_flight.uss_participant_id}'s flight with injection ID {mapping.injected_flight.flight.injection_id} in test {mapping.injected_flight.test_id} had telemetry index {mapping.telemetry_index} at {injected_telemetry.timestamp} with accuracy_h={injected_telemetry.position.accuracy_h}, but Service Provider reported accuracy_h={observed_position.accuracy_h}",
+                        )
+
+            if mapping.observed_flight.flight.raw.current_state is not None:
+                with self._test_scenario.check(
+                    "Service Provider vertical speed",
+                    [mapping.injected_flight.uss_participant_id],
+                ) as check:
+                    if (
+                        abs(
+                            injected_telemetry.vertical_speed
+                            - mapping.observed_flight.flight.raw.current_state.vertical_speed
+                        )
+                        > VERTICAL_SPEED_PRECISION
+                    ):
+                        check.record_failed(
+                            "Vertical speed reported by Service Provider does not match injected vertical speed",
+                            details=f"{mapping.injected_flight.uss_participant_id}'s flight with injection ID {mapping.injected_flight.flight.injection_id} in test {mapping.injected_flight.test_id} had telemetry index {mapping.telemetry_index} at {injected_telemetry.timestamp} with vertical speed {injected_telemetry.vertical_speed}, but Service Provider reported vertical speed {mapping.observed_flight.flight.raw.current_state.vertical_speed} at {mapping.observed_flight.query.query.request.initiated_at}",
+                        )
+
+            if mapping.observed_flight.flight.raw.current_state is not None:
+                with self._test_scenario.check(
+                    "Service Provider speed",
+                    [mapping.injected_flight.uss_participant_id],
+                ) as check:
+                    # Based on the spec, expecting a precision of 0.05 m/s is reasonable: the sample value is '1.9'
+                    # and the maximal value is '254.25' (to be used if the speed is > 254.25 m/s).
+                    if (
+                        abs(
+                            injected_telemetry.speed
+                            - mapping.observed_flight.flight.raw.current_state.speed
+                        )
+                        > SPEED_PRECISION
+                    ):
+                        check.record_failed(
+                            "Speed reported by Service Provider does not match injected speed",
+                            details=f"{mapping.injected_flight.uss_participant_id}'s flight with injection ID {mapping.injected_flight.flight.injection_id} in test {mapping.injected_flight.test_id} had telemetry index {mapping.telemetry_index} at {injected_telemetry.timestamp} with speed={injected_telemetry.speed}, but Service Provider reported speed={mapping.observed_flight.flight.raw.current_state.speed} at {mapping.observed_flight.query.query.request.initiated_at}",
+                        )
+
+            if mapping.observed_flight.flight.raw.current_state is not None:
+                with self._test_scenario.check(
+                    "Service Provider speed accuracy",
+                    [mapping.injected_flight.uss_participant_id],
+                ) as check:
+                    if (
+                        injected_telemetry.speed_accuracy.value
+                        != mapping.observed_flight.flight.raw.current_state.speed_accuracy.value
+                    ):
+                        check.record_failed(
+                            summary="Speed accuracy reported by Service Provider does not match injected speed accuracy",
+                            details=f"{mapping.injected_flight.uss_participant_id}'s flight with injection ID {mapping.injected_flight.flight.injection_id} in test {mapping.injected_flight.test_id} had telemetry index {mapping.telemetry_index} at {injected_telemetry.timestamp} with speed accuracy {injected_telemetry.speed_accuracy.value}, but Service Provider reported speed accuracy {mapping.observed_flight.flight.raw.current_state.speed_accuracy.value} at {mapping.observed_flight.query.query.request.initiated_at}",
+                        )
+
+            if mapping.observed_flight.flight.raw.current_state is not None:
+                with self._test_scenario.check(
+                    "Service Provider track",
+                    [mapping.injected_flight.uss_participant_id],
+                ) as check:
+                    # 361 is a special value, and if we injected it there is no reason we should see a value that could be rounded down to 360
+                    if math.isclose(injected_telemetry.track, 361):
+                        if (
+                            abs(
+                                injected_telemetry.track
+                                - mapping.observed_flight.flight.raw.current_state.track
+                            )
+                            > 0.5
+                        ):
+                            check.record_failed(
+                                "Special value for track reported by Service Provider does not match injected special value (361)",
+                                details=f"{mapping.injected_flight.uss_participant_id}'s flight with injection ID {mapping.injected_flight.flight.injection_id} in test {mapping.injected_flight.test_id} had telemetry index {mapping.telemetry_index} at {injected_telemetry.timestamp} with track={injected_telemetry.track}, but Service Provider reported track={mapping.observed_flight.flight.raw.current_state.track} at {mapping.observed_flight.query.query.request.initiated_at}. If this special value is injected we expect it to be reported as is, and do not tolerate the usual track precision of +/- 1 degree.",
+                            )
+
+                    # For any 'normal' track, the resolution is 1 degree.
+                    if (
+                        abs(
+                            injected_telemetry.track
+                            - mapping.observed_flight.flight.raw.current_state.track
+                        )
+                        >= 1.0
+                    ):
+                        check.record_failed(
+                            "Track reported by Service Provider does not match injected track",
+                            details=f"{mapping.injected_flight.uss_participant_id}'s flight with injection ID {mapping.injected_flight.flight.injection_id} in test {mapping.injected_flight.test_id} had telemetry index {mapping.telemetry_index} at {injected_telemetry.timestamp} with track={injected_telemetry.track}, but Service Provider reported track={mapping.observed_flight.flight.raw.current_state.track} at {mapping.observed_flight.query.query.request.initiated_at}",
+                        )
+
+            # Due to how implicit dicts are deserialized and the timestamp_accuracy is specified in the OpenAPI file for F3411-v22a,
+            # we need to look into the raw JSON response to determine if the field is present:
+            #
+            # Because the spec requires the field to be present while also specifying a default value, the implicit dict based class derived
+            # from the spec may not catch that a field is missing at deserialization time (because the RIDAircraftState class specifies a default
+            # value for the field, no ValueError will be thrown when ImplicitDict.parse() is called).
+            #
+            # This means that a missing json field will neither raise an exception nor cause the field to be set to None when we access it,
+            # meaning this part of the logic cannot rely on the deserialized value to determine if the field was present or not.
+            raw_flight = mapping.observed_flight.raw_flight
+            raw_state = (
+                raw_flight["current_state"] if "current_state" in raw_flight else {}
+            )
+            with self._test_scenario.check(
+                "Service Provider timestamp accuracy is present",
+                [mapping.injected_flight.uss_participant_id],
+            ) as check:
+                if "timestamp_accuracy" not in raw_state:
+                    check.record_failed(
+                        "Timestamp accuracy not present in Service Provider response",
+                        details=f"Timestamp accuracy not present in Service Provider {mapping.injected_flight.uss_participant_id}'s response for flight with injection ID {mapping.injected_flight.flight.injection_id} in test {mapping.injected_flight.test_id} with telemetry index {mapping.telemetry_index}",
+                    )
+
+            if "timestamp_accuracy" in raw_state:
+                # From this point on we can use the 'timestamp_accuracy' field of the deserialized object
+                with self._test_scenario.check(
+                    "Service Provider timestamp accuracy is correct",
+                    [mapping.injected_flight.uss_participant_id],
+                ) as check:
+                    if (
+                        abs(
+                            mapping.observed_flight.timestamp_accuracy
+                            - injected_telemetry.timestamp_accuracy
+                        )
+                        > TIMESTAMP_ACCURACY_PRECISION
+                    ):
+                        check.record_failed(
+                            "Timestamp accuracy in Service Provider response is incorrect",
+                            details=f"Timestamp accuracy in Service Provider {mapping.injected_flight.uss_participant_id}'s response for flight with injection ID {mapping.injected_flight.flight.injection_id} in test {mapping.injected_flight.test_id} with telemetry index {mapping.telemetry_index} is {mapping.observed_flight.timestamp_accuracy} which is not equal to the injected value of {injected_telemetry.timestamp_accuracy}",
+                        )
+
+            if "height" in injected_position:
+                # We injected a height so expect to observe one
+                if "height" not in observed_position:
+                    check.record_failed(
+                        "A value was injected for the height field, but none was returned in Service Provider response",
+                        details=f"{mapping.injected_flight.uss_participant_id}'s flight with injection ID {mapping.injected_flight.flight.injection_id} in test {mapping.injected_flight.test_id} had a height injected, but Service Provider did not return a height at {mapping.observed_flight.query.query.request.initiated_at}",
+                    )
+                else:
+                    if (
+                        injected_position.height.reference.value
+                        != observed_position.height.reference.value
+                    ):
+                        check.record_failed(
+                            "Height reference reported by Service Provider does not match injected height reference",
+                            details=f"{mapping.injected_flight.uss_participant_id}'s flight with injection ID {mapping.injected_flight.flight.injection_id} in test {mapping.injected_flight.test_id} had telemetry index {mapping.telemetry_index} at {injected_telemetry.timestamp} with height={injected_position.height.distance} {injected_position.height.reference.value}, but Service Provider reported height={observed_position.height.distance} {observed_position.height.reference.value} at {mapping.observed_flight.query.query.request.initiated_at}",
+                        )
+                    if not math.isclose(
+                        injected_position.height.distance,
+                        observed_position.height.distance,
+                        abs_tol=HEIGHT_PRECISION_M,
+                    ):
+                        check.record_failed(
+                            "Height reported by Service Provider does not match injected height",
+                            details=f"{mapping.injected_flight.uss_participant_id}'s flight with injection ID {mapping.injected_flight.flight.injection_id} in test {mapping.injected_flight.test_id} had telemetry index {mapping.telemetry_index} at {injected_telemetry.timestamp} with height={injected_position.height.distance} {injected_position.height.reference.value}, but Service Provider reported height={observed_position.height.distance} {observed_position.height.reference.value} at {mapping.observed_flight.query.query.request.initiated_at}",
+                        )
+            else:
+                # We did not inject a height, but a height returning the magic 'unknown' value would still be seen as valid
+                if "height" in observed_position:
+                    if not math.isclose(
+                        observed_position.height.distance, -1000, abs_tol=1
+                    ):
+                        check.record_failed(
+                            "Injected no height, but Service Provider reported a height",
+                            details=f"{mapping.injected_flight.uss_participant_id}'s flight with injection ID {mapping.injected_flight.flight.injection_id} in test {mapping.injected_flight.test_id} had no height injected, but Service Provider reported height={observed_position.height.distance} {observed_position.height.reference.value} at {mapping.observed_flight.query.query.request.initiated_at}",
                         )
 
         # Verify that flight details queries succeeded and returned correctly-formatted data
@@ -969,6 +1209,8 @@ class RIDObservationEvaluator(object):
         diagonal: float,
     ) -> None:
         for mapping in mappings.values():
+            # Note: we register the check only if we can fail it, because, in case of success, we are
+            # not able to properly determine which participant succeeded (in this context)
             with self._test_scenario.check(
                 "Area too large", [mapping.injected_flight.uss_participant_id]
             ) as check:
@@ -980,3 +1222,87 @@ class RIDObservationEvaluator(object):
                         mapping.observed_flight.query.query.request.timestamp
                     ],
                 )
+
+    def _evaluate_sp_flight_recent_positions_times(
+        self, f: Flight, query_time: datetime.datetime, participant: ParticipantID
+    ):
+        with self._test_scenario.check(
+            "Recent positions timestamps", participant
+        ) as check:
+            for p in f.recent_positions:
+                # check that the position's timestamp is at most 60 seconds before the request time
+                if (
+                    query_time - p.time
+                ).total_seconds() > _POSITION_TIMESTAMP_MAX_AGE_SEC:
+                    check.record_failed(
+                        "A Position timestamp was older than the tolerance.",
+                        details=f"Position timestamp: {p.time}, query time: {query_time}",
+                        severity=Severity.Medium,
+                    )
+
+    def _evaluate_sp_flight_recent_positions_crossing_area_boundary(
+        self, requested_area: s2sphere.LatLngRect, f: Flight, participant: ParticipantID
+    ):
+        with self._test_scenario.check(
+            "Recent positions for aircraft crossing the requested area boundary show only one position before or after crossing",
+            participant,
+        ) as check:
+
+            def fail_check():
+                check.record_failed(
+                    "A position outside the area was neither preceded nor followed by a position inside the area.",
+                    details=f"Positions: {f.recent_positions}, requested_area: {requested_area}",
+                    severity=Severity.Medium,
+                )
+
+            positions = _chronological_positions(f)
+            if len(positions) < 2:
+                # Check does not apply in this case
+                return
+
+            if len(positions) == 2:
+                # Only one of the positions can be outside the area. If both are, we fail.
+                if not requested_area.contains(
+                    positions[0]
+                ) and not requested_area.contains(positions[1]):
+                    fail_check()
+                return
+
+            # For each sliding triple we check that if the middle position is outside the area, then either
+            # the first or the last position is inside the area. This means checking for any point that is inside the
+            # area in the triple and failing otherwise
+            for triple in _sliding_triples(_chronological_positions(f)):
+                if not (
+                    requested_area.contains(triple[0])
+                    or requested_area.contains(triple[1])
+                    or requested_area.contains(triple[2])
+                ):
+                    fail_check()
+
+            # Finally we need to check for the forbidden corner cases of having the two first or two last positions being outside.
+            # (These won't be caught by the iteration on the triples above)
+            if (
+                not requested_area.contains(positions[0])
+                and not requested_area.contains(positions[1])
+            ) or (
+                not requested_area.contains(positions[-1])
+                and not requested_area.contains(positions[-2])
+            ):
+                fail_check()
+
+
+def _chronological_positions(f: Flight) -> List[s2sphere.LatLng]:
+    """
+    Returns the recent positions of the flight, ordered by time with the oldest first, and the most recent last.
+    """
+    return [
+        s2sphere.LatLng.from_degrees(p.lat, p.lng)
+        for p in sorted(f.recent_positions, key=lambda p: p.time)
+    ]
+
+
+def _sliding_triples(points: List[s2sphere.LatLng]) -> List[List[s2sphere.LatLng]]:
+    """
+    Returns a list of triples of consecutive positions in passed the list.
+    """
+    return [[points[i], points[i + 1], points[i + 2]] for i in range(len(points) - 2)]

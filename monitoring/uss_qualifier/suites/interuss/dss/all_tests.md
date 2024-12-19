@@ -21,10 +21,15 @@
     <th><a href="../../README.md#checked-in">Checked in</a></th>
   </tr>
   <tr>
-    <td rowspan="38" style="vertical-align:top;"><a href="../../../requirements/astm/f3411/v19.md">astm<br>.f3411<br>.v19</a></td>
+    <td rowspan="41" style="vertical-align:top;"><a href="../../../requirements/astm/f3411/v19.md">astm<br>.f3411<br>.v19</a></td>
     <td><a href="../../../requirements/astm/f3411/v19.md">DSS0010</a></td>
     <td>Implemented</td>
     <td><a href="../../../scenarios/astm/netrid/v19/dss/token_validation.md">ASTM NetRID DSS: Token Validation</a></td>
+  </tr>
+  <tr>
+    <td><a href="../../../requirements/astm/f3411/v19.md">DSS0020</a></td>
+    <td>Implemented</td>
+    <td><a href="../../../scenarios/astm/netrid/v19/dss/endpoint_encryption.md">ASTM NetRID DSS: Endpoint encryption</a></td>
   </tr>
   <tr>
     <td><a href="../../../requirements/astm/f3411/v19.md">DSS0030,a</a></td>
@@ -49,7 +54,7 @@
   <tr>
     <td><a href="../../../requirements/astm/f3411/v19.md">DSS0030,e</a></td>
     <td>Implemented</td>
-    <td><a href="../../../scenarios/astm/netrid/v19/dss/heavy_traffic_concurrent.md">ASTM NetRID DSS: Concurrent Requests</a><br><a href="../../../scenarios/astm/netrid/v19/dss/isa_expiry.md">ASTM NetRID DSS: ISA Expiry</a><br><a href="../../../scenarios/astm/netrid/v19/dss/isa_subscription_interactions.md">ASTM NetRID DSS: ISA Subscription Interactions</a><br><a href="../../../scenarios/astm/netrid/v19/dss/isa_simple.md">ASTM NetRID DSS: Simple ISA</a><br><a href="../../../scenarios/astm/netrid/v19/dss/isa_validation.md">ASTM NetRID DSS: Submitted ISA Validations</a><br><a href="../../../scenarios/astm/netrid/v19/dss/subscription_simple.md">ASTM NetRID DSS: Subscription Simple</a><br><a href="../../../scenarios/astm/netrid/v19/dss/subscription_validation.md">ASTM NetRID DSS: Subscription Validation</a><br><a href="../../../scenarios/astm/netrid/v19/dss/token_validation.md">ASTM NetRID DSS: Token Validation</a></td>
+    <td><a href="../../../scenarios/astm/netrid/v19/dss_interoperability.md">ASTM F3411-19 NetRID DSS interoperability</a><br><a href="../../../scenarios/astm/netrid/v19/dss/heavy_traffic_concurrent.md">ASTM NetRID DSS: Concurrent Requests</a><br><a href="../../../scenarios/astm/netrid/v19/dss/isa_expiry.md">ASTM NetRID DSS: ISA Expiry</a><br><a href="../../../scenarios/astm/netrid/v19/dss/isa_subscription_interactions.md">ASTM NetRID DSS: ISA Subscription Interactions</a><br><a href="../../../scenarios/astm/netrid/v19/dss/isa_simple.md">ASTM NetRID DSS: Simple ISA</a><br><a href="../../../scenarios/astm/netrid/v19/dss/isa_validation.md">ASTM NetRID DSS: Submitted ISA Validations</a><br><a href="../../../scenarios/astm/netrid/v19/dss/subscription_simple.md">ASTM NetRID DSS: Subscription Simple</a><br><a href="../../../scenarios/astm/netrid/v19/dss/subscription_validation.md">ASTM NetRID DSS: Subscription Validation</a><br><a href="../../../scenarios/astm/netrid/v19/dss/token_validation.md">ASTM NetRID DSS: Token Validation</a></td>
   </tr>
   <tr>
     <td><a href="../../../requirements/astm/f3411/v19.md">DSS0030,f</a></td>
@@ -82,6 +87,11 @@
     <td><a href="../../../scenarios/astm/netrid/v19/dss/crdb_access.md">ASTM NetRID DSS: Direct CRDB access</a></td>
   </tr>
   <tr>
+    <td><a href="../../../requirements/astm/f3411/v19.md">DSS0130,1</a></td>
+    <td>Implemented</td>
+    <td><a href="../../../scenarios/astm/netrid/v19/dss_interoperability.md">ASTM F3411-19 NetRID DSS interoperability</a></td>
+  </tr>
+  <tr>
     <td><a href="../../../requirements/astm/f3411/v19.md">DSS0130,2,a</a></td>
     <td>Implemented</td>
     <td><a href="../../../scenarios/astm/netrid/v19/dss_interoperability.md">ASTM F3411-19 NetRID DSS interoperability</a></td>
@@ -98,6 +108,11 @@
   </tr>
   <tr>
     <td><a href="../../../requirements/astm/f3411/v19.md">DSS0130,2,d</a></td>
+    <td>Implemented</td>
+    <td><a href="../../../scenarios/astm/netrid/v19/dss_interoperability.md">ASTM F3411-19 NetRID DSS interoperability</a></td>
+  </tr>
+  <tr>
+    <td><a href="../../../requirements/astm/f3411/v19.md">DSS0130,2,e</a></td>
     <td>Implemented</td>
     <td><a href="../../../scenarios/astm/netrid/v19/dss_interoperability.md">ASTM F3411-19 NetRID DSS interoperability</a></td>
   </tr>
@@ -173,7 +188,7 @@
   </tr>
   <tr>
     <td><a href="../../../requirements/astm/f3411/v19.md">DSS0130,A2-6-1,3c</a></td>
-    <td>Implemented + TODO</td>
+    <td>Implemented</td>
     <td><a href="../../../scenarios/astm/netrid/v19/dss_interoperability.md">ASTM F3411-19 NetRID DSS interoperability</a></td>
   </tr>
   <tr>
@@ -212,10 +227,15 @@
     <td><a href="../../../scenarios/astm/netrid/v19/dss/heavy_traffic_concurrent.md">ASTM NetRID DSS: Concurrent Requests</a><br><a href="../../../scenarios/astm/netrid/v19/dss/isa_expiry.md">ASTM NetRID DSS: ISA Expiry</a><br><a href="../../../scenarios/astm/netrid/v19/dss/isa_subscription_interactions.md">ASTM NetRID DSS: ISA Subscription Interactions</a><br><a href="../../../scenarios/astm/netrid/v19/dss/isa_simple.md">ASTM NetRID DSS: Simple ISA</a><br><a href="../../../scenarios/astm/netrid/v19/dss/isa_validation.md">ASTM NetRID DSS: Submitted ISA Validations</a><br><a href="../../../scenarios/astm/netrid/v19/dss/subscription_simple.md">ASTM NetRID DSS: Subscription Simple</a><br><a href="../../../scenarios/astm/netrid/v19/dss/subscription_validation.md">ASTM NetRID DSS: Subscription Validation</a><br><a href="../../../scenarios/astm/netrid/v19/dss/token_validation.md">ASTM NetRID DSS: Token Validation</a></td>
   </tr>
   <tr>
-    <td rowspan="39" style="vertical-align:top;"><a href="../../../requirements/astm/f3411/v22a.md">astm<br>.f3411<br>.v22a</a></td>
+    <td rowspan="42" style="vertical-align:top;"><a href="../../../requirements/astm/f3411/v22a.md">astm<br>.f3411<br>.v22a</a></td>
     <td><a href="../../../requirements/astm/f3411/v22a.md">DSS0010</a></td>
     <td>Implemented</td>
     <td><a href="../../../scenarios/astm/netrid/v22a/dss/token_validation.md">ASTM NetRID DSS: Token Validation</a></td>
+  </tr>
+  <tr>
+    <td><a href="../../../requirements/astm/f3411/v22a.md">DSS0020</a></td>
+    <td>Implemented</td>
+    <td><a href="../../../scenarios/astm/netrid/v22a/dss/endpoint_encryption.md">ASTM NetRID DSS: Endpoint encryption</a></td>
   </tr>
   <tr>
     <td><a href="../../../requirements/astm/f3411/v22a.md">DSS0030</a></td>
@@ -245,7 +265,7 @@
   <tr>
     <td><a href="../../../requirements/astm/f3411/v22a.md">DSS0030,e</a></td>
     <td>Implemented</td>
-    <td><a href="../../../scenarios/astm/netrid/v22a/dss/heavy_traffic_concurrent.md">ASTM NetRID DSS: Concurrent Requests</a><br><a href="../../../scenarios/astm/netrid/v22a/dss/isa_expiry.md">ASTM NetRID DSS: ISA Expiry</a><br><a href="../../../scenarios/astm/netrid/v22a/dss/isa_subscription_interactions.md">ASTM NetRID DSS: ISA Subscription Interactions</a><br><a href="../../../scenarios/astm/netrid/v22a/dss/isa_simple.md">ASTM NetRID DSS: Simple ISA</a><br><a href="../../../scenarios/astm/netrid/v22a/dss/isa_validation.md">ASTM NetRID DSS: Submitted ISA Validations</a><br><a href="../../../scenarios/astm/netrid/v22a/dss/subscription_simple.md">ASTM NetRID DSS: Subscription Simple</a><br><a href="../../../scenarios/astm/netrid/v22a/dss/subscription_validation.md">ASTM NetRID DSS: Subscription Validation</a><br><a href="../../../scenarios/astm/netrid/v22a/dss/token_validation.md">ASTM NetRID DSS: Token Validation</a></td>
+    <td><a href="../../../scenarios/astm/netrid/v22a/dss_interoperability.md">ASTM F3411-22a NetRID DSS interoperability</a><br><a href="../../../scenarios/astm/netrid/v22a/dss/heavy_traffic_concurrent.md">ASTM NetRID DSS: Concurrent Requests</a><br><a href="../../../scenarios/astm/netrid/v22a/dss/isa_expiry.md">ASTM NetRID DSS: ISA Expiry</a><br><a href="../../../scenarios/astm/netrid/v22a/dss/isa_subscription_interactions.md">ASTM NetRID DSS: ISA Subscription Interactions</a><br><a href="../../../scenarios/astm/netrid/v22a/dss/isa_simple.md">ASTM NetRID DSS: Simple ISA</a><br><a href="../../../scenarios/astm/netrid/v22a/dss/isa_validation.md">ASTM NetRID DSS: Submitted ISA Validations</a><br><a href="../../../scenarios/astm/netrid/v22a/dss/subscription_simple.md">ASTM NetRID DSS: Subscription Simple</a><br><a href="../../../scenarios/astm/netrid/v22a/dss/subscription_validation.md">ASTM NetRID DSS: Subscription Validation</a><br><a href="../../../scenarios/astm/netrid/v22a/dss/token_validation.md">ASTM NetRID DSS: Token Validation</a></td>
   </tr>
   <tr>
     <td><a href="../../../requirements/astm/f3411/v22a.md">DSS0030,f</a></td>
@@ -278,6 +298,11 @@
     <td><a href="../../../scenarios/astm/netrid/v22a/dss/crdb_access.md">ASTM NetRID DSS: Direct CRDB access</a></td>
   </tr>
   <tr>
+    <td><a href="../../../requirements/astm/f3411/v22a.md">DSS0130,1</a></td>
+    <td>Implemented</td>
+    <td><a href="../../../scenarios/astm/netrid/v22a/dss_interoperability.md">ASTM F3411-22a NetRID DSS interoperability</a></td>
+  </tr>
+  <tr>
     <td><a href="../../../requirements/astm/f3411/v22a.md">DSS0130,2,a</a></td>
     <td>Implemented</td>
     <td><a href="../../../scenarios/astm/netrid/v22a/dss_interoperability.md">ASTM F3411-22a NetRID DSS interoperability</a></td>
@@ -294,6 +319,11 @@
   </tr>
   <tr>
     <td><a href="../../../requirements/astm/f3411/v22a.md">DSS0130,2,d</a></td>
+    <td>Implemented</td>
+    <td><a href="../../../scenarios/astm/netrid/v22a/dss_interoperability.md">ASTM F3411-22a NetRID DSS interoperability</a></td>
+  </tr>
+  <tr>
+    <td><a href="../../../requirements/astm/f3411/v22a.md">DSS0130,2,e</a></td>
     <td>Implemented</td>
     <td><a href="../../../scenarios/astm/netrid/v22a/dss_interoperability.md">ASTM F3411-22a NetRID DSS interoperability</a></td>
   </tr>
@@ -369,7 +399,7 @@
   </tr>
   <tr>
     <td><a href="../../../requirements/astm/f3411/v22a.md">DSS0130,A2-6-1,3c</a></td>
-    <td>Implemented + TODO</td>
+    <td>Implemented</td>
     <td><a href="../../../scenarios/astm/netrid/v22a/dss_interoperability.md">ASTM F3411-22a NetRID DSS interoperability</a></td>
   </tr>
   <tr>
@@ -411,27 +441,27 @@
     <td rowspan="52" style="vertical-align:top;"><a href="../../../requirements/astm/f3548/v21.md">astm<br>.f3548<br>.v21</a></td>
     <td><a href="../../../requirements/astm/f3548/v21.md">DSS0005,1</a></td>
     <td>Implemented</td>
-    <td><a href="../../../scenarios/astm/utm/dss/op_intent_ref_access_control.md">ASTM F3548-21 UTM DSS Operational Intent Reference Access Control</a><br><a href="../../../scenarios/astm/utm/dss/op_intent_ref_state_transitions.md">ASTM F3548-21 UTM DSS Operational Intent Reference State Transitions</a><br><a href="../../../scenarios/astm/utm/dss/synchronization/constraint_ref_synchronization.md">ASTM SCD DSS: Constraint Reference Synchronization</a><br><a href="../../../scenarios/astm/utm/dss/authentication/authentication_validation.md">ASTM SCD DSS: Interfaces authentication</a><br><a href="../../../scenarios/astm/utm/dss/op_intent_ref_key_validation.md">ASTM SCD DSS: Operational Intent Reference Key Validation</a><br><a href="../../../scenarios/astm/utm/dss/synchronization/op_intent_ref_synchronization.md">ASTM SCD DSS: Operational Intent Reference Synchronization</a><br><a href="../../../scenarios/astm/utm/dss/subscription_simple.md">ASTM SCD DSS: Subscription Simple</a><br><a href="../../../scenarios/astm/utm/dss/synchronization/subscription_synchronization.md">ASTM SCD DSS: Subscription Synchronization</a><br><a href="../../../scenarios/astm/utm/dss/subscription_validation.md">ASTM SCD DSS: Subscription Validation</a><br><a href="../../../scenarios/astm/utm/dss/subscription_interactions_deletion.md">ASTM SCD DSS: Subscription and entity deletion interaction</a><br><a href="../../../scenarios/astm/utm/dss/subscription_interactions.md">ASTM SCD DSS: Subscription and entity interaction</a></td>
+    <td><a href="../../../scenarios/astm/utm/dss/op_intent_ref_access_control.md">ASTM F3548-21 UTM DSS Operational Intent Reference Access Control</a><br><a href="../../../scenarios/astm/utm/dss/op_intent_ref_state_transitions.md">ASTM F3548-21 UTM DSS Operational Intent Reference State Transitions</a><br><a href="../../../scenarios/astm/utm/dss/oir_implicit_sub_handling.md">ASTM SCD DSS: Implicit Subscription handling</a><br><a href="../../../scenarios/astm/utm/dss/authentication/authentication_validation.md">ASTM SCD DSS: Interfaces authentication</a><br><a href="../../../scenarios/astm/utm/dss/op_intent_ref_key_validation.md">ASTM SCD DSS: Operational Intent Reference Key Validation</a><br><a href="../../../scenarios/astm/utm/dss/op_intent_ref_simple.md">ASTM SCD DSS: Operational Intent Reference Simple</a><br><a href="../../../scenarios/astm/utm/dss/synchronization/op_intent_ref_synchronization.md">ASTM SCD DSS: Operational Intent Reference Synchronization</a><br><a href="../../../scenarios/astm/utm/dss/subscription_interactions_deletion.md">ASTM SCD DSS: Subscription and entity deletion interaction</a><br><a href="../../../scenarios/astm/utm/dss/subscription_interactions.md">ASTM SCD DSS: Subscription and entity interaction</a><br><a href="../../../scenarios/interuss/ovn_request/dss_ovn_request.md">OVN Request Optional Extension to ASTM F3548-21</a></td>
   </tr>
   <tr>
     <td><a href="../../../requirements/astm/f3548/v21.md">DSS0005,2</a></td>
     <td>Implemented</td>
-    <td><a href="../../../scenarios/astm/utm/dss/op_intent_ref_access_control.md">ASTM F3548-21 UTM DSS Operational Intent Reference Access Control</a><br><a href="../../../scenarios/astm/utm/dss/op_intent_ref_state_transitions.md">ASTM F3548-21 UTM DSS Operational Intent Reference State Transitions</a><br><a href="../../../scenarios/astm/utm/dss/synchronization/constraint_ref_synchronization.md">ASTM SCD DSS: Constraint Reference Synchronization</a><br><a href="../../../scenarios/astm/utm/dss/authentication/authentication_validation.md">ASTM SCD DSS: Interfaces authentication</a><br><a href="../../../scenarios/astm/utm/dss/op_intent_ref_key_validation.md">ASTM SCD DSS: Operational Intent Reference Key Validation</a><br><a href="../../../scenarios/astm/utm/dss/synchronization/op_intent_ref_synchronization.md">ASTM SCD DSS: Operational Intent Reference Synchronization</a><br><a href="../../../scenarios/astm/utm/dss/subscription_simple.md">ASTM SCD DSS: Subscription Simple</a><br><a href="../../../scenarios/astm/utm/dss/synchronization/subscription_synchronization.md">ASTM SCD DSS: Subscription Synchronization</a><br><a href="../../../scenarios/astm/utm/dss/subscription_validation.md">ASTM SCD DSS: Subscription Validation</a><br><a href="../../../scenarios/astm/utm/dss/subscription_interactions_deletion.md">ASTM SCD DSS: Subscription and entity deletion interaction</a><br><a href="../../../scenarios/astm/utm/dss/subscription_interactions.md">ASTM SCD DSS: Subscription and entity interaction</a></td>
+    <td><a href="../../../scenarios/astm/utm/dss/op_intent_ref_access_control.md">ASTM F3548-21 UTM DSS Operational Intent Reference Access Control</a><br><a href="../../../scenarios/astm/utm/dss/op_intent_ref_state_transitions.md">ASTM F3548-21 UTM DSS Operational Intent Reference State Transitions</a><br><a href="../../../scenarios/astm/utm/dss/oir_implicit_sub_handling.md">ASTM SCD DSS: Implicit Subscription handling</a><br><a href="../../../scenarios/astm/utm/dss/authentication/authentication_validation.md">ASTM SCD DSS: Interfaces authentication</a><br><a href="../../../scenarios/astm/utm/dss/op_intent_ref_key_validation.md">ASTM SCD DSS: Operational Intent Reference Key Validation</a><br><a href="../../../scenarios/astm/utm/dss/op_intent_ref_simple.md">ASTM SCD DSS: Operational Intent Reference Simple</a><br><a href="../../../scenarios/astm/utm/dss/synchronization/op_intent_ref_synchronization.md">ASTM SCD DSS: Operational Intent Reference Synchronization</a><br><a href="../../../scenarios/astm/utm/dss/subscription_interactions_deletion.md">ASTM SCD DSS: Subscription and entity deletion interaction</a><br><a href="../../../scenarios/astm/utm/dss/subscription_interactions.md">ASTM SCD DSS: Subscription and entity interaction</a><br><a href="../../../scenarios/interuss/ovn_request/dss_ovn_request.md">OVN Request Optional Extension to ASTM F3548-21</a></td>
   </tr>
   <tr>
     <td><a href="../../../requirements/astm/f3548/v21.md">DSS0005,3</a></td>
     <td>Implemented</td>
-    <td><a href="../../../scenarios/astm/utm/dss/op_intent_ref_access_control.md">ASTM F3548-21 UTM DSS Operational Intent Reference Access Control</a><br><a href="../../../scenarios/astm/utm/dss/op_intent_ref_state_transitions.md">ASTM F3548-21 UTM DSS Operational Intent Reference State Transitions</a><br><a href="../../../scenarios/astm/utm/dss/synchronization/constraint_ref_synchronization.md">ASTM SCD DSS: Constraint Reference Synchronization</a><br><a href="../../../scenarios/astm/utm/dss/authentication/authentication_validation.md">ASTM SCD DSS: Interfaces authentication</a><br><a href="../../../scenarios/astm/utm/dss/op_intent_ref_key_validation.md">ASTM SCD DSS: Operational Intent Reference Key Validation</a><br><a href="../../../scenarios/astm/utm/dss/synchronization/op_intent_ref_synchronization.md">ASTM SCD DSS: Operational Intent Reference Synchronization</a><br><a href="../../../scenarios/astm/utm/dss/subscription_simple.md">ASTM SCD DSS: Subscription Simple</a><br><a href="../../../scenarios/astm/utm/dss/synchronization/subscription_synchronization.md">ASTM SCD DSS: Subscription Synchronization</a><br><a href="../../../scenarios/astm/utm/dss/subscription_validation.md">ASTM SCD DSS: Subscription Validation</a><br><a href="../../../scenarios/astm/utm/dss/subscription_interactions_deletion.md">ASTM SCD DSS: Subscription and entity deletion interaction</a><br><a href="../../../scenarios/astm/utm/dss/subscription_interactions.md">ASTM SCD DSS: Subscription and entity interaction</a></td>
+    <td><a href="../../../scenarios/astm/utm/dss/constraint_ref_simple.md">ASTM SCD DSS: Constraint Reference Simple</a><br><a href="../../../scenarios/astm/utm/dss/synchronization/constraint_ref_synchronization.md">ASTM SCD DSS: Constraint Reference Synchronization</a><br><a href="../../../scenarios/astm/utm/dss/authentication/authentication_validation.md">ASTM SCD DSS: Interfaces authentication</a></td>
   </tr>
   <tr>
     <td><a href="../../../requirements/astm/f3548/v21.md">DSS0005,4</a></td>
     <td>Implemented</td>
-    <td><a href="../../../scenarios/astm/utm/dss/op_intent_ref_access_control.md">ASTM F3548-21 UTM DSS Operational Intent Reference Access Control</a><br><a href="../../../scenarios/astm/utm/dss/op_intent_ref_state_transitions.md">ASTM F3548-21 UTM DSS Operational Intent Reference State Transitions</a><br><a href="../../../scenarios/astm/utm/dss/synchronization/constraint_ref_synchronization.md">ASTM SCD DSS: Constraint Reference Synchronization</a><br><a href="../../../scenarios/astm/utm/dss/authentication/authentication_validation.md">ASTM SCD DSS: Interfaces authentication</a><br><a href="../../../scenarios/astm/utm/dss/op_intent_ref_key_validation.md">ASTM SCD DSS: Operational Intent Reference Key Validation</a><br><a href="../../../scenarios/astm/utm/dss/synchronization/op_intent_ref_synchronization.md">ASTM SCD DSS: Operational Intent Reference Synchronization</a><br><a href="../../../scenarios/astm/utm/dss/subscription_simple.md">ASTM SCD DSS: Subscription Simple</a><br><a href="../../../scenarios/astm/utm/dss/synchronization/subscription_synchronization.md">ASTM SCD DSS: Subscription Synchronization</a><br><a href="../../../scenarios/astm/utm/dss/subscription_validation.md">ASTM SCD DSS: Subscription Validation</a><br><a href="../../../scenarios/astm/utm/dss/subscription_interactions_deletion.md">ASTM SCD DSS: Subscription and entity deletion interaction</a><br><a href="../../../scenarios/astm/utm/dss/subscription_interactions.md">ASTM SCD DSS: Subscription and entity interaction</a></td>
+    <td><a href="../../../scenarios/astm/utm/dss/constraint_ref_simple.md">ASTM SCD DSS: Constraint Reference Simple</a><br><a href="../../../scenarios/astm/utm/dss/synchronization/constraint_ref_synchronization.md">ASTM SCD DSS: Constraint Reference Synchronization</a><br><a href="../../../scenarios/astm/utm/dss/authentication/authentication_validation.md">ASTM SCD DSS: Interfaces authentication</a></td>
   </tr>
   <tr>
     <td><a href="../../../requirements/astm/f3548/v21.md">DSS0005,5</a></td>
     <td>Implemented</td>
-    <td><a href="../../../scenarios/astm/utm/dss/op_intent_ref_access_control.md">ASTM F3548-21 UTM DSS Operational Intent Reference Access Control</a><br><a href="../../../scenarios/astm/utm/dss/op_intent_ref_state_transitions.md">ASTM F3548-21 UTM DSS Operational Intent Reference State Transitions</a><br><a href="../../../scenarios/astm/utm/dss/synchronization/constraint_ref_synchronization.md">ASTM SCD DSS: Constraint Reference Synchronization</a><br><a href="../../../scenarios/astm/utm/dss/authentication/authentication_validation.md">ASTM SCD DSS: Interfaces authentication</a><br><a href="../../../scenarios/astm/utm/dss/op_intent_ref_key_validation.md">ASTM SCD DSS: Operational Intent Reference Key Validation</a><br><a href="../../../scenarios/astm/utm/dss/synchronization/op_intent_ref_synchronization.md">ASTM SCD DSS: Operational Intent Reference Synchronization</a><br><a href="../../../scenarios/astm/utm/dss/subscription_simple.md">ASTM SCD DSS: Subscription Simple</a><br><a href="../../../scenarios/astm/utm/dss/synchronization/subscription_synchronization.md">ASTM SCD DSS: Subscription Synchronization</a><br><a href="../../../scenarios/astm/utm/dss/subscription_validation.md">ASTM SCD DSS: Subscription Validation</a><br><a href="../../../scenarios/astm/utm/dss/subscription_interactions_deletion.md">ASTM SCD DSS: Subscription and entity deletion interaction</a><br><a href="../../../scenarios/astm/utm/dss/subscription_interactions.md">ASTM SCD DSS: Subscription and entity interaction</a></td>
+    <td><a href="../../../scenarios/astm/utm/dss/oir_implicit_sub_handling.md">ASTM SCD DSS: Implicit Subscription handling</a><br><a href="../../../scenarios/astm/utm/dss/authentication/authentication_validation.md">ASTM SCD DSS: Interfaces authentication</a><br><a href="../../../scenarios/astm/utm/dss/subscription_simple.md">ASTM SCD DSS: Subscription Simple</a><br><a href="../../../scenarios/astm/utm/dss/synchronization/subscription_synchronization.md">ASTM SCD DSS: Subscription Synchronization</a><br><a href="../../../scenarios/astm/utm/dss/subscription_validation.md">ASTM SCD DSS: Subscription Validation</a><br><a href="../../../scenarios/astm/utm/dss/subscription_interactions_deletion.md">ASTM SCD DSS: Subscription and entity deletion interaction</a><br><a href="../../../scenarios/astm/utm/dss/subscription_interactions.md">ASTM SCD DSS: Subscription and entity interaction</a></td>
   </tr>
   <tr>
     <td><a href="../../../requirements/astm/f3548/v21.md">DSS0015</a></td>
@@ -678,5 +708,11 @@
     <td><a href="../../../requirements/interuss/f3411/dss_endpoints.md">SearchISAs</a></td>
     <td>Implemented</td>
     <td><a href="../../../scenarios/astm/netrid/v22a/dss/heavy_traffic_concurrent.md">ASTM NetRID DSS: Concurrent Requests</a><br><a href="../../../scenarios/astm/netrid/v22a/dss/isa_expiry.md">ASTM NetRID DSS: ISA Expiry</a><br><a href="../../../scenarios/astm/netrid/v22a/dss/isa_simple.md">ASTM NetRID DSS: Simple ISA</a><br><a href="../../../scenarios/astm/netrid/v22a/dss/token_validation.md">ASTM NetRID DSS: Token Validation</a></td>
+  </tr>
+  <tr>
+    <td rowspan="1" style="vertical-align:top;"><a href="../../../requirements/interuss/f3548/ovn_request.md">interuss<br>.f3548<br>.ovn_request</a></td>
+    <td><a href="../../../requirements/interuss/f3548/ovn_request.md">ImplementAPI</a></td>
+    <td>Implemented</td>
+    <td><a href="../../../scenarios/interuss/ovn_request/dss_ovn_request.md">OVN Request Optional Extension to ASTM F3548-21</a></td>
   </tr>
 </table>

@@ -7,6 +7,8 @@ import sys
 from implicitdict import ImplicitDict
 from loguru import logger
 
+from monitoring.monitorlib import inspection
+from monitoring import uss_qualifier as uss_qualifier_module
 from monitoring.uss_qualifier.configurations.configuration import (
     USSQualifierConfiguration,
     USSQualifierConfigurationV1,
@@ -26,8 +28,8 @@ def parseArgs() -> argparse.Namespace:
 
     parser.add_argument(
         "--config",
+        default=None,
         help="Configuration string according to monitoring/uss_qualifier/configurations/README.md; Several comma-separated strings may be specified",
-        required=True,
     )
 
     parser.add_argument(
@@ -48,32 +50,45 @@ def parseArgs() -> argparse.Namespace:
 def main() -> int:
     args = parseArgs()
 
-    config_names = str(args.config).split(",")
-
     report_paths = str(args.report).split(",")
-    if len(report_paths) != len(config_names):
-        raise ValueError(
-            f"Need matching number of report, expected {len(config_names)}, got {len(report_paths)}"
-        )
 
-    for idx, config_name in enumerate(config_names):
+    config_in_report = "<config in report>"
+    if args.config:
+        config_names = str(args.config).split(",")
+
+        if len(report_paths) != len(config_names):
+            raise ValueError(
+                f"Need matching number of report, expected {len(config_names)}, got {len(report_paths)}"
+            )
+    else:
+        config_names = [config_in_report] * len(report_paths)
+
+    inspection.import_submodules(uss_qualifier_module)
+
+    for config_name, report_path in zip(config_names, report_paths):
         logger.info(
-            f"========== Generating artifacts for configuration {config_name} =========="
+            f"========== Generating artifacts for configuration {config_name} and report {report_path} =========="
         )
 
-        config_src = load_dict_with_references(config_name)
-        whole_config = ImplicitDict.parse(config_src, USSQualifierConfiguration)
-
-        report_src = load_dict_with_references(report_paths[idx])
+        report_src = load_dict_with_references(report_path)
         report = ImplicitDict.parse(report_src, TestRunReport)
+
+        if config_name != config_in_report:
+            config_src = load_dict_with_references(config_name)
+            whole_config = ImplicitDict.parse(config_src, USSQualifierConfiguration)
+        else:
+            whole_config = report.configuration
 
         config: USSQualifierConfigurationV1 = whole_config.v1
         if config.artifacts:
             if args.output_path:
                 output_path = args.output_path
+            elif config_name == config_in_report:
+                report_name, _ = os.path.splitext(os.path.split(report_path)[-1])
+                output_path = default_output_path(report_name)
             else:
                 output_path = default_output_path(config_name)
-            generate_artifacts(report, config.artifacts, output_path)
+            generate_artifacts(report, config.artifacts, output_path, False)
         else:
             output_path = "nowhere"
             logger.warning(f"No artifacts to generate for {config_name}")

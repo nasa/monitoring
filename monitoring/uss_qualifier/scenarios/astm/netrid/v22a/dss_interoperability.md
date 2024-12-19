@@ -133,6 +133,16 @@ Qualitatively proves: Can retrieve specific Subscription emplaced in primary DSS
 
 **[astm.f3411.v22a.DSS0130,2,f](../../../../requirements/astm/f3411/v22a.md)**
 
+#### 🛑 Subscription[*n*] search returned with proper response check
+
+**[astm.f3411.v22a.DSS0030,e](../../../../requirements/astm/f3411/v22a.md)**
+
+**[astm.f3411.v22a.DSS0130,A2-6-1,6](../../../../requirements/astm/f3411/v22a.md)**
+
+#### 🛑 Subscription[*P*] cell ID is properly synchronized with all DSS check
+
+**[astm.f3411.v22a.DSS0130,1](../../../../requirements/astm/f3411/v22a.md)**
+
 ### S4 test step
 
 Action: USS2@DSS*n*: GET Subscriptions using ISA[*P*]’s area
@@ -159,11 +169,17 @@ Qualitatively proves: ISA[*P*] modified with proper response, all Subscription[i
 
 **[astm.f3411.v22a.DSS0130,A2-6-1,1b](../../../../requirements/astm/f3411/v22a.md)**
 
-#### ISA modification triggers subscription notification requests check
-
-TODO: Implement
+#### ⚠️ ISA modification on primary DSS triggers subscription notification requests check
 
 **[astm.f3411.v22a.DSS0130,A2-6-1,3c](../../../../requirements/astm/f3411/v22a.md)**
+
+#### 🛑 Can modify ISA on secondary DSS check
+
+**[astm.f3411.v22a.DSS0130,A2-6-1,1b](../../../../requirements/astm/f3411/v22a.md)**
+
+#### ⚠️ ISA modification on secondary DSS triggers subscription notification requests check
+
+A failure of this check indicates that the DSS fails to implement either one or both of  **[astm.f3411.v22a.DSS0130,A2-6-1,3c](../../../../requirements/astm/f3411/v22a.md)** and **[astm.f3411.v22a.DSS0130,2,e](../../../../requirements/astm/f3411/v22a.md)**.
 
 ### S6 test step
 

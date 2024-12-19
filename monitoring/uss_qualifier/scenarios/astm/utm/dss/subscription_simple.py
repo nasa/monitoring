@@ -417,7 +417,7 @@ class SubscriptionSimple(TestScenario):
             fetched_sub = self._dss.get_subscription(sub_id)
             self.record_query(fetched_sub)
             with self.check("Get subscription query succeeds", self._pid) as check:
-                if not fetched_sub.success:
+                if not (fetched_sub.success or fetched_sub.was_not_found):
                     check.record_failed(
                         "Get subscription by ID failed",
                         details=f"Get subscription by ID failed with status code {fetched_sub.status_code}",
@@ -666,10 +666,10 @@ class SubscriptionSimple(TestScenario):
         with self.check(
             "Returned USS base URL has correct base URL", self._pid
         ) as check:
-            if sub_under_test.uss_base_url != self._planning_area.base_url:
+            if sub_under_test.uss_base_url != self._planning_area.get_base_url():
                 check.record_failed(
                     "Returned USS Base URL does not match provided one",
-                    details=f"Provided: {self._planning_area.base_url}, Returned: {sub_under_test.uss_base_url}",
+                    details=f"Provided: {self._planning_area.get_base_url()}, Returned: {sub_under_test.uss_base_url}",
                     query_timestamps=query_timestamps,
                 )
 

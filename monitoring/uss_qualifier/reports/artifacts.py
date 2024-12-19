@@ -7,6 +7,9 @@ from loguru import logger
 from implicitdict import ImplicitDict
 from monitoring.uss_qualifier.configurations.configuration import ArtifactsConfiguration
 from monitoring.uss_qualifier.reports.documents import make_report_html
+from monitoring.uss_qualifier.reports.globally_expanded.generate import (
+    generate_globally_expanded_report,
+)
 from monitoring.uss_qualifier.reports.report import TestRunReport, redact_access_tokens
 from monitoring.uss_qualifier.reports.sequence_view.generate import (
     generate_sequence_view,
@@ -31,12 +34,18 @@ def generate_artifacts(
     report: TestRunReport,
     artifacts: ArtifactsConfiguration,
     output_path: str,
+    disallow_unredacted: bool,
 ):
     logger.debug(f"Writing artifacts to {os.path.abspath(output_path)}")
     os.makedirs(output_path, exist_ok=True)
 
     def _should_redact(cfg) -> bool:
-        return "redact_access_tokens" in cfg and cfg.redact_access_tokens
+        result = "redact_access_tokens" in cfg and cfg.redact_access_tokens
+        if disallow_unredacted and not result:
+            raise RuntimeError(
+                "The option to disallow unredacted information was set, but the configuration specified unredacted information any way"
+            )
+        return result
 
     logger.info(f"Redacting access tokens from report")
     redacted_report = ImplicitDict.parse(json.loads(json.dumps(report)), TestRunReport)
@@ -87,3 +96,16 @@ def generate_artifacts(
             redacted_report if _should_redact(artifacts.sequence_view) else report
         )
         generate_sequence_view(report_to_write, artifacts.sequence_view, path)
+
+    if artifacts.globally_expanded_report:
+        # Globally-expanded report
+        path = os.path.join(output_path, "globally_expanded")
+        logger.info(f"Writing globally-expanded report to {path}")
+        report_to_write = (
+            redacted_report
+            if _should_redact(artifacts.globally_expanded_report)
+            else report
+        )
+        generate_globally_expanded_report(
+            report_to_write, artifacts.globally_expanded_report, path
+        )

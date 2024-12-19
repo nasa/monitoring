@@ -1,22 +1,27 @@
 from __future__ import annotations
 
-from datetime import datetime, timedelta
-import re
-from typing import Callable, Dict, List, Tuple, Optional
+from datetime import datetime
+from typing import Set
 
-import arrow
-from implicitdict import StringBasedDateTime
-from uas_standards.astm.f3548.v21 import api
-from uas_standards.astm.f3548.v21.api import OperationID, EntityID
+from implicitdict import StringBasedDateTime, ImplicitDict
+from uas_standards.astm.f3548.v21.api import (
+    OperationID,
+    EntityID,
+    PutOperationalIntentDetailsParameters,
+)
 
-from monitoring.monitorlib.clients.mock_uss.interactions import Interaction
 from monitoring.monitorlib.clients.mock_uss.interactions import QueryDirection
-from monitoring.monitorlib.delay import sleep
-from monitoring.monitorlib.fetch import QueryError, Query
 from monitoring.uss_qualifier.resources.interuss.mock_uss.client import MockUSSClient
 from monitoring.uss_qualifier.scenarios.astm.utm.data_exchange_validation.test_steps.wait import (
     wait_in_intervals,
-    MaxTimeToWaitForSubscriptionNotificationSeconds as max_wait_time,
+)
+from monitoring.uss_qualifier.scenarios.interuss.mock_uss.test_steps import (
+    get_mock_uss_interactions,
+    operation_filter,
+    direction_filter,
+    filter_interactions,
+    notif_op_intent_id_filter,
+    status_code_filter,
 )
 from monitoring.uss_qualifier.scenarios.scenario import TestScenarioType
 
@@ -25,6 +30,7 @@ def expect_mock_uss_receives_op_intent_notification(
     scenario: TestScenarioType,
     mock_uss: MockUSSClient,
     st: StringBasedDateTime,
+    op_intent_id: EntityID,
     participant_id: str,
     plan_request_time: datetime,
 ):
@@ -32,24 +38,27 @@ def expect_mock_uss_receives_op_intent_notification(
 
     Args:
         st: the earliest time a notification may have been sent
+        op_intent_id: the operational intent ID subject of the notification
         participant_id: id of the participant responsible to send the notification
         plan_request_time: timestamp of the flight plan query that would lead to sending notification
     """
 
     # Check for 'notification found' will be done periodically by waiting for a duration till max_wait_time
-    found, query = wait_in_intervals(mock_uss_interactions)(
-        scenario=scenario,
-        mock_uss=mock_uss,
-        op_id=OperationID.NotifyOperationalIntentDetailsChanged,
-        direction=QueryDirection.Incoming,
-        since=st,
+    found, query = wait_in_intervals(get_mock_uss_interactions)(
+        scenario,
+        mock_uss,
+        st,
+        operation_filter(OperationID.NotifyOperationalIntentDetailsChanged),
+        direction_filter(QueryDirection.Incoming),
+        notif_op_intent_id_filter(op_intent_id),
+        status_code_filter(204),
     )
 
     with scenario.check("Expect Notification sent", [participant_id]) as check:
         if not found:
             check.record_failed(
-                summary=f"Notification not sent",
-                details=f"Notification to USS with pre-existing relevant operational intent not sent even though DSS instructed the planning USS to notify due to subscription.",
+                summary=f"Notification not sent for {op_intent_id}",
+                details=f"Notification from {participant_id} to USS for {op_intent_id} with pre-existing relevant operational intent not sent even though DSS instructed the planning USS to notify due to subscription.",
                 query_timestamps=[plan_request_time, query.request.timestamp],
             )
 
@@ -58,94 +67,106 @@ def expect_no_interuss_post_interactions(
     scenario: TestScenarioType,
     mock_uss: MockUSSClient,
     st: StringBasedDateTime,
+    shared_op_intent_ids: Set[EntityID],
     participant_id: str,
 ):
-    """This step checks no notification is sent to any USS within the required time window (as no DSS entity was created).
+    """This step checks no notification about an unexpected operational intent is sent to any USS within the required time window (as no DSS entity was created).
 
     Args:
         st: the earliest time a notification may have been sent
+        shared_op_intent_ids: the set of IDs of previously shared operational intents for which it is expected that notifications are present regardless of their timings
         participant_id: id of the participant responsible to send the notification
     """
-    sleep(
-        max_wait_time,
-        "we have to wait the longest it may take a USS to send a notification before we can establish that they didn't send a notification",
+    interactions, query = get_mock_uss_interactions(
+        scenario,
+        mock_uss,
+        st,
+        operation_filter(OperationID.NotifyOperationalIntentDetailsChanged),
+        direction_filter(QueryDirection.Incoming),
     )
-    found, query = mock_uss_interactions(
-        scenario=scenario,
-        mock_uss=mock_uss,
-        op_id=OperationID.NotifyOperationalIntentDetailsChanged,
-        direction=QueryDirection.Incoming,
-        since=st,
-    )
-    with scenario.check("Expect Notification not sent", [participant_id]) as check:
-        if found:
-            check.record_failed(
-                summary=f"Notification was wrongly sent for an entity not created.",
-                details=f"Notification was wrongly sent for an entity not created.",
-                query_timestamps=[query.request.timestamp],
-            )
+
+    for interaction in interactions:
+        with scenario.check(
+            "Mock USS interaction can be parsed", [mock_uss.participant_id]
+        ) as check:
+            try:
+                req = PutOperationalIntentDetailsParameters(
+                    ImplicitDict.parse(
+                        interaction.query.request.json,
+                        PutOperationalIntentDetailsParameters,
+                    )
+                )
+            except (ValueError, TypeError, KeyError) as e:
+                check.record_failed(
+                    summary=f"Failed to parse request of a 'NotifyOperationalIntentDetailsChanged' interaction with mock_uss as a PutOperationalIntentDetailsParameters",
+                    details=f"{str(e)}\nRequest: {interaction.query.request.json}\n\nStack trace:\n{e.stacktrace}",
+                    query_timestamps=[query.request.timestamp],
+                )
+                continue  # low priority failure: continue checking interactions if one cannot be parsed
+
+        with scenario.check("Expect Notification not sent", [participant_id]) as check:
+            op_intent_id = EntityID(req.operational_intent_id)
+            if op_intent_id not in shared_op_intent_ids:
+                check.record_failed(
+                    summary=f"Observed unexpected notification for operational intent ID {req.operational_intent_id}.",
+                    details=f"Notification for operational intent ID {req.operational_intent_id} triggered by subscriptions {', '.join([sub.subscription_id for sub in req.subscriptions])} with timestamp {interaction.query.request.timestamp}.",
+                    query_timestamps=[query.request.timestamp],
+                )
 
 
-def mock_uss_interactions(
+def expect_uss_obtained_op_intent_details(
     scenario: TestScenarioType,
     mock_uss: MockUSSClient,
-    op_id: OperationID,
-    direction: QueryDirection,
-    since: StringBasedDateTime,
-    query_params: Optional[Dict[str, str]] = None,
-    is_applicable: Optional[Callable[[Interaction], bool]] = None,
-) -> Tuple[List[Interaction], Query]:
-    """Determine if mock_uss recorded an interaction for the specified operation in the specified direction."""
+    st: StringBasedDateTime,
+    op_intent_id: EntityID,
+    participant_id: str,
+):
+    """
+    This step verifies that a USS obtained operational intent details from a Mock USS by means of either a notification
+    from the Mock USS (push), or a GET request (operation *getOperationalIntentDetails*) to the Mock USS.
+
+    Implements the test step fragment in `validate_operational_intent_details_obtained.md`.
+
+    Args:
+        st: the earliest time a notification may have been sent
+        op_intent_id: the operational intent ID subject of the notification
+        participant_id: id of the participant responsible to obtain the details
+    """
+
+    all_interactions, query = get_mock_uss_interactions(
+        scenario,
+        mock_uss,
+        st,
+    )
+
+    notifications = filter_interactions(
+        all_interactions,
+        [
+            operation_filter(OperationID.NotifyOperationalIntentDetailsChanged),
+            direction_filter(QueryDirection.Outgoing),
+            notif_op_intent_id_filter(op_intent_id),
+            status_code_filter(204),
+        ],
+    )
+
+    get_requests = filter_interactions(
+        all_interactions,
+        [
+            operation_filter(
+                OperationID.GetOperationalIntentDetails, entityid=op_intent_id
+            ),
+            direction_filter(QueryDirection.Incoming),
+            status_code_filter(200),
+        ],
+    )
 
     with scenario.check(
-        "Mock USS interactions logs retrievable", [mock_uss.participant_id]
+        "USS obtained operational intent details by means of either notification or GET request",
+        [participant_id],
     ) as check:
-        try:
-            interactions, query = mock_uss.get_interactions(since)
-            scenario.record_query(query)
-        except QueryError as e:
-            for q in e.queries:
-                scenario.record_query(q)
+        if not notifications and not get_requests:
             check.record_failed(
-                summary=f"Error from mock_uss when attempting to get interactions since {since}",
-                details=f"{str(e)}\n\nStack trace:\n{e.stacktrace}",
-                query_timestamps=[q.request.timestamp for q in e.queries],
+                summary=f"USS {participant_id} did not obtained details of operational intent {op_intent_id} from mock_uss",
+                details=f"operational intent {op_intent_id}: mock_uss did not notify successfully {participant_id} of the details and {participant_id} did not do a successful GET request to retrieve them either since {st}",
+                query_timestamps=[query.request.timestamp],
             )
-
-    op = api.OPERATIONS[op_id]
-
-    op_path = op.path
-    if query_params is None:
-        query_params = {}
-    for m in re.findall(r"\{[^}]+\}", op_path):
-        param_name = m[1:-1]
-        op_path = op_path.replace(m, query_params.get(param_name, r"[^/]+"))
-
-    if is_applicable is None:
-        is_applicable = lambda i: True
-    result = []
-    for interaction in interactions:
-        if (
-            interaction.direction == direction
-            and interaction.query.request.method == op.verb
-            and re.search(op_path, interaction.query.request.url)
-            and is_applicable(interaction)
-        ):
-            result.append(interaction)
-    return result, query
-
-
-def is_op_intent_notification_with_id(
-    op_intent_id: EntityID,
-) -> Callable[[Interaction], bool]:
-    """Returns an `is_applicable` function that detects whether an op intent notification refers to the specified operational intent."""
-
-    def is_applicable(interaction: Interaction) -> bool:
-        if "json" in interaction.query.request and interaction.query.request.json:
-            return (
-                interaction.query.request.json.get("operational_intent_id", None)
-                == op_intent_id
-            )
-        return False
-
-    return is_applicable

@@ -60,6 +60,15 @@ function(env) {
       resources: {
         resource_declarations: env.resource_declarations + {
 
+          // Controls query behavior (but not provided explicitly to any test scenario)
+          query_behavior: {
+            resource_type: 'resources.interuss.QueryBehaviorResource',
+            specification: {
+              // Allow additional time for requests to complete
+              read_timeout_seconds: 30.0,
+            },
+          },
+
           // Controls tests behavior
           test_exclusions: {
             resource_type: 'resources.dev.TestExclusionsResource',
@@ -96,7 +105,6 @@ function(env) {
           planning_area: {
             resource_type: 'resources.astm.f3548.v21.PlanningAreaResource',
             specification: {
-              base_url: 'https://uss_qualifier.test.utm/dummy_base_url',
               volume: {
                 outline_polygon: {
                   vertices: [
@@ -320,6 +328,7 @@ function(env) {
                 'interuss.automated_testing.flight_planning.ImplementAPI',
                 'interuss.automated_testing.flight_planning.Readiness',
                 'interuss.f3548.notification_requirements.NoDssEntityNoNotification',
+                'versioning.ReportSystemVersion',
               ],
             },
             'Basic SCD without DSS provision': {
@@ -352,6 +361,7 @@ function(env) {
                 'interuss.automated_testing.flight_planning.ImplementAPI',
                 'interuss.automated_testing.flight_planning.Readiness',
                 'interuss.f3548.notification_requirements.NoDssEntityNoNotification',
+                'versioning.ReportSystemVersion',
               ],
             },
           },
@@ -409,7 +419,7 @@ function(env) {
               count: {
                 // We currently expect this amount of skipped scenarios: making it an equality
                 // to make sure this is reduced if some scenarios start to be executed
-                equal_to: 7,
+                equal_to: 9,
               },
             },
           },

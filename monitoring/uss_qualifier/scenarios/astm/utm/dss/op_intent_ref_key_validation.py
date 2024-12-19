@@ -111,7 +111,7 @@ class OIRKeyValidation(TestScenario):
         first_oir_params = self._planning_area.get_new_operational_intent_ref_params(
             key=[],
             state=OperationalIntentState.Accepted,
-            uss_base_url=self._planning_area.base_url,
+            uss_base_url=self._planning_area.get_base_url(),
             time_start=datetime.now() - timedelta(seconds=10),
             time_end=datetime.now() + timedelta(minutes=20),
             subscription_id=None,
@@ -121,7 +121,7 @@ class OIRKeyValidation(TestScenario):
         second_oir_params = self._planning_area.get_new_operational_intent_ref_params(
             key=[],
             state=OperationalIntentState.Accepted,
-            uss_base_url=self._planning_area.base_url,
+            uss_base_url=self._planning_area.get_base_url(),
             time_start=datetime.now() + timedelta(hours=1, minutes=20),
             time_end=datetime.now() + timedelta(hours=1, minutes=40),
             subscription_id=None,
@@ -245,7 +245,7 @@ class OIRKeyValidation(TestScenario):
         conflict_first = self._planning_area.get_new_operational_intent_ref_params(
             key=[],
             state=OperationalIntentState.Accepted,
-            uss_base_url=self._planning_area.base_url,
+            uss_base_url=self._planning_area.get_base_url(),
             time_start=first_oir.time_start.value.datetime,
             time_end=first_oir.time_end.value.datetime,
             subscription_id=None,
@@ -260,7 +260,7 @@ class OIRKeyValidation(TestScenario):
         conflict_second = self._planning_area.get_new_operational_intent_ref_params(
             key=[],
             state=OperationalIntentState.Accepted,
-            uss_base_url=self._planning_area.base_url,
+            uss_base_url=self._planning_area.get_base_url(),
             time_start=second_oir.time_start.value.datetime,
             time_end=second_oir.time_end.value.datetime,
             subscription_id=None,
@@ -275,7 +275,7 @@ class OIRKeyValidation(TestScenario):
         conflict_both = self._planning_area.get_new_operational_intent_ref_params(
             key=[],
             state=OperationalIntentState.Accepted,
-            uss_base_url=self._planning_area.base_url,
+            uss_base_url=self._planning_area.get_base_url(),
             time_start=first_oir.time_start.value.datetime,
             time_end=second_oir.time_end.value.datetime,
             subscription_id=None,
@@ -428,11 +428,6 @@ class OIRKeyValidation(TestScenario):
         # Make sure the OIR IDs we are going to use are available
         for oir_id in self._oir_ids:
             test_step_fragments.cleanup_op_intent(self, self._dss, oir_id)
-
-        # Also drop any subs we might own and that could interfere
-        test_step_fragments.cleanup_active_subs(
-            self, self._dss, self._planning_area_volume4d.to_f3548v21()
-        )
 
     def cleanup(self):
         self.begin_cleanup()

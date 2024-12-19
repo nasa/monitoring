@@ -1,8 +1,8 @@
+import datetime
 import ipaddress
 import socket
 import uuid
 from dataclasses import dataclass
-import datetime
 from enum import Enum
 from typing import List, Dict, Optional
 from urllib.parse import urlparse
@@ -11,6 +11,7 @@ import s2sphere
 
 from monitoring.monitorlib.delay import sleep
 from monitoring.monitorlib.fetch.rid import ISA
+from monitoring.monitorlib.testing import make_fake_url
 from monitoring.uss_qualifier.common_data_definitions import Severity
 from monitoring.uss_qualifier.resources.astm.f3411.dss import (
     DSSInstancesResource,
@@ -23,6 +24,7 @@ from monitoring.uss_qualifier.scenarios.astm.netrid.dss_wrapper import DSSWrappe
 from monitoring.uss_qualifier.scenarios.scenario import GenericTestScenario
 from monitoring.uss_qualifier.suites.suite import ExecutionContext
 
+# TODO pass a test resource specifying the test area instead
 VERTICES: List[s2sphere.LatLng] = [
     s2sphere.LatLng.from_degrees(lng=130.6205, lat=-23.6558),
     s2sphere.LatLng.from_degrees(lng=130.6301, lat=-23.6898),
@@ -39,7 +41,7 @@ def _default_params(duration: datetime.timedelta) -> Dict:
         alt_hi=400,
         start_time=now,
         end_time=now + duration,
-        uss_base_url="https://example.interuss.org",
+        uss_base_url=make_fake_url(),
     )
 
 
@@ -59,6 +61,12 @@ class TestEntity(object):
 
 
 class DSSInteroperability(GenericTestScenario):
+    """
+    TODO additional improvements/extensions:
+     - cell ID synchronization checks can be improved further by search outside of the
+       subscription's footprint on the secondary DSS and confirming it is not returned
+    """
+
     _dss_primary: DSSWrapper
     _dss_others: List[DSSWrapper]
     _allow_private_addresses: bool = False
@@ -399,6 +407,29 @@ class DSSInteroperability(GenericTestScenario):
                             other_sub.subscription.time_end,
                         )
                     )
+            with self.check(
+                "Subscription[n] search returned with proper response",
+                [dss.participant_id],
+            ) as check:
+                searched_subs = dss.search_subs(check, VERTICES)
+                if not searched_subs.success:
+                    check.record_failed(
+                        summary="Subscription search on secondary DSS failed",
+                        details=f"Subscription search request on secondary DSS failed with HTTP code {searched_subs.status_code}: {searched_subs.errors}",
+                        query_timestamps=[searched_subs.query.request.timestamp],
+                    )
+
+            with self.check(
+                "Subscription[P] cell ID is properly synchronized with all DSS",
+                self._dss_primary.participant_id,
+            ) as check:
+                if primary_sub.subscription.id not in searched_subs.subscriptions:
+                    check.record_failed(
+                        summary=f"Subscription {primary_sub.subscription.id} not returned by search on secondary DSS",
+                        details=f"Subscription {primary_sub.subscription.id} was written to the primary DSS in a specific area and searched for in the same area on the secondary DSS, but was not found. "
+                        f"This may indicate that the primary DSS failed to properly synchronize the Cell ID to the DAR.",
+                        query_timestamps=[searched_subs.query.request.timestamp],
+                    )
 
     def step4(self):
         """Can query all Subscriptions in area from all DSSs."""
@@ -428,6 +459,7 @@ class DSSInteroperability(GenericTestScenario):
         subscription notification requests"""
 
         isa_1 = self._context["isa_1"]
+        sub_1_0 = self._context["sub_1_0"]
 
         with self.check(
             "Can get ISA from primary DSS", [self._dss_primary.participant_id]
@@ -438,15 +470,58 @@ class DSSInteroperability(GenericTestScenario):
         with self.check(
             "Can modify ISA in primary DSS", [self._dss_primary.participant_id]
         ) as check:
-            mutated_isa = self._dss_primary.put_isa(
+            mutated_isa_primary = self._dss_primary.put_isa(
                 check,
                 isa_id=isa_1.uuid,
                 isa_version=isa_1.version,
+                do_not_notify="https://testdummy.interuss.org",
                 **_default_params(datetime.timedelta(seconds=SHORT_WAIT_SEC)),
             )
-            isa_1.version = mutated_isa.dss_query.isa.version
+            isa_1.version = mutated_isa_primary.dss_query.isa.version
 
-        # TODO: Implement "ISA modification triggers subscription notification requests check"
+        subs_to_notify_primary = []
+        for subscriber in mutated_isa_primary.subscribers:
+            for s in subscriber.raw.subscriptions:
+                subs_to_notify_primary.append(s.subscription_id)
+
+        with self.check(
+            "ISA modification on primary DSS triggers subscription notification requests",
+            [self._dss_primary.participant_id],
+        ) as check:
+            if sub_1_0.uuid not in subs_to_notify_primary:
+                check.record_failed(
+                    summary=f"Subscription {sub_1_0.uuid} was not notified of ISA modification",
+                    details=f"Subscription {sub_1_0.uuid} was created on the primary DSS and should have been notified of the ISA modification that happened on the primary DSS, but was not.",
+                )
+
+        for sec_dss in self._dss_others:
+            with self.check(
+                "Can modify ISA on secondary DSS",
+                [sec_dss.participant_id],
+            ) as check:
+                mutated_isa_sec = sec_dss.put_isa(
+                    check,
+                    isa_id=isa_1.uuid,
+                    isa_version=isa_1.version,
+                    do_not_notify="https://testdummy.interuss.org",
+                    **_default_params(datetime.timedelta(seconds=SHORT_WAIT_SEC)),
+                )
+                isa_1.version = mutated_isa_sec.dss_query.isa.version
+
+            subs_to_notify_sec = []
+            for subscriber in mutated_isa_sec.subscribers:
+                for s in subscriber.raw.subscriptions:
+                    subs_to_notify_sec.append(s.subscription_id)
+
+            with self.check(
+                "ISA modification on secondary DSS triggers subscription notification requests",
+                [self._dss_primary.participant_id, sec_dss.participant_id],
+            ) as check:
+                if sub_1_0.uuid not in subs_to_notify_sec:
+                    check.record_failed(
+                        summary=f"Subscription {sub_1_0.uuid} was not notified of ISA modification",
+                        details=f"Subscription {sub_1_0.uuid} was created on the primary DSS (participant_id={self._dss_primary.participant_id}) and should have been notified of the ISA modification (ID={isa_1.uuid}, version={isa_1.version}) that happened on the secondary DSS (participant_id={sec_dss}), but was not.",
+                    )
 
     def step6(self):
         """Can delete all Subscription in primary DSS"""

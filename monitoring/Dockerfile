@@ -9,7 +9,7 @@
 #
 # This image is intended to be built from the repository root context/folder.
 
-FROM python:3.12.4-slim
+FROM python:3.12.6-slim
 # Not -alpine because: https://stackoverflow.com/a/58028091/651139
 
 # Install system tools
@@ -17,13 +17,18 @@ FROM python:3.12.4-slim
 #   curl: Useful debugging utility
 #   gcc: Required to build various packages
 #   ca-certificates: Needed to accurately validate TLS connections
-RUN apt-get update --fix-missing && apt-get install -y openssl curl libgeos-dev gcc && apt-get install ca-certificates
+RUN apt-get update --fix-missing && apt-get install -y make openssl curl libgeos-dev gcc g++ && apt-get install ca-certificates
+
+# Deal with https://github.com/docker-library/python/pull/954
+RUN pip install --no-cache-dir setuptools==74.1.2
 
 # Required to build in an ARM environment
 #   gevent: libffi-dev libssl-dev python3-dev build-essential
 #   lxml: libxml2-dev libxslt-dev
 #   h5py: pkg-config libhdf5-dev
-RUN apt-get install -y libffi-dev libssl-dev python3-dev build-essential libxml2-dev libxslt-dev pkg-config libhdf5-dev
+RUN if [ "$(uname -m)" = "aarch64" ]; then \
+    apt-get install -y libffi-dev libssl-dev python3-dev build-essential libxml2-dev libxslt-dev pkg-config libhdf5-dev \
+; fi
 
 # Install the necessary Python packages from requirements.txt
 RUN mkdir -p /app/monitoring

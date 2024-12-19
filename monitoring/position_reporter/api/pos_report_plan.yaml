@@ -1,0 +1,195 @@
+openapi: 3.0.2
+info:
+  title: Position Report Plan Interface
+  version: 0.4.4
+  description: >-
+    This interface is between uss_qualifier and position_reporter.
+
+    Uss_qualifier posts position report plan to position reporter. Position reporter then send the position reports
+    to the specified url of a participant USS.
+
+components:
+  securitySchemes:
+    Authority:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://auth.example.com/oauth/token
+          scopes:
+            test.flight_data.direct_automated_test: |-
+              Test framework may determine the test-readiness of the Position Reporter.
+            test.flight_data.position_report_plan: |-
+              Test framework send the position report plan to the Position Reporter.
+      description: |-
+        Authorization from, or on behalf of, an authorization authority, augmenting standard strategic conflict detection or other similar authorization for the purpose of automated testing.
+
+        This authority will issue access tokens that are JSON Web Tokens as defined in RFC 7519, using the `RS256` algorithm for the signature, and publish to all providers the public key for verifying that signature.
+
+        The following fields must be included in the JWT claim for access tokens issued by this authority:
+
+        * `exp`, with a time no further than 1 hour in the future.
+
+        * `sub`, with unique ID of the client requesting the access token.
+
+        * `scope`, with a string composed of a space-separated list of strings indicating the scopes granted, per RFC 6749.
+
+        * `aud`, with the fully qualified domain name of the URL the access token will be used to access.  For example, if a USS were querying the endpoint at https://uss.example.com:8888/flight_planning/v1/flight_plans/db41f454-b255-470e-98d6-4c5096a295a1, the access token included in the request should specify `"aud": "uss.example.com"`.
+
+        Clients must provide these access tokens in an `Authorization` header in the form `Bearer <token>` in accordance with RFC 6750.
+
+  schemas:
+    FlightPlanID:
+      description: >-
+        String identifying a user flight plan.  Format matches a version-4 UUID according to RFC 4122.
+      maxLength: 36
+      minLength: 36
+      type: string
+      format: uuid
+      pattern: >-
+        ^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-4[0-9a-fA-F]{3}\-[8-b][0-9a-fA-F]{3}\-[0-9a-fA-F]{12}$
+      example: 03e5572a-f733-49af-bc14-8a18bd53ee39
+
+    StatusResponse:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          description: >-
+            The status of this automated testing interface.
+
+            - `Starting`: the interface is starting and the automated test driver should wait before sending requests.
+
+            - `Ready`: the interface is ready to receive test requests.
+          type: string
+          enum: [Starting, Ready]
+          example: Ready
+        api_name:
+          description: |-
+            Indication of the API implemented at this URL.  Must be "Position Report Plan Interface".
+          type: string
+          example: Position Report Plan Interface
+        api_version:
+          description: |-
+            Indication of the API version implemented at this URL.  Must be "v0.4.4" when implementing this version of the API.
+          type: string
+          example: v0.4.4
+
+    PositionReportPlan:
+      description: >-
+        Position report plan .
+      required:
+        - id
+        - pos_url
+        - positions
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: float
+          maximum: 90
+          exclusiveMaximum: false
+          minimum: -90
+          exclusiveMinimum: false
+        longitude:
+          type: number
+          format: float
+          minimum: -180
+          exclusiveMaximum: false
+          maximum: 180
+          exclusiveMinimum: false
+        altitude:
+          type: number
+          format: float
+          minimum: -8000
+          exclusiveMinimum: false
+          maximum: 100000
+          exclusiveMaximum: false
+        offset_ms:
+          description: >-
+            Time offset, in milliseconds, from the previous position
+          type: integer
+        speed:
+          type: number
+          format: float
+        track:
+          type: number
+          format: float
+
+    PostPositionReportPlanRequest:
+      description: >-
+        Post the flight position plan to the client
+      type: object
+      required:
+        - id
+        - pos_url
+        - positions
+      properties:
+        id:
+          description: participant id of the USS to which the position reports are to be sent.
+          type: string
+        pos_url:
+          description: >-
+            The url to which position reports have to be sent
+          type: string
+        positions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PositionReportPlan'
+
+paths:
+  /status:
+    get:
+      security:
+        - Authority:
+            - interuss.flight_planning.direct_automated_test
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+          description: >-
+            This automated testing interface is available and its status was retrieved successfully.
+        '401':
+          description: Bearer access token was not provided in Authorization header, token could not be decoded, or token was invalid.
+        '403':
+          description: The access token was decoded successfully but did not include a scope appropriate to this endpoint.
+        '404':
+          description: This automated testing interface is not available.
+      summary: Status of this automated testing interface
+      description: Get the status of this automated testing interface.
+      operationId: GetStatus
+
+  /position_report_plan/{flight_plan_id}:
+    parameters:
+      - name: flight_plan_id
+        in: path
+        required: true
+        description: A UUID-formatted string identifying the user's flight plan intent.
+        schema:
+          $ref: '#/components/schemas/FlightPlanID'
+    post:
+      security:
+        - Authority:
+            - interuss.flight_data.position_report_plan
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostPositionReportPlanRequest'
+        required: true
+      responses:
+        '200':
+          description: Requested data was processed successfully
+        '401':
+          description: Bearer access token was not provided in Authorization header, token could not be decoded, or token was invalid.
+        '403':
+          description: The access token was decoded successfully but did not include a scope appropriate to this endpoint.
+        '409':
+          description: The request contains a duplicate request_id and the response for that request is not available, or another conflict condition occurred.
+
+      summary: Post flight's position reports plan
+      operationId: PostPositionReportPlan
+      description: >-
+        This endpoint simulates position reports being submitted for flight.

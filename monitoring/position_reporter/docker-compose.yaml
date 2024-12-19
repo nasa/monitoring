@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+
+  position_reporter:
+    container_name: position_reporter_trial1
+    hostname: scdsc.position_reporter_trial1
+    image: interuss/monitoring
+    command: position_reporter/start.sh
+    environment:
+      - POS_REP_AUTH_SPEC=DummyOAuth(http://oauth.authority.localutm:8085/token,uss1)
+      - MOCK_USS_BASE_URL=http://scdsc.position_reporter_trial1
+      # TODO: remove interaction_logging once dedicated mock_uss is involved in tests
+      - POS_REP_PORT=80
+      - MOCK_USS_PROXY_VALUES=x_for=1,x_proto=1,x_host=1,x_prefix=1,x_port=1
+    expose:
+      - 80
+    ports:
+      - 8074:80
+    user: "${UID_GID}"
+    restart: always
+    networks:
+      - interop_ecosystem_network
+    extra_hosts:
+      - host.docker.internal:host-gateway
+
+
+networks:
+  interop_ecosystem_network:
+    external: true

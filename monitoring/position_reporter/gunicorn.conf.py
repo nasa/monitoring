@@ -1,0 +1,70 @@
+import os
+
+from gunicorn.arbiter import Arbiter
+from gunicorn.http import Request
+from gunicorn.http.wsgi import Response
+from gunicorn.workers.base import Worker
+import logging
+
+from monitoring.position_reporter import webapp
+
+
+def on_starting(server: Arbiter):
+    """gunicorn server hook called just before master process is initialized."""
+    logging.debug("on_starting")
+    webapp.setup()
+
+
+def when_ready(server: Arbiter):
+    """gunicorn server hook called just after the server is started."""
+    logging.debug("when_ready")
+    webapp.start_periodic_tasks_daemon()
+
+
+def _skip_logging(req: Request) -> bool:
+    # Status endpoint is polled constantly for liveness; to avoid filling logs, we don't log it
+    if req.path == "/status" and req.method == "GET":
+        return True
+    return False
+
+
+def pre_request(worker: Worker, req: Request):
+    """gunicorn server hook called just before a worker processes the request."""
+    if not _skip_logging(req):
+        logging.debug(
+            "gunicorn pre_request from worker {} (OS PID {}): {} {}".format(
+                worker.pid,
+                os.getpid(),
+                req.method,
+                req.path,
+            )
+        )
+
+
+def post_request(worker: Worker, req: Request, environ: dict, resp: Response):
+    """gunicorn server hook called after a worker processes the request."""
+    if not _skip_logging(req):
+        logging.debug(
+            "gunicorn post_request from worker {} (OS PID {}): {} {} -> {}".format(
+                worker.pid,
+                os.getpid(),
+                req.method,
+                req.path,
+                resp.status_code,
+            )
+        )
+
+
+def worker_abort(worker: Worker):
+    """gunicorn server hook called when a worker received the SIGABRT signal."""
+    logging.debug(
+        "gunicorn worker_abort from worker {} (OS PID {})".format(worker.pid, os.getpid())
+    )
+
+
+def on_exit(server: Arbiter):
+    """gunicorn server hook called just before exiting Gunicorn."""
+    logging.debug(
+        f"on_exit from process {os.getpid()} with arbiter process {server.pid}"
+    )
+    webapp.shutdown(None, None)

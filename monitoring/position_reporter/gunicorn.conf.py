@@ -58,7 +58,9 @@ def post_request(worker: Worker, req: Request, environ: dict, resp: Response):
 def worker_abort(worker: Worker):
     """gunicorn server hook called when a worker received the SIGABRT signal."""
     logging.debug(
-        "gunicorn worker_abort from worker {} (OS PID {})".format(worker.pid, os.getpid())
+        "gunicorn worker_abort from worker {} (OS PID {})".format(
+            worker.pid, os.getpid()
+        )
     )
 
 

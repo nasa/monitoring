@@ -5,7 +5,6 @@ from typing import Optional
 
 
 class PositionReporter(flask.Flask):
-
     def __init__(self, *args, **kwargs):
         self._pid = os.getpid()
         super(PositionReporter, self).__init__(*args, **kwargs)
@@ -24,4 +23,3 @@ class PositionReporter(flask.Flask):
         logging.debug(
             f"Process {os.getpid()} stopped with signal {signal_number} while MockUSS server was not stopping"
         )
-

@@ -53,11 +53,7 @@ def require_config_value(config_key: str) -> None:
 fmt = "%(asctime)s, %(filename)s:%(lineno)-4s | %(message)s"
 datefmt = "%Y-%m-%d:%H:%M:%S"
 # Configure the root logger
-logging.basicConfig(
-    format=fmt,
-    datefmt=datefmt,
-    level=logging.INFO
-)
+logging.basicConfig(format=fmt, datefmt=datefmt, level=logging.INFO)
 
 AUTH_SPEC = "POS_REP_AUTH_SPEC"
 import_environment_variable(AUTH_SPEC)

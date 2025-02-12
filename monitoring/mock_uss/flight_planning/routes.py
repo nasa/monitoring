@@ -141,3 +141,6 @@ def flight_planning_v1_clear_area() -> Tuple[str, int]:
     )
 
     return flask.jsonify(resp), 200
+
+
+from . import cmsa_routes

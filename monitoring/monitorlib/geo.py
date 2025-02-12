@@ -102,6 +102,22 @@ class LatLngPoint(ImplicitDict):
         return LatLngPoint(lat=self.lat + dlat, lng=self.lng + dlng)
 
 
+def offset_pt(p0: LatLngPoint, p: LatLngPoint, translation: RelativeTranslation) -> LatLngPoint:
+    s2_p0 = p0.as_s2sphere()
+    xy = flatten(s2_p0, p.as_s2sphere())
+    if "meters_east" in translation and translation.meters_east:
+        xy = (xy[0] + translation.meters_east, xy[1])
+    if "meters_north" in translation and translation.meters_north:
+        xy = (xy[0], xy[1] + translation.meters_north)
+    p1 = LatLngPoint.from_s2(unflatten(s2_p0, xy))
+    if "degrees_east" in translation and translation.degrees_east:
+        p1.lng += translation.degrees_east
+    if "degrees_north" in translation and translation.degrees_north:
+        p1.lat += translation.degrees_north
+
+    return p1
+
+
 class Radius(ImplicitDict):
     value: float
     units: DistanceUnits
@@ -315,29 +331,16 @@ class Volume3D(ImplicitDict):
         )
 
     def translate_relative(self, translation: RelativeTranslation) -> Volume3D:
-        def offset(p0: LatLngPoint, p: LatLngPoint) -> LatLngPoint:
-            s2_p0 = p0.as_s2sphere()
-            xy = flatten(s2_p0, p.as_s2sphere())
-            if "meters_east" in translation and translation.meters_east:
-                xy = (xy[0] + translation.meters_east, xy[1])
-            if "meters_north" in translation and translation.meters_north:
-                xy = (xy[0], xy[1] + translation.meters_north)
-            p1 = LatLngPoint.from_s2(unflatten(s2_p0, xy))
-            if "degrees_east" in translation and translation.degrees_east:
-                p1.lng += translation.degrees_east
-            if "degrees_north" in translation and translation.degrees_north:
-                p1.lat += translation.degrees_north
-            return p1
 
         kwargs = {k: v for k, v in self.items() if v is not None}
         if self.outline_circle is not None:
             kwargs["outline_circle"] = Circle(
-                center=offset(self.outline_circle.center, self.outline_circle.center),
+                center=offset_pt(self.outline_circle.center, self.outline_circle.center, translation),
                 radius=self.outline_circle.radius,
             )
         if self.outline_polygon is not None:
             ref0 = self.outline_polygon.vertex_average()
-            vertices = [offset(ref0, p) for p in self.outline_polygon.vertices]
+            vertices = [offset_pt(ref0, p, translation) for p in self.outline_polygon.vertices]
             kwargs["outline_polygon"] = Polygon(vertices=vertices)
         result = Volume3D(**kwargs)
         if "meters_up" in translation and translation.meters_up:

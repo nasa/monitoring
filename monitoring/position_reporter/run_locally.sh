@@ -2,7 +2,11 @@
 
 set -eo pipefail
 
-# Find and change to repo root directory
+if [[ -z $(command -v docker) ]]; then
+  echo "docker is required but not installed.  Visit https://docs.docker.com/install/ to install."
+  exit 1
+fi
+
 OS=$(uname)
 if [[ "$OS" == "Darwin" ]]; then
 	# OSX uses BSD readlink
@@ -10,31 +14,37 @@ if [[ "$OS" == "Darwin" ]]; then
 else
 	BASEDIR=$(readlink -e "$(dirname "$0")")
 fi
-cd "${BASEDIR}/../.." || exit 1
 
-(
-cd monitoring || exit 1
-make image
-)
+cd "${BASEDIR}" || exit 1
 
-AUTH_SPEC="DummyOAuth(http://host.docker.internal:8085/token,uss1)"
-container_name="position_reporter"
+echo "run_locally.sh ${BASEDIR}"
 
-PORT=8074
-#BASE_URL="http://${MOCK_USS_TOKEN_AUDIENCE:-host.docker.internal}:${PORT}"
+DC_COMMAND=$*
 
-if [ "$CI" == "true" ]; then
-  docker_args="--add-host host.docker.internal:host-gateway" # Required to reach other containers in Ubuntu (used for Github Actions)
-else
-  docker_args="-it"
+if [[ ! "$DC_COMMAND" ]]; then
+  DC_COMMAND="up"
+  DC_OPTIONS="--build"
+elif [[ "$DC_COMMAND" == "down" ]]; then
+  DC_OPTIONS="--volumes --remove-orphans"
+elif [[ "$DC_COMMAND" == "debug" ]]; then
+  DC_COMMAND=up
+  export DEBUG_ON=1
 fi
 
-docker container rm -f ${container_name} || echo "No pre-existing ${container_name} container to remove"
 
-# shellcheck disable=SC2086
-docker run ${docker_args} --name ${container_name} \
-  -e POS_REP_AUTH_SPEC="${AUTH_SPEC}" \
-  -p ${PORT}:5000 \
-  "$@" \
-  interuss/monitoring \
-  position_reporter/start.sh
+UID_GID="$(id -u):$(id -g)"
+export UID_GID
+echo "DC_COMMAND is ${DC_COMMAND}"
+
+declare log_folder="output/position_report_logs"
+
+mkdir -p log_folder
+
+chmod -R 766 output/position_report_logs
+
+if [[ "$DC_COMMAND" == up* ]]; then
+      find "$log_folder" -name "*.yaml" -exec rm {} \;
+      find "$log_folder" -name "*.json" -exec rm {} \;
+fi
+
+docker compose -f docker-compose.yaml -p position_reporter "$DC_COMMAND" "$DC_OPTIONS"

@@ -199,7 +199,9 @@ def activate_flight(
     """Activate a flight intent that should result in success.
 
     This function implements the test step fragment described in
-    activate_flight_intent.md.
+    activate_flight_intent.md.9
+    This is in case of operator-detected conformance monitoring where
+    flight is activated on notification of commencement of flight
 
     Returns:
       * The injection response.
@@ -208,6 +210,28 @@ def activate_flight(
     return submit_flight(
         scenario=scenario,
         success_check="Successful activation",
+        expected_results={(PlanningActivityResult.Completed, FlightPlanStatus.OkToFly)},
+        failed_checks={PlanningActivityResult.Failed: "Failure"},
+        flight_planner=flight_planner,
+        flight_info=flight_info,
+        flight_id=flight_id,
+        additional_fields=additional_fields,
+    )
+
+
+def commence_monitoring(
+    scenario: TestScenarioType,
+    flight_planner: FlightPlannerClient,
+    flight_info: FlightInfo,
+    flight_id: Optional[str] = None,
+    additional_fields: Optional[dict] = None,
+) -> Tuple[PlanningActivityResponse, Optional[str]]:
+    """ Notify commencement of flight for starting to monitor the conformance of flight
+        OkToFly result means
+    """
+    return submit_flight(
+        scenario=scenario,
+        success_check="Successful starting of conformance monitoring",
         expected_results={(PlanningActivityResult.Completed, FlightPlanStatus.OkToFly)},
         failed_checks={PlanningActivityResult.Failed: "Failure"},
         flight_planner=flight_planner,
@@ -395,6 +419,9 @@ def delete_flight(
     raise RuntimeError(
         "Error with deletion of flight intent, but a High Severity issue didn't interrupt execution"
     )
+
+
+end_flight = delete_flight
 
 
 def cleanup_flights(

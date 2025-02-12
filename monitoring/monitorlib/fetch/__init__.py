@@ -380,6 +380,9 @@ class QueryType(str, Enum):
         "interuss.deprecated_scd_injection.v1.deleteFlight"
     )
     InterUSSSCDInjectionV1ClearArea = "interuss.deprecated_scd_injection.v1.clearArea"
+    InterUSSPositionReporterPlan = "interuss.position_reporter.plan"
+    InterUSSPositionReporterLogs = "interuss.position_reporter.logs"
+    InterUSSPositionReportSubmit = "interuss.automated_testing.position_reporting.postPositionReport"
 
     def __str__(self):
         return self.value

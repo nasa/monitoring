@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 
 # This script is intended to be called from within a Docker container running
-# mock_uss via the interuss/monitoring image.  In that context, this script is
-# the entrypoint into the mock_uss server.
+# position_reporter via the interuss/monitoring image.
 
-# Ensure mock_uss is the working directory
+# Ensure position_reporter is the working directory
 OS=$(uname)
 if [[ $OS == "Darwin" ]]; then
 	# OSX uses BSD readlink
@@ -13,12 +12,17 @@ else
 	BASEDIR=$(readlink -e "$(dirname "$0")")
 fi
 cd "${BASEDIR}" || exit 1
+echo "start.sh ${BASEDIR}"
 
-# Use mock_uss's health check
+chmod -R 766 ./output/position_report_logs
+
+ls -l output/
+
+# health check
 cp health_check.sh /app
 
-# Start mock_uss server
-port=${POS_PEP_PORT:-5000}
+# Start
+port=${POS_REP_PORT:-5000}
 export PYTHONUNBUFFERED=TRUE
 gunicorn \
     --preload \

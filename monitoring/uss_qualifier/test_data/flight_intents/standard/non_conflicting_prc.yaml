@@ -30,7 +30,9 @@ intents:
 
       astm_f3548_21:
         priority: 0
-        operator_detected_nonconformance: true
+        position_report_details:
+            position_frequency: 1.0
+            max_missing_position_data_period: 30
 
       uspace_flight_authorisation:
         $ref: ./flight_auths.yaml#/standard
@@ -82,12 +84,13 @@ intents:
                     time_during_test: TimeOfEvaluation
 
 
-  flight_1_activated:
+  flight_1_commenced:
     delta:
       source: flight_1_planned
       mutation:
         basic_information:
           usage_state: InUse
+          uas_state: Nominal
 
 
   flight_2_planned:
@@ -101,11 +104,3 @@ intents:
                   starting_from:
                     time_during_test: TimeOfEvaluation
 
-  flight_2_planned_modified:
-    delta:
-      source: flight_2_planned
-      mutation:
-        basic_information:
-          area:
-            - altitude_upper:
-                value: 65

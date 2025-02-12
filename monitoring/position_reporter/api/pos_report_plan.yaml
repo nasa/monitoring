@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Position Report Plan Interface
-  version: 0.4.4
+  version: 0.1.0
   description: >-
     This interface is between uss_qualifier and position_reporter.
 
@@ -79,9 +79,12 @@ components:
       description: >-
         Position report plan .
       required:
-        - id
-        - pos_url
-        - positions
+        - latitude
+        - longitude
+        - altitude
+        - offset_ms
+        - speed
+        - track
       type: object
       properties:
         latitude:
@@ -107,7 +110,7 @@ components:
           exclusiveMaximum: false
         offset_ms:
           description: >-
-            Time offset, in milliseconds, from the previous position
+            Time offset, in milliseconds, from the previous position. For the first position, its the offset from the base_time.
           type: integer
         speed:
           type: number
@@ -115,8 +118,35 @@ components:
         track:
           type: number
           format: float
+        transition:
+          description: >-
+            Marks the first position, in a series of position reports, that causes a flight to transition
+            to conforming or nonconforming
+          type: string
+          enum:
+            - Conforming
+            - NonConforming
 
-    PostPositionReportPlanRequest:
+
+
+    Time:
+      required:
+        - value
+        - format
+      type: object
+      properties:
+        value:
+          type: string
+          description: >-
+            RFC3339-formatted time/date string.  The time zone must be 'Z'.
+          format: date-time
+          example: '1985-04-12T23:20:50.52Z'
+        format:
+          type: string
+          enum:
+            - RFC3339
+
+    PostPositionReportsPlanRequest:
       description: >-
         Post the flight position plan to the client
       type: object
@@ -136,13 +166,28 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PositionReportPlan'
+        base_time:
+          $ref: '#/components/schemas/Time'
+          description: >-
+            The time that is used for calculating the time of the positions as per the offsets in the plan.
+            If this field is not provided, then mock_uss uses the current time as the base time.
+
+    PostPositionReportsPlanResponse:
+      type: object
+      description:
+        Successful posting response contains the base_time that was used to generate the positions.
+      properties:
+        base_time:
+          description: >-
+            Time used as the base time for the position reports plan.
+          $ref: '#/components/schemas/Time'
 
 paths:
   /status:
     get:
       security:
         - Authority:
-            - interuss.flight_planning.direct_automated_test
+            - position_reporter.status
       responses:
         '200':
           content:
@@ -172,15 +217,19 @@ paths:
     post:
       security:
         - Authority:
-            - interuss.flight_data.position_report_plan
+            - position_reporter.plan
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PostPositionReportPlanRequest'
+              $ref: '#/components/schemas/PostPositionReportsPlanRequest'
         required: true
       responses:
         '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostPositionReportsPlanResponse'
           description: Requested data was processed successfully
         '401':
           description: Bearer access token was not provided in Authorization header, token could not be decoded, or token was invalid.
@@ -190,6 +239,29 @@ paths:
           description: The request contains a duplicate request_id and the response for that request is not available, or another conflict condition occurred.
 
       summary: Post flight's position reports plan
-      operationId: PostPositionReportPlan
+      operationId: PostPositionReportsPlan
       description: >-
         This endpoint simulates position reports being submitted for flight.
+
+  /position_report_logs/{flight_id}:
+    get:
+      security:
+        - Authority:
+            - position_reporter.plan
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: >-
+            This automated testing interface is available and its status was retrieved successfully.
+        '401':
+          description: Bearer access token was not provided in Authorization header, token could not be decoded, or token was invalid.
+        '403':
+          description: The access token was decoded successfully but did not include a scope appropriate to this endpoint.
+        '404':
+          description: This automated testing interface is not available.
+      summary: Position report logs for flight_id
+      description: Get the position report logs for flight_id.
+      operationId: GetPositionReportLogs

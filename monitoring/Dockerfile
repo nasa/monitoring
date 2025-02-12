@@ -32,7 +32,9 @@ RUN if [ "$(uname -m)" = "aarch64" ]; then \
 
 # Install the necessary Python packages from requirements.txt
 RUN mkdir -p /app/monitoring
+RUN mkdir -p /uaslib
 COPY ./requirements.txt /app/monitoring/requirements.txt
+COPY 'uaslib/uas_standards-0.1.dev20+gf556529.d20250205-py3-none-any.whl' /uaslib/
 RUN pip install -r /app/monitoring/requirements.txt && rm -rf __pycache__
 
 # Add core content from repo

@@ -21,6 +21,8 @@ resources:
   problematically_big_area: resources.VerticesResource
   system_identity: resources.versioning.SystemIdentityResource?
   test_exclusions: resources.dev.TestExclusionsResource?
+  position_reporter: resources.position_reporting.PositionReporterResource
+  non_conflicting_flight_data: resources.position_reporting.FlightDataResource
 local_resources:
   system_identity:
     resource_type: resources.versioning.SystemIdentityResource
@@ -177,6 +179,31 @@ actions:
             mock_uss: mock_uss
             dss: dss
             flight_intents: non_conflicting_flights
+        on_failure: Continue
+      flight_planners_source: flight_planners
+      roles:
+        - tested_uss
+  on_failure: Continue
+- action_generator:
+    generator_type: action_generators.flight_planning.FlightPlannerCombinations
+    resources:
+      flight_planners: flight_planners
+      non_conflicting_flights_prc: non_conflicting_flights_prc
+      dss: dss
+      mock_uss: mock_uss
+      position_reporter: position_reporter
+      non_conflicting_flight_data: non_conflicting_flight_data
+    specification:
+      action_to_repeat:
+        test_scenario:
+          scenario_type: scenarios.astm.utm.cmsa.position_report_based_detection.PositionReportBasedSpatialConformanceMonitoring
+          resources:
+            tested_uss: tested_uss
+            mock_uss: mock_uss
+            dss: dss
+            position_reporter: position_reporter
+            flight_intents: non_conflicting_flights_prc
+            flight_data: non_conflicting_flight_data
         on_failure: Continue
       flight_planners_source: flight_planners
       roles:

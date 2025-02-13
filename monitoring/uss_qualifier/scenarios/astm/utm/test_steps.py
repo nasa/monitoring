@@ -196,18 +196,20 @@ class OpIntentValidator(object):
                     "Operational intent not changed",
                     [self._flight_planner.participant_id],
                 ) as check:
-                    if (curr_ref.version == prev_ref.version) and (curr_ref.state == prev_ref.state):
+                    if (curr_ref.version == prev_ref.version) and (
+                        curr_ref.state == prev_ref.state
+                    ):
                         return True
                     else:
-                        return False # ToDo uncomment below and remove the return once Mock USS fixed.
+                        return False  # ToDo uncomment below and remove the return once Mock USS fixed.
                         # check.record_failed(
                         #     summary="Operational intent reference was changed in DSS",
                     #     details=f"USS {self._flight_planner.participant_id} was not supposed to change operational"
-                        #             f" intent in DSS. There was a change from previous version {prev_ref.version} "
-                        #             f"and state {prev_ref.state} to current version {curr_ref.version} and state "
-                        #             f"{curr_ref.state}",
-                        #     query_timestamps=[self._after_query.request.timestamp],
-                        # )
+                    #             f" intent in DSS. There was a change from previous version {prev_ref.version} "
+                    #             f"and state {prev_ref.state} to current version {curr_ref.version} and state "
+                    #             f"{curr_ref.state}",
+                    #     query_timestamps=[self._after_query.request.timestamp],
+                    # )
 
     def expect_not_shared(self) -> None:
         """Validate that an operational intent information was not shared with the DSS.
@@ -408,7 +410,7 @@ class OpIntentValidator(object):
         self,
         flight_intent: FlightInfo,
         oi_ref: OperationalIntentReference,
-        expected_state: Optional[OperationalIntentState]
+        expected_state: Optional[OperationalIntentState],
     ):
         if expected_state is None:
             resolved_expected_state = flight_intent.get_f3548v21_op_intent_state()
@@ -468,7 +470,7 @@ class OpIntentValidator(object):
                     summary="Operational intent details response failed schema validation",
                     severity=Severity.Medium,
                     details="The response received from querying operational intent details failed validation against the required OpenAPI schema:\n"
-                            + "\n".join(
+                    + "\n".join(
                         f"At {e.json_path} in the response: {e.message}" for e in errors
                     ),
                     query_timestamps=[oi_full_query.request.timestamp],

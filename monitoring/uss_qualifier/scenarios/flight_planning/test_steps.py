@@ -226,8 +226,8 @@ def commence_monitoring(
     flight_id: Optional[str] = None,
     additional_fields: Optional[dict] = None,
 ) -> Tuple[PlanningActivityResponse, Optional[str]]:
-    """ Notify commencement of flight for starting to monitor the conformance of flight
-        OkToFly result means
+    """Notify commencement of flight for starting to monitor the conformance of flight
+    OkToFly result means
     """
     return submit_flight(
         scenario=scenario,

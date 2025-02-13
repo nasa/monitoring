@@ -3,10 +3,14 @@ from implicitdict import ImplicitDict
 import json
 
 from monitoring.monitorlib.transformations import Transformation, RelativeTranslation
-from monitoring.uss_qualifier.resources.flight_planning.flight_intent import FlightIntentID
+from monitoring.uss_qualifier.resources.flight_planning.flight_intent import (
+    FlightIntentID,
+)
 from monitoring.uss_qualifier.resources.files import ExternalFile
-from monitoring.monitorlib.clients.position_reporter.position_report_plan_interface import PositionReportPlan, \
-    PositionReportsPlan
+from monitoring.monitorlib.clients.position_reporter.position_report_plan_interface import (
+    PositionReportPlan,
+    PositionReportsPlan,
+)
 
 FlightDataID = str
 """Identifier for a position reports plan within a collection of flight data.
@@ -43,18 +47,29 @@ class FlightDataCollection(ImplicitDict):
 
                         if self.transformations:
                             for transformation in self.transformations:
-                                if "relative_translation" in transformation and transformation.relative_translation:
+                                if (
+                                    "relative_translation" in transformation
+                                    and transformation.relative_translation
+                                ):
                                     processed_position_reports_plan.append(
-                                        transform(processed_flight_data_template, transformation.relative_translation))
+                                        transform(
+                                            processed_flight_data_template,
+                                            transformation.relative_translation,
+                                        )
+                                    )
                         else:
-                            processed_position_reports_plan.append(processed_flight_data_template)
+                            processed_position_reports_plan.append(
+                                processed_flight_data_template
+                            )
                 else:
                     raise ValueError(
                         f"{intent_id} flight intent in FlightDataCollection is invalid; must specify `plan` - a list of Position reports"
                     )
 
                 nb_processed += 1
-                processed_flight_data[intent_id] = PositionReportsPlan(position_reports=processed_position_reports_plan)
+                processed_flight_data[intent_id] = PositionReportsPlan(
+                    position_reports=processed_position_reports_plan
+                )
                 unprocessed_intent_ids.remove(intent_id)
 
             if nb_processed == 0 and unprocessed_intent_ids:
@@ -67,8 +82,7 @@ class FlightDataCollection(ImplicitDict):
 
 
 def transform(
-    position_report_plan_template: PositionReportPlan,
-    translation: RelativeTranslation
+    position_report_plan_template: PositionReportPlan, translation: RelativeTranslation
 ) -> PositionReportPlan:
     if (
         translation.has_field_with_value("degrees_north")
@@ -85,7 +99,7 @@ def transform(
             altitude=alt,
             offset_ms=position_report_plan_template.offset_ms,
             speed=position_report_plan_template.speed,
-            track=position_report_plan_template.track
+            track=position_report_plan_template.track,
         )
         if position_report_plan_template.transition:
             pr_plan.transition = position_report_plan_template.transition

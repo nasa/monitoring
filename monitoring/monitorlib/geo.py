@@ -102,7 +102,9 @@ class LatLngPoint(ImplicitDict):
         return LatLngPoint(lat=self.lat + dlat, lng=self.lng + dlng)
 
 
-def offset_pt(p0: LatLngPoint, p: LatLngPoint, translation: RelativeTranslation) -> LatLngPoint:
+def offset_pt(
+    p0: LatLngPoint, p: LatLngPoint, translation: RelativeTranslation
+) -> LatLngPoint:
     s2_p0 = p0.as_s2sphere()
     xy = flatten(s2_p0, p.as_s2sphere())
     if "meters_east" in translation and translation.meters_east:
@@ -335,12 +337,16 @@ class Volume3D(ImplicitDict):
         kwargs = {k: v for k, v in self.items() if v is not None}
         if self.outline_circle is not None:
             kwargs["outline_circle"] = Circle(
-                center=offset_pt(self.outline_circle.center, self.outline_circle.center, translation),
+                center=offset_pt(
+                    self.outline_circle.center, self.outline_circle.center, translation
+                ),
                 radius=self.outline_circle.radius,
             )
         if self.outline_polygon is not None:
             ref0 = self.outline_polygon.vertex_average()
-            vertices = [offset_pt(ref0, p, translation) for p in self.outline_polygon.vertices]
+            vertices = [
+                offset_pt(ref0, p, translation) for p in self.outline_polygon.vertices
+            ]
             kwargs["outline_polygon"] = Polygon(vertices=vertices)
         result = Volume3D(**kwargs)
         if "meters_up" in translation and translation.meters_up:

@@ -5,7 +5,9 @@ from typing import Optional, List, Tuple
 from implicitdict import ImplicitDict
 
 from uas_standards.interuss.automated_testing.flight_planning.v1.constants import Scope
-from uas_standards.interuss.automated_testing.flight_planning.v1.api import PostFlightPositionRequest
+from uas_standards.interuss.automated_testing.flight_planning.v1.api import (
+    PostFlightPositionRequest,
+)
 from monitoring.mock_uss import webapp
 from monitoring.mock_uss.auth import requires_scope
 from monitoring.monitorlib.idempotency import idempotent_request

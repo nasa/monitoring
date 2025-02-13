@@ -2,7 +2,9 @@ from typing import Dict
 
 from implicitdict import ImplicitDict
 
-from monitoring.monitorlib.clients.position_reporter.position_report_plan_interface import PositionReportsPlan
+from monitoring.monitorlib.clients.position_reporter.position_report_plan_interface import (
+    PositionReportsPlan,
+)
 
 from monitoring.uss_qualifier.resources.files import load_dict
 from monitoring.uss_qualifier.resources.resource import Resource
@@ -20,7 +22,8 @@ class FlightDataResource(Resource[FlightDataSpecification]):
         super(FlightDataResource, self).__init__(specification, resource_origin)
         has_file = "file" in specification and specification.file
         has_literal = (
-            "flight_data_collection" in specification and specification.flight_data_collection
+            "flight_data_collection" in specification
+            and specification.flight_data_collection
         )
         if has_file and has_literal:
             raise ValueError(
@@ -45,7 +48,9 @@ class FlightDataResource(Resource[FlightDataSpecification]):
                     specification.transformations
                 )
             else:
-                self._flight_data_collection.transformations = specification.transformations
+                self._flight_data_collection.transformations = (
+                    specification.transformations
+                )
 
     def get_flight_data(self) -> Dict[FlightIntentID, PositionReportsPlan]:
         return self._flight_data_collection.resolve()

@@ -2,6 +2,7 @@ import asyncio
 import uuid
 
 import aiohttp
+
 # import aiofiles
 import logging
 import datetime
@@ -15,11 +16,23 @@ from monitoring.position_reporter.position_reports.position_report import (
     PositionReportsPlan,
 )
 from uas_standards.interuss.automated_testing.flight_planning.v1.api import (
-    PositionReport, Position, Time, Velocity, PostFlightPositionRequest, Altitude, AltitudeReference, AltitudeUnits
+    PositionReport,
+    Position,
+    Time,
+    Velocity,
+    PostFlightPositionRequest,
+    Altitude,
+    AltitudeReference,
+    AltitudeUnits,
 )
 from uas_standards.interuss.automated_testing.flight_planning.v1.constants import Scope
 from monitoring.monitorlib.infrastructure import AuthAdapter
-from monitoring.monitorlib.fetch import Query, QueryType, RequestDescription, ResponseDescription
+from monitoring.monitorlib.fetch import (
+    Query,
+    QueryType,
+    RequestDescription,
+    ResponseDescription,
+)
 from monitoring.position_reporter import POS_REP_LOG_DIR
 
 
@@ -33,27 +46,33 @@ def get_position_report_from_plan(
             alt=Altitude(
                 value=pr.altitude,
                 reference=AltitudeReference.W84,
-                units=AltitudeUnits.M
-            )
+                units=AltitudeUnits.M,
+            ),
         ),
         time_measured=Time(value=StringBasedDateTime(time_measured)),
-        velocity=Velocity(speed=pr.speed, track=pr.track)
+        velocity=Velocity(speed=pr.speed, track=pr.track),
     )
 
 
 async def post_position(
-    pos_base_url: str, flight_id: str, order: int, pr: PositionReport, client: aiohttp.ClientSession
+    pos_base_url: str,
+    flight_id: str,
+    order: int,
+    pr: PositionReport,
+    client: aiohttp.ClientSession,
 ):
     pr_id = str(uuid.uuid4())
     pr_req = PostFlightPositionRequest(position_report=pr, position_report_id=pr_id)
-    logging.info(f"Posted position to {pos_base_url} : \n{json.dumps(pr_req, indent=4)}")
+    logging.info(
+        f"Posted position to {pos_base_url} : \n{json.dumps(pr_req, indent=4)}"
+    )
     t0 = datetime.datetime.now(datetime.UTC)
     req = RequestDescription(
         method="POST",
         url=pos_base_url,
         headers={k: v for k, v in client.headers.items()},
         json=pr_req,
-        initiated_at=StringBasedDateTime(t0)
+        initiated_at=StringBasedDateTime(t0),
     )
     # async with client.post(url=pos_base_url, data=json.dumps(pr)) as response:
     async with client.post(url=pos_base_url, json=pr_req) as response:
@@ -107,7 +126,9 @@ async def send_positions_periodically(
         position_report = get_position_report_from_plan(pr, next_time)
         logging.info(f"\n Position {i} - {position_report}\n")
         await asyncio.sleep(pr.offset_ms / 1000)
-        task = asyncio.create_task(post_position(pos_url, flight_id, i, position_report, client))
+        task = asyncio.create_task(
+            post_position(pos_url, flight_id, i, position_report, client)
+        )
         tasks.append(task)
 
     results = await asyncio.gather(*tasks)
@@ -122,9 +143,7 @@ async def send_position_reports_async(
 ):
     # pos_url = f"{prs.pos_url}/{flight_id}"
     pos_url = prs.pos_url
-    auth_token = auth_client.get_headers(
-        url=pos_url, scopes=[Scope.PositionReport]
-    )
+    auth_token = auth_client.get_headers(url=pos_url, scopes=[Scope.PositionReport])
     async with aiohttp.ClientSession(headers=auth_token) as client:
         task2 = asyncio.create_task(
             send_positions_periodically(flight_id, pos_url, prs, client, time_start)
@@ -156,7 +175,9 @@ def send_position_reports(
         send_position_reports_async(req_id, flight_id, auth_client, prs, time_start)
     )
 
-    logging.info(f"Completed position reports for {flight_id} to {prs.pos_url} at {datetime.datetime.now(datetime.UTC)}")
+    logging.info(
+        f"Completed position reports for {flight_id} to {prs.pos_url} at {datetime.datetime.now(datetime.UTC)}"
+    )
 
 
 def log_file(flight_id: str, order: int, content: Query) -> None:
@@ -168,4 +189,3 @@ def log_file(flight_id: str, order: int, content: Query) -> None:
         logging.info(f"Writing to file {basename} started at {datetime.datetime.now()}")
         f.write(json.dumps(content))
         logging.info(f"Writing to file {basename} ended at {datetime.datetime.now()}")
-

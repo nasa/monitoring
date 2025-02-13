@@ -11,7 +11,9 @@ from monitoring.monitorlib.clients.flight_planning.flight_info import (
 from monitoring.monitorlib.clients.flight_planning.flight_info_template import (
     FlightInfoTemplate,
 )
-from monitoring.uss_qualifier.resources.position_reporting.position_reporter.client import PositionReporterClient
+from monitoring.uss_qualifier.resources.position_reporting.position_reporter.client import (
+    PositionReporterClient,
+)
 
 from monitoring.uss_qualifier.scenarios.astm.utm.data_exchange_validation.test_steps.wait import (
     MaxTimeToWaitForSubscriptionNotificationSeconds as max_wait_time,
@@ -27,7 +29,9 @@ from monitoring.uss_qualifier.resources.astm.f3548.v21.dss import DSSInstance
 from monitoring.uss_qualifier.resources.flight_planning import (
     FlightIntentsResource,
 )
-from monitoring.uss_qualifier.resources.position_reporting.flight_data_resource import FlightDataResource
+from monitoring.uss_qualifier.resources.position_reporting.flight_data_resource import (
+    FlightDataResource,
+)
 from monitoring.uss_qualifier.resources.flight_planning.flight_intent_validation import (
     ExpectedFlightIntent,
     validate_flight_intent_templates,
@@ -41,7 +45,7 @@ from monitoring.uss_qualifier.resources.interuss.mock_uss.client import (
     MockUSSResource,
 )
 from monitoring.uss_qualifier.resources.position_reporting.position_reporter.client import (
-    PositionReporterResource
+    PositionReporterResource,
 )
 from monitoring.uss_qualifier.scenarios.astm.utm.test_steps import (
     OpIntentValidator,
@@ -59,14 +63,21 @@ from monitoring.uss_qualifier.scenarios.flight_planning.test_steps import (
     cleanup_flights,
     plan_flight,
     delete_flight,
-    commence_monitoring
+    commence_monitoring,
 )
 from monitoring.uss_qualifier.suites.suite import ExecutionContext
-from uas_standards.astm.f3548.v21.api import EntityID, OperationalIntentState, OperationalIntentReference
+from uas_standards.astm.f3548.v21.api import (
+    EntityID,
+    OperationalIntentState,
+    OperationalIntentReference,
+)
 from uas_standards.astm.f3548.v21.constants import Scope
-from monitoring.monitorlib.clients.position_reporter.position_report_plan_interface import PositionReportsPlan
+from monitoring.monitorlib.clients.position_reporter.position_report_plan_interface import (
+    PositionReportsPlan,
+)
 from monitoring.uss_qualifier.scenarios.astm.utm.cmsa.position_report_based_detection.test_steps.test_steps import (
-    post_position_report_plan, check_position_reports_posted_successfully
+    post_position_report_plan,
+    check_position_reports_posted_successfully,
 )
 
 
@@ -90,7 +101,7 @@ class PositionReportBasedSpatialConformanceMonitoring(TestScenario):
         dss: DSSInstanceResource,
         position_reporter: PositionReporterResource,
         flight_intents: Optional[FlightIntentsResource] = None,
-        flight_data: Optional[FlightDataResource] = None
+        flight_data: Optional[FlightDataResource] = None,
     ):
         super().__init__()
         self.tested_uss_client = tested_uss.client
@@ -135,7 +146,7 @@ class PositionReportBasedSpatialConformanceMonitoring(TestScenario):
                 must_not_conflict_with=["Flight 2"],
                 usage_state=AirspaceUsageState.InUse,
                 uas_state=UasState.Nominal,
-            )
+            ),
         ]
 
         templates = flight_intents.get_flight_intents()
@@ -151,8 +162,10 @@ class PositionReportBasedSpatialConformanceMonitoring(TestScenario):
 
         # position_report_plan
         if not flight_data:
-            msg = (f"No FlightDataResource was provided as input to this CMSA test scenario, flight_data is required. "
-                   f"Hence execution of the scenario was stopped without failure")
+            msg = (
+                f"No FlightDataResource was provided as input to this CMSA test scenario, flight_data is required. "
+                f"Hence execution of the scenario was stopped without failure"
+            )
             self.record_note(
                 "FlightDataResource missing for CMSA tests",
                 msg,
@@ -174,7 +187,9 @@ class PositionReportBasedSpatialConformanceMonitoring(TestScenario):
             f"{self.tested_uss_client.participant_id}",
         )
 
-        self.begin_test_case("Successfully monitor conformance with conforming positions")
+        self.begin_test_case(
+            "Successfully monitor conformance with conforming positions"
+        )
         self._monitor_conformance_test_case(times)
         self.end_test_case()
 
@@ -249,7 +264,8 @@ class PositionReportBasedSpatialConformanceMonitoring(TestScenario):
 
         # Commencement of flight of tested_uss
         self.begin_test_step(
-            "Send commencement of flight1 notification to start conformance monitoring by tested_uss")
+            "Send commencement of flight1 notification to start conformance monitoring by tested_uss"
+        )
         # BasicFlightPlanInformationUsageState=InUse
         # BasicFlightPlanInformationUasState=Nominal with no area means commencement of flight notification
         flight_1_commenced = self.flight_1_commenced.resolve(times)
@@ -289,28 +305,32 @@ class PositionReportBasedSpatialConformanceMonitoring(TestScenario):
                 self.position_reporter_client,
                 flight1_data,
                 self.flight_1_id,
-                "{0.scheme}://{0.netloc}/".format(urlsplit(self.tested_uss_client.get_base_url())),
+                "{0.scheme}://{0.netloc}/".format(
+                    urlsplit(self.tested_uss_client.get_base_url())
+                ),
                 self.tested_uss_client.participant_id,
             )
 
             wait_time = t1.datetime + datetime.timedelta(
-                milliseconds=(flight1_data.position_reports[0].offset_ms + 2000))
+                milliseconds=(flight1_data.position_reports[0].offset_ms + 2000)
+            )
             logger.info(f"Returned t1 {t1.datetime} and wait time {wait_time}")
             wait_until(wait_time)
 
             check_position_reports_posted_successfully(
-                self,
-                self.position_reporter_client,
-                self.flight_1_id,
-                0
+                self, self.position_reporter_client, self.flight_1_id, 0
             )
 
             last_flight_info = flight_1_commenced
             # self.begin_test_step("Tested_uss shares flight1 intent transitioned to Activated state")
             flight_1_oi_ref_latest = validator.expect_shared(
-                last_flight_info,
-                expected_state=OperationalIntentState.Activated)
-            self._check_intent_activated(flight_1_oi_ref, flight_1_oi_ref_latest, self.tested_uss_client.participant_id)
+                last_flight_info, expected_state=OperationalIntentState.Activated
+            )
+            self._check_intent_activated(
+                flight_1_oi_ref,
+                flight_1_oi_ref_latest,
+                self.tested_uss_client.participant_id,
+            )
         self.end_test_step()
 
         time.sleep(self._time_for_all_reports(flight1_data, 1))
@@ -330,15 +350,17 @@ class PositionReportBasedSpatialConformanceMonitoring(TestScenario):
         delta = 0
         for r in reports.position_reports[order:]:
             delta += r.offset_ms
-        logger.info(f"Total time for all position reports to be posted {delta} milliseconds")
+        logger.info(
+            f"Total time for all position reports to be posted {delta} milliseconds"
+        )
 
-        return math.ceil(delta/1000)
+        return math.ceil(delta / 1000)
 
     def _check_intent_activated(
         self,
         oi_ref_before_transition: OperationalIntentReference,
         oi_ref_after_transition: OperationalIntentReference,
-        participant_id: str
+        participant_id: str,
     ):
         with self.check(
             "Intent transitioned to Activated state", participant_id
@@ -346,13 +368,13 @@ class PositionReportBasedSpatialConformanceMonitoring(TestScenario):
             if oi_ref_after_transition.state != OperationalIntentState.Activated:
                 check.record_failed(
                     summary="The intent should have been in Activated state",
-                    details=f"The intent should have been in Activated state, but is in {oi_ref_after_transition.state}"
+                    details=f"The intent should have been in Activated state, but is in {oi_ref_after_transition.state}",
                 )
             else:
                 if oi_ref_before_transition == OperationalIntentState.Activated:
                     check.record_failed(
                         summary="There should have been transition of intent to Activated state",
-                        details="The previous state of intent was Activated as well, so no transition took place."
+                        details="The previous state of intent was Activated as well, so no transition took place.",
                     )
 
     def cleanup(self):
@@ -363,7 +385,7 @@ class PositionReportBasedSpatialConformanceMonitoring(TestScenario):
 
 def wait_until(t1: datetime):
     """
-        t1: time till which to wait
+    t1: time till which to wait
     """
     diff = t1 - datetime.datetime.now(datetime.UTC)
     logger.info(f"diff second to sleep- {diff.total_seconds()}")

@@ -16,7 +16,7 @@ from monitoring.monitorlib.clients.position_reporter.position_report_plan_interf
     PostPositionReportsPlanRequest,
     PostPositionReportsPlanResponse,
     PositionReportLogsResponse,
-    Time
+    Time,
 )
 from monitoring.position_reporter.position_reports.sender import send_position_reports
 from monitoring.position_reporter import webapp, POS_REP_LOG_DIR
@@ -45,8 +45,7 @@ def send_pos(flight_plan_id: str) -> Tuple[(Response | str), int]:
         req_id = uuid.uuid4()
 
     positions_plan: PostPositionReportsPlanRequest = ImplicitDict.parse(
-        json.loads(json.dumps(req_plan)),
-        PostPositionReportsPlanRequest
+        json.loads(json.dumps(req_plan)), PostPositionReportsPlanRequest
     )
     # if positions_plan.base_time:
     #     return f"base_time field feature not implemented", 501
@@ -72,7 +71,14 @@ def send_pos(flight_plan_id: str) -> Tuple[(Response | str), int]:
         f"End of req  id {req_id} main thread - {threading.current_thread().name}\n"
     )
 
-    return jsonify(PostPositionReportsPlanResponse(base_time=Time(value=StringBasedDateTime(time_start)))), 200
+    return (
+        jsonify(
+            PostPositionReportsPlanResponse(
+                base_time=Time(value=StringBasedDateTime(time_start))
+            )
+        ),
+        200,
+    )
 
 
 @webapp.route("/position_report_logs/<flight_id>", methods=["GET"])

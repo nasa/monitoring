@@ -128,7 +128,7 @@ OPERATIONS: Dict[OperationID, Operation] = {
             401: None,
             403: None,
             404: None,
-        }
+        },
     ),
     OperationID.PostPositionReportsPlan: Operation(
         id="PostPositionReportsPlan",
@@ -140,7 +140,7 @@ OPERATIONS: Dict[OperationID, Operation] = {
             401: None,
             403: None,
             409: None,
-        }
+        },
     ),
     OperationID.GetPositionReportLogs: Operation(
         id="GetPositionReportLogs",
@@ -152,6 +152,6 @@ OPERATIONS: Dict[OperationID, Operation] = {
             401: None,
             403: None,
             404: None,
-        }
+        },
     ),
 }

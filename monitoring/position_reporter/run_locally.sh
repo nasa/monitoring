@@ -38,9 +38,9 @@ echo "DC_COMMAND is ${DC_COMMAND}"
 
 declare log_folder="output/position_report_logs"
 
-mkdir -p log_folder
+mkdir -p "$log_folder"
 
-chmod -R 766 output/position_report_logs
+chmod -R 766 "$log_folder"
 
 if [[ "$DC_COMMAND" == up* ]]; then
       find "$log_folder" -name "*.yaml" -exec rm {} \;

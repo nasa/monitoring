@@ -47,4 +47,4 @@ if [[ "$DC_COMMAND" == up* ]]; then
       find "$log_folder" -name "*.json" -exec rm {} \;
 fi
 
-docker compose -f docker-compose.yaml -p position_reporter $DC_COMMAND $DC_OPTIONS
+docker compose -f docker-compose.yaml -p position_reporter "$DC_COMMAND" "$DC_OPTIONS"

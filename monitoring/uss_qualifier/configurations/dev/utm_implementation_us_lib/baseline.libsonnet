@@ -23,6 +23,7 @@ function(env) {
             conflicting_flights: 'conflicting_flights',
             invalid_flight_intents: 'invalid_flight_intents',
             non_conflicting_flights: 'non_conflicting_flights',
+            non_conflicting_flights_prc: 'non_conflicting_flights_prc',
             dss: 'dss',
             dss_instances: 'dss_instances',
             mock_uss: 'mock_uss',
@@ -32,6 +33,8 @@ function(env) {
             system_identity: 'system_identity',
             // dss_crdb_cluster: dss_crdb_cluster  # TODO: Provide once local DSS uses a multi-node cluster
             test_exclusions: 'test_exclusions',
+            position_reporter: 'position_reporter',
+            non_conflicting_flight_data: 'non_conflicting_flight_data',
           },
         },
       },
@@ -51,6 +54,8 @@ function(env) {
         'v1.test_run.resources.resource_declarations.dss_crdb_cluster',
         'v1.artifacts.tested_requirements[0].aggregate_participants',
         'v1.artifacts.tested_requirements[0].participant_requirements',
+        'v1.test_run.resources.resource_declarations.position_reporter',
+        'v1.test_run.resources.resource_declarations.flight_data',
       ],
 
       // This block defines all the resources available in the resource pool.
@@ -225,7 +230,42 @@ function(env) {
               ],
             },
           },
-
+          non_conflicting_flights_prc: {
+            resource_type: 'resources.flight_planning.FlightIntentsResource',
+            specification: {
+              intent_collection: {
+              # Note that $refs are relative to the file with the $ref (this one, in this case)
+                '$ref': 'file://../../test_data/flight_intents/standard/non_conflicting_prc.yaml'
+              },
+              transformations: [
+                {
+                  relative_translation: {
+                    degrees_north: 32.7181,
+                    degrees_east: -96.7587,
+                    meters_up: 93,
+                  },
+                },
+              ],
+            },
+          },
+          // Flight data for non-conflicting flights for cmsa test scenarios
+          non_conflicting_flight_data: {
+            resource_type: 'resources.position_reporting.FlightDataResource',
+            specification: {
+              flight_data_collection: {
+                '$ref': 'file://../../test_data/flight_data/non_conflicting.yaml'
+              },
+              transformations: [
+                {
+                  relative_translation: {
+                    degrees_north: 32.7181,
+                    degrees_east: -96.7587,
+                    meters_up: 93,
+                  },
+                },
+              ],
+            },
+          },
           // Name of the system under test for which the system version should be obtained from participants who provide version information
           system_identity: {
             resource_type: 'resources.versioning.SystemIdentityResource',

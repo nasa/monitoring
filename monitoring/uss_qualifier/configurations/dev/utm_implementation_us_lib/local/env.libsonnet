@@ -119,6 +119,16 @@ function(participants) {
         mock_uss_base_url: 'http://scdsc.log.uss6.localutm',
       },
     },
+    position_reporter: {
+      resource_type: 'resources.position_reporting.PositionReporterResource',
+      dependencies: {
+        auth_adapter: 'utm_auth',
+      },
+      specification: {
+        participant_id: 'position_reporter',
+        pos_base_url: 'http://cmsa.position_reporter.localutm',
+      },
+    },
   },
 
   aggregate_participants: {

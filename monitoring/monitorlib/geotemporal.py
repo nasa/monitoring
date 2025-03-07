@@ -15,7 +15,9 @@ from uas_standards.interuss.automated_testing.geospatial_map.v1 import (
     api as geospatial_map_api,
 )
 from uas_standards.interuss.automated_testing.scd.v1 import api as interuss_scd_api
-
+from uas_standards.interuss.automated_testing.flight_planning.v1.api import (
+    PositionReport,
+)
 from monitoring.monitorlib import geo
 from monitoring.monitorlib.geo import LatLngPoint, Circle, Altitude, Volume3D, Polygon
 from monitoring.monitorlib.temporal import TestTime, Time, TimeDuringTest
@@ -128,6 +130,14 @@ class Volume4D(ImplicitDict):
         if vol4_1.time_start.datetime > vol4_2.time_end.datetime:
             return False
         return self.volume.intersects_vol3(vol4_2.volume)
+
+    def contains(self, pt: Point4D):
+        vol4_1 = self
+        if pt.time_measured.datetime < vol4_1.time_start.datetime:
+            return False
+        if pt.time_measured.datetime > vol4_1.time_end.datetime:
+            return False
+        return self.volume.contains(alt=pt.alt, lat=pt.lat, lng=pt.lng)
 
     @property
     def rect_bounds(self) -> s2sphere.LatLngRect:
@@ -400,6 +410,12 @@ class Volume4DCollection(List[Volume4D]):
                     return True
         return False
 
+    def contains_pt(self, pt: Point4D):
+        for v1 in self:
+            if v1.contains(pt):
+                return True
+        return False
+
     @staticmethod
     def from_f3548v21(vol4s: List[f3548v21.Volume4D]) -> Volume4DCollection:
         volumes = [Volume4D.from_f3548v21(v) for v in vol4s]
@@ -426,6 +442,24 @@ class Volume4DCollection(List[Volume4D]):
 
 class Volume4DTemplateCollection(List[Volume4DTemplate]):
     pass
+
+
+class Point4D(ImplicitDict):
+    lat: float
+    lng: float
+    alt: float
+    time_measured: Time
+
+    @staticmethod
+    def from_interuss_position_report(position_report: PositionReport) -> Point4D:
+        kwargs = {
+            "lat": position_report.position.lat,
+            "lng": position_report.position.lng,
+            "alt": position_report.position.alt.value,
+            "time_measured": position_report.time_measured.value,
+        }
+
+        return Point4D(**kwargs)
 
 
 def end_time_of(

@@ -211,6 +211,34 @@ class OpIntentValidator(object):
                     #     query_timestamps=[self._after_query.request.timestamp],
                     # )
 
+    def expect_no_state_change(self) -> bool:
+        """Validate that no changes were made to existing operational intent in the DSS.
+
+        It implements the test step described in validate_not_changed_operational_intent.md.
+        """
+        self._begin_step_fragment()
+
+        if self._orig_oi_ref:
+            if self._new_oi_ref is None:
+                curr_ref = self._find_after_oi(self._orig_oi_ref.id)
+                prev_ref = self._find_before_oi(self._orig_oi_ref.id)
+
+                with self._scenario.check(
+                    "Operational intent state not changed",
+                    [self._flight_planner.participant_id],
+                ) as check:
+                    if curr_ref.state == prev_ref.state:
+                        return True
+                    else:
+                        check.record_failed(
+                            summary="Operational intent reference state was changed in DSS",
+                            details=f"USS {self._flight_planner.participant_id} was not supposed to change operational"
+                            f" intent state in DSS. There was a change from previous "
+                            f"state {prev_ref.state} to current state {curr_ref.state}",
+                            query_timestamps=[self._after_query.request.timestamp],
+                        )
+                        return False
+
     def expect_not_shared(self) -> None:
         """Validate that an operational intent information was not shared with the DSS.
 

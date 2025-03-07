@@ -65,7 +65,7 @@ tested_uss notifies mock_uss of flight 1, due to mock_uss's subscription coverin
 
 #### [Commence flight1](./test_steps/commencement_of_flight.md)
 
-#### [Validate operational intent not changed](../../validate_not_changed_operational_intent.md)
+#### [Validate operational intent state not changed](../../validate_state_not_changed_operational_intent.md)
 
 ### Post Position report plan for flight1 to activate test step
 

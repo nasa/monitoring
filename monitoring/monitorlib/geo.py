@@ -317,6 +317,42 @@ class Volume3D(ImplicitDict):
 
         return footprint1.intersects(footprint2)
 
+    def contains(self, lat: float, lng: float, alt: float) -> bool:
+        vol3 = self
+        if alt < vol3.altitude_lower.value:
+            return False
+        if alt > vol3.altitude_upper.value:
+            return False
+
+        if vol3.outline_circle:
+            circle = vol3.outline_circle
+            if circle.radius.units != "M":
+                raise NotImplementedError(
+                    "Unsupported circle radius units: {}".format(circle.radius.units)
+                )
+            ref = s2sphere.LatLng.from_degrees(circle.center.lat, circle.center.lng)
+            footprint1 = shapely.geometry.Point(0, 0).buffer(
+                vol3.outline_circle.radius.value
+            )
+        elif vol3.outline_polygon:
+            p = vol3.outline_polygon.vertices[0]
+            ref = s2sphere.LatLng.from_degrees(p.lat, p.lng)
+            footprint1 = shapely.geometry.Polygon(
+                flatten(ref, s2sphere.LatLng.from_degrees(v.lat, v.lng))
+                for v in vol3.outline_polygon.vertices
+            )
+        else:
+            raise ValueError("Neither outline_circle nor outline_polygon specified")
+
+        xy = shapely.geometry.Point(
+            flatten(ref, s2sphere.LatLng.from_degrees(lat, lng))
+        )
+
+        if xy:
+            return footprint1.contains(xy)
+        else:
+            raise ValueError(f"Could not create point from given lat {lat}, lng {lng}")
+
     def transform(self, transformation: Transformation):
         if (
             "relative_translation" in transformation

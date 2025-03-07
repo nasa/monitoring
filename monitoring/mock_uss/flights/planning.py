@@ -4,6 +4,7 @@ from typing import Callable, Optional
 
 from monitoring.mock_uss.flights.database import FlightRecord, db, DEADLOCK_TIMEOUT
 from monitoring.monitorlib.delay import sleep
+from uas_standards.astm.f3548.v21.api import OperationalIntent
 
 
 def lock_flight(flight_id: str, log: Callable[[str], None]) -> FlightRecord:
@@ -33,6 +34,18 @@ def lock_flight(flight_id: str, log: Callable[[str], None]) -> FlightRecord:
                 f"Deadlock in inject_flight while attempting to gain access to flight {flight_id}"
             )
     return existing_flight
+
+
+def get_flight_record(
+    flight_id: str, log: Callable[[str], None]
+) -> Optional[FlightRecord]:
+    with db as tx:
+        if flight_id in tx.flights:
+            # This is an existing flight being modified
+            existing_flight: FlightRecord = tx.flights[flight_id]
+            return existing_flight
+        else:
+            return None
 
 
 def release_flight_lock(flight_id: str, log: Callable[[str], None]) -> None:

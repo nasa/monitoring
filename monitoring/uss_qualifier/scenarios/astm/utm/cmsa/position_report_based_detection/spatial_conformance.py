@@ -129,7 +129,6 @@ class PositionReportBasedSpatialConformanceMonitoring(TestScenario):
                 f3548v21_priority_equal_to=["Flight 2"],
                 usage_state=AirspaceUsageState.Planned,
                 uas_state=UasState.Nominal,
-                # TODO: Must intersect bounding box of Flight 2
             ),
             ExpectedFlightIntent(
                 "flight_2",
@@ -138,7 +137,6 @@ class PositionReportBasedSpatialConformanceMonitoring(TestScenario):
                 f3548v21_priority_equal_to=["Flight 1"],
                 usage_state=AirspaceUsageState.Planned,
                 uas_state=UasState.Nominal,
-                # TODO: Must intersect bounding box of Flight 1
             ),
             ExpectedFlightIntent(
                 "flight_1_commenced",
@@ -277,16 +275,18 @@ class PositionReportBasedSpatialConformanceMonitoring(TestScenario):
             flight_1.basic_information.area.bounding_volume.to_f3548v21(),
             flight_1_oi_ref,
         ) as validator:
+            # flight_1_commenced has area, hence it will be submitted to DSS with same area
+            # ToDo - Find if we can have flight_1_commenced with no area, then no DSS submission needed
             commence_monitoring(
                 self,
                 self.tested_uss_client,
                 flight_1_commenced,
                 self.flight_1_id,
             )
-            # time.sleep(2)
+
             # Might need to add some wait later to check whether shared
 
-            validator.expect_no_change()
+            validator.expect_no_state_change()
 
         self.end_test_step()
 

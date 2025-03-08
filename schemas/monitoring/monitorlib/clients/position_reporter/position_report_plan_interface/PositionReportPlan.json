@@ -1,0 +1,50 @@
+{
+  "$id": "https://github.com/interuss/monitoring/blob/main/schemas/monitoring/monitorlib/clients/position_reporter/position_report_plan_interface/PositionReportPlan.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Position report plan .\n\nmonitoring.monitorlib.clients.position_reporter.position_report_plan_interface.PositionReportPlan, as defined in monitoring/monitorlib/clients/position_reporter/position_report_plan_interface.py",
+  "properties": {
+    "$ref": {
+      "description": "Path to content that replaces the $ref",
+      "type": "string"
+    },
+    "altitude": {
+      "type": "number"
+    },
+    "latitude": {
+      "type": "number"
+    },
+    "longitude": {
+      "type": "number"
+    },
+    "offset_ms": {
+      "description": "Time offset, in milliseconds, from the previous position. For the first position, its the offset from the\nbase_time.",
+      "type": "integer"
+    },
+    "speed": {
+      "type": "number"
+    },
+    "track": {
+      "type": "number"
+    },
+    "transition": {
+      "description": "Marks the first position, in a series of position reports, that causes a flight to transition to conforming or nonconforming",
+      "enum": [
+        "Conforming",
+        "NonConforming"
+      ],
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "altitude",
+    "latitude",
+    "longitude",
+    "offset_ms",
+    "speed",
+    "track"
+  ],
+  "type": "object"
+}

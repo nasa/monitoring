@@ -11,6 +11,9 @@ from uas_standards.astm.f3548.v21.api import (
 from monitoring.monitorlib.clients.mock_uss.mock_uss_scd_injection_api import (
     MockUssFlightBehavior,
 )
+from uas_standards.interuss.automated_testing.flight_planning.v1.api import (
+    PositionReport,
+)
 
 DEADLOCK_TIMEOUT = timedelta(seconds=5)
 
@@ -22,6 +25,14 @@ class FlightRecord(ImplicitDict):
     op_intent: OperationalIntent
     mod_op_sharing_behavior: Optional[MockUssFlightBehavior] = None
     locked: bool = False
+    cm_on: Optional[bool] = False
+
+
+class PositionRecord(ImplicitDict):
+    """Representation of latest position of a flight"""
+
+    position_report: PositionReport
+    position_report_id: str
 
 
 class Database(ImplicitDict):
@@ -29,6 +40,7 @@ class Database(ImplicitDict):
 
     flights: Dict[str, Optional[FlightRecord]] = {}
     cached_operations: Dict[str, OperationalIntent] = {}
+    flight_position: Dict[str, Optional[PositionRecord]] = {}
 
 
 db = SynchronizedValue(

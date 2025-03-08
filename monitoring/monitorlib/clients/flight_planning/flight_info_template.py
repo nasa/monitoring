@@ -59,6 +59,14 @@ class FlightInfoTemplate(ImplicitDict):
     def resolve(self, times: Dict[TimeDuringTest, Time]) -> FlightInfo:
         kwargs = {k: v for k, v in self.items() if k not in {"transformations"}}
         basic_info = self.basic_information.resolve(times)
+        if (
+            ("astm_f3548_21" in self)
+            and self.astm_f3548_21
+            and ("position_report_details" not in self.astm_f3548_21)
+        ):
+            self.astm_f3548_21.operator_detected_nonconformance = True
+            kwargs["astm_f3548_21"] = self.astm_f3548_21
+
         if "transformations" in self and self.transformations:
             for xform in self.transformations:
                 basic_info.area = [v.transform(xform) for v in basic_info.area]

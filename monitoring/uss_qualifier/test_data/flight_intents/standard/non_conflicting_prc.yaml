@@ -1,0 +1,111 @@
+intents:
+  flight_1:
+    full:
+      basic_information:
+        usage_state: Planned
+        uas_state: Nominal
+        area:
+          - outline_polygon:
+              # There are 0.00000898331 (roughly 0.00001) degrees of latitude (and longitude, at the equator) per meter.
+              # Therefore, each value below is roughly in meters.
+              vertices:
+                - {lat: 0.00000, lng:  0.00000}
+                - {lat: 0.00717, lng: -0.00835}
+                - {lat: 0.00939, lng: -0.00364}
+                - {lat: 0.00821, lng: -0.00101}
+            altitude_lower:
+              value: -9
+              reference: W84
+              units: M
+            altitude_upper:
+              value: 76
+              reference: W84
+              units: M
+            start_time:
+              offset_from:
+                starting_from:
+                  time_during_test: StartOfScenario
+                offset: -1s
+            duration: 45m
+
+      astm_f3548_21:
+        priority: 0
+        position_report_details:
+            position_frequency: 1.0
+            max_missing_position_data_period: 30
+
+      uspace_flight_authorisation:
+        $ref: ./flight_auths.yaml#/standard
+
+
+  flight_2:
+    full:
+      basic_information:
+        usage_state: Planned
+        uas_state: Nominal
+        area:
+          - outline_polygon:
+              vertices:
+                - {lat:  0.00770, lng: -0.00065}
+                - {lat:  0.00596, lng:  0.00316}
+                - {lat: -0.00431, lng:  0.00059}
+                - {lat:  0.00753, lng: -0.01035}
+                - {lat: -0.00025, lng:  0.00013}
+            altitude_lower:
+              value: 0
+              reference: W84
+              units: M
+            altitude_upper:
+              value: 58
+              reference: W84
+              units: M
+            start_time:
+              offset_from:
+                starting_from:
+                  time_during_test: StartOfScenario
+                offset: -1s
+            duration: 45m
+
+      astm_f3548_21:
+        priority: 0
+        operator_detected_nonconformance: true
+      uspace_flight_authorisation:
+        $ref: ./flight_auths.yaml#/standard
+
+  flight_1_planned:
+    delta:
+      source: flight_1
+      mutation:
+        basic_information:
+          area:
+            - start_time:
+                offset_from:
+                  starting_from:
+                    time_during_test: TimeOfEvaluation
+
+
+  flight_1_commenced:
+    delta:
+      source: flight_1_planned
+      mutation:
+        basic_information:
+          usage_state: InUse
+          uas_state: Nominal
+
+#  flight_1_commenced:
+#    full:
+#      basic_information:
+#        usage_state: InUse
+#        uas_state: Nominal
+
+  flight_2_planned:
+    delta:
+      source: flight_2
+      mutation:
+        basic_information:
+          area:
+            - start_time:
+                offset_from:
+                  starting_from:
+                    time_during_test: TimeOfEvaluation
+

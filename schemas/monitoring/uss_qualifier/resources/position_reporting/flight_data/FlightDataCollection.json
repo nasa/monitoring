@@ -1,0 +1,38 @@
+{
+  "$id": "https://github.com/interuss/monitoring/blob/main/schemas/monitoring/uss_qualifier/resources/position_reporting/flight_data/FlightDataCollection.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Specification for a collection of flight intents, each identified by a FlightIntentID.\n\nmonitoring.uss_qualifier.resources.position_reporting.flight_data.FlightDataCollection, as defined in monitoring/uss_qualifier/resources/position_reporting/flight_data.py",
+  "properties": {
+    "$ref": {
+      "description": "Path to content that replaces the $ref",
+      "type": "string"
+    },
+    "flight_data": {
+      "additionalProperties": {
+        "$ref": "../../../../monitorlib/clients/position_reporter/position_report_plan_interface/PositionReportsPlan.json"
+      },
+      "description": "Flight planning actions that users want to perform.",
+      "properties": {
+        "$ref": {
+          "description": "Path to content that replaces the $ref",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "transformations": {
+      "description": "Transformations to append to all FlightInfoTemplates.",
+      "items": {
+        "$ref": "../../../../monitorlib/transformations/Transformation.json"
+      },
+      "type": [
+        "array",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "flight_data"
+  ],
+  "type": "object"
+}

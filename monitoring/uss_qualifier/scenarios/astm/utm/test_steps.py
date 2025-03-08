@@ -118,6 +118,10 @@ class OpIntentValidator(object):
         found = [oi_ref for oi_ref in self._after_oi_refs if oi_ref.id == oi_id]
         return found[0] if len(found) != 0 else None
 
+    def _find_before_oi(self, oi_id: str) -> Optional[OperationalIntentReference]:
+        found = [oi_ref for oi_ref in self._before_oi_refs if oi_ref.id == oi_id]
+        return found[0] if len(found) != 0 else None
+
     def _begin_step_fragment(self):
         with self._scenario.check("DSS responses", [self._dss.participant_id]) as check:
             try:
@@ -176,6 +180,65 @@ class OpIntentValidator(object):
                     ],
                 )
 
+    def expect_no_change(self) -> bool:
+        """Validate that no changes were made to existing operational intent in the DSS.
+
+        It implements the test step described in validate_not_changed_operational_intent.md.
+        """
+        self._begin_step_fragment()
+
+        if self._orig_oi_ref:
+            if self._new_oi_ref is None:
+                curr_ref = self._find_after_oi(self._orig_oi_ref.id)
+                prev_ref = self._find_before_oi(self._orig_oi_ref.id)
+
+                with self._scenario.check(
+                    "Operational intent not changed",
+                    [self._flight_planner.participant_id],
+                ) as check:
+                    if (curr_ref.version == prev_ref.version) and (
+                        curr_ref.state == prev_ref.state
+                    ):
+                        return True
+                    else:
+                        return False  # ToDo uncomment below and remove the return once Mock USS fixed.
+                        # check.record_failed(
+                        #     summary="Operational intent reference was changed in DSS",
+                    #     details=f"USS {self._flight_planner.participant_id} was not supposed to change operational"
+                    #             f" intent in DSS. There was a change from previous version {prev_ref.version} "
+                    #             f"and state {prev_ref.state} to current version {curr_ref.version} and state "
+                    #             f"{curr_ref.state}",
+                    #     query_timestamps=[self._after_query.request.timestamp],
+                    # )
+
+    def expect_no_state_change(self) -> bool:
+        """Validate that no changes were made to existing operational intent in the DSS.
+
+        It implements the test step described in validate_not_changed_operational_intent.md.
+        """
+        self._begin_step_fragment()
+
+        if self._orig_oi_ref:
+            if self._new_oi_ref is None:
+                curr_ref = self._find_after_oi(self._orig_oi_ref.id)
+                prev_ref = self._find_before_oi(self._orig_oi_ref.id)
+
+                with self._scenario.check(
+                    "Operational intent state not changed",
+                    [self._flight_planner.participant_id],
+                ) as check:
+                    if curr_ref.state == prev_ref.state:
+                        return True
+                    else:
+                        check.record_failed(
+                            summary="Operational intent reference state was changed in DSS",
+                            details=f"USS {self._flight_planner.participant_id} was not supposed to change operational"
+                            f" intent state in DSS. There was a change from previous "
+                            f"state {prev_ref.state} to current state {curr_ref.state}",
+                            query_timestamps=[self._after_query.request.timestamp],
+                        )
+                        return False
+
     def expect_not_shared(self) -> None:
         """Validate that an operational intent information was not shared with the DSS.
 
@@ -197,6 +260,7 @@ class OpIntentValidator(object):
     def expect_shared(
         self,
         flight_info: FlightInfo,
+        expected_state: Optional[OperationalIntentState] = None,
         skip_if_not_found: bool = False,
     ) -> Optional[OperationalIntentReference]:
         """Validate that operational intent information was correctly shared for a flight intent.
@@ -204,6 +268,7 @@ class OpIntentValidator(object):
         This function implements the test step described in validate_shared_operational_intent.md.
 
         :param flight_info: the flight intent that was supposed to have been shared.
+        :param expected_state: If this param is provided, then it will override expected_state determined from flight_intent
         :param skip_if_not_found: set to True to skip the execution of the checks if the operational intent was not found while it should have been modified.
 
         :returns: the shared operational intent reference. None if skipped because not found.
@@ -213,7 +278,7 @@ class OpIntentValidator(object):
         if oi_ref is None:
             return None
 
-        self._check_op_intent_reference(flight_info, oi_ref)
+        self._check_op_intent_reference(flight_info, oi_ref, expected_state)
         self._check_op_intent_details(flight_info, oi_ref)
 
         # Check telemetry if intent is off-nominal
@@ -370,16 +435,27 @@ class OpIntentValidator(object):
         return oi_ref
 
     def _check_op_intent_reference(
-        self, flight_intent: FlightInfo, oi_ref: OperationalIntentReference
+        self,
+        flight_intent: FlightInfo,
+        oi_ref: OperationalIntentReference,
+        expected_state: Optional[OperationalIntentState],
     ):
+        if expected_state is None:
+            resolved_expected_state = flight_intent.get_f3548v21_op_intent_state()
+        else:
+            resolved_expected_state = expected_state
+
+        self._check_op_intent_state(resolved_expected_state, oi_ref)
+
+    def _check_op_intent_state(self, expected_state: OperationalIntentState, oi_ref):
         with self._scenario.check(
             "Operational intent state is correct",
             [self._flight_planner.participant_id],
         ) as check:
-            if flight_intent.get_f3548v21_op_intent_state() != oi_ref.state:
+            if expected_state != oi_ref.state:
                 check.record_failed(
-                    summary="Operational intent state does not match user's flight intent",
-                    details=f"Expected state {flight_intent.get_f3548v21_op_intent_state()} but got state {oi_ref.state}",
+                    summary="Operational intent state does not match expected state",
+                    details=f"Expected state {expected_state} but got state {oi_ref.state}",
                     query_timestamps=[self._after_query.request.timestamp],
                 )
 

@@ -1,0 +1,44 @@
+{
+  "$id": "https://github.com/interuss/monitoring/blob/main/schemas/monitoring/uss_qualifier/resources/position_reporting/flight_data/FlightDataSpecification.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Exactly one field must be specified.\n\nmonitoring.uss_qualifier.resources.position_reporting.flight_data.FlightDataSpecification, as defined in monitoring/uss_qualifier/resources/position_reporting/flight_data.py",
+  "properties": {
+    "$ref": {
+      "description": "Path to content that replaces the $ref",
+      "type": "string"
+    },
+    "file": {
+      "description": "Location of file to load, containing a FlightIntentCollection",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "../../files/ExternalFile.json"
+        }
+      ]
+    },
+    "flight_data_collection": {
+      "description": "Full flight intent collection, or a $ref to an external file containing a FlightIntentCollection.",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "FlightDataCollection.json"
+        }
+      ]
+    },
+    "transformations": {
+      "description": "Transformations to apply to all flight intents' 4D volumes after resolution (if specified)",
+      "items": {
+        "$ref": "../../../../monitorlib/transformations/Transformation.json"
+      },
+      "type": [
+        "array",
+        "null"
+      ]
+    }
+  },
+  "type": "object"
+}

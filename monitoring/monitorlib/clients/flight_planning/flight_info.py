@@ -18,11 +18,27 @@ from monitoring.monitorlib.geotemporal import Volume4D, Volume4DCollection
 Priority = int
 """Ordinal priority that the flight's operational intent should be assigned, as defined in ASTM F3548-21."""
 
+OperatorDetectedNonConformance = bool
+
+
+class PositionReportingDetails(ImplicitDict):
+    """Details of how the operator would be providing position reports"""
+
+    position_frequency: Optional[float]
+    """Frequency, in hertz, at which the operator will send the flight position reports to the USS."""
+
+    max_missing_position_data_period: Optional[int]
+    """The max time elapsed in seconds, since last position, after which the flight should be considered nonconforming"""
+
 
 class ASTMF354821OpIntentInformation(ImplicitDict):
     """Information provided about a flight plan that is necessary for ASTM F3548-21."""
 
     priority: Optional[Priority]
+
+    operator_detected_nonconformance: Optional[OperatorDetectedNonConformance]
+
+    position_report_details: Optional[PositionReportingDetails]
 
 
 # ===== U-space =====

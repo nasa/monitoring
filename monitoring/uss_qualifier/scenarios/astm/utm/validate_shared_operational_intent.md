@@ -19,7 +19,8 @@ fail per **[interuss.automated_testing.flight_planning.FlightCoveredByOperationa
 
 ## 🛑 Operational intent state is correct check
 
-If the state of the operational intent found in the DSS does not match the user's flight intent, this check will fail per **[interuss.automated_testing.flight_planning.ExpectedBehavior](../../../requirements/interuss/automated_testing/flight_planning.md)**.
+If the state of the operational intent found in the DSS does not match the given expected state, or the state derived from user's flight intent
+(if expected state is not provided), this check will fail per **[interuss.automated_testing.flight_planning.ExpectedBehavior](../../../requirements/interuss/automated_testing/flight_planning.md)**.
 
 ## 🛑 Operational intent details retrievable check
 

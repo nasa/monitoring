@@ -143,6 +143,7 @@ def inject_flight(
     flight_id: str,
     new_flight: FlightRecord,
     existing_flight: Optional[FlightRecord],
+    flight_commenced_trigger: Optional[bool] = False,
 ) -> PlanningActivityResponse:
     pid = os.getpid()
     locality = get_locality()
@@ -165,6 +166,44 @@ def inject_flight(
             notes=msg,
         )
 
+    def no_area_and_priority(new_record: FlightRecord):
+        if new_record.flight_info.basic_information.area is None:
+            if new_record.flight_info.astm_f3548_21 is None:
+                return True
+            else:
+                if new_record.flight_info.astm_f3548_21.priority is None:
+                    return True
+
+    def adjust_to_existing_area_and_astm_fields(
+        new_record: FlightRecord, existing_record: FlightRecord
+    ):
+        """
+        If area or other astm fields are missing in new record populate them with existing values
+        """
+        if not new_record.flight_info.basic_information.area:
+            new_record.flight_info.basic_information.area = (
+                existing_record.flight_info.basic_information.area
+            )
+        if not new_record.flight_info.astm_f3548_21:
+            new_record.flight_info.astm_f3548_21 = (
+                existing_record.flight_info.astm_f3548_21
+            )
+        else:
+            if not new_record.flight_info.astm_f3548_21.priority:
+                new_record.flight_info.astm_f3548_21.priority = (
+                    existing_record.flight_info.astm_f3548_21.priority
+                )
+            if (
+                not new_record.flight_info.astm_f3548_21.operator_detected_nonconformance
+            ):
+                new_record.flight_info.astm_f3548_21.operator_detected_nonconformance = (
+                    existing_record.flight_info.astm_f3548_21.operator_detected_nonconformance
+                )
+            if not new_record.flight_info.astm_f3548_21.position_report_details:
+                new_record.flight_info.astm_f3548_21.position_report_details = (
+                    existing_record.flight_info.astm_f3548_21.position_report_details
+                )
+
     # Validate request
     try:
         if locality.is_uspace_applicable():
@@ -182,14 +221,29 @@ def inject_flight(
         except PlanningError as e:
             return unsuccessful(PlanningActivityResult.Rejected, str(e))
 
-        step_name = "sharing operational intent in DSS"
-        record, notif_errors = share_op_intent(new_flight, existing_flight, key, log)
-        if notif_errors:
-            notif_errors_messages = [
-                f"{url}: {str(err)}" for url, err in notif_errors.items()
-            ]
-            notes = f"Injection succeeded, but notification to some subscribers failed: {'; '.join(notif_errors_messages)}"
-            log(notes)
+        if flight_commenced_trigger:
+            notes = "Flight conformance monitoring has started"
+
+        if flight_commenced_trigger and no_area_and_priority(new_flight):
+            # Currently, not used because flight_intents need to be passed area. Find a way to not pass area
+            # Check if it's ok - no submission to DSS needed.
+            # It might be good to check that DSS submission is still good - then we don't need this step
+            # Or query DSS and check if no conflicts
+            adjust_to_existing_area_and_astm_fields(new_flight, existing_flight)
+            record = new_flight
+        else:
+            step_name = "sharing operational intent in DSS"
+            record, notif_errors = share_op_intent(
+                new_flight, existing_flight, key, log
+            )
+            if flight_commenced_trigger:
+                record.cm_on = True
+            if notif_errors:
+                notif_errors_messages = [
+                    f"{url}: {str(err)}" for url, err in notif_errors.items()
+                ]
+                notes = f"Injection succeeded, but notification to some subscribers failed: {'; '.join(notif_errors_messages)}"
+                log(notes)
 
         # Store flight in database
         step_name = "storing flight in database"

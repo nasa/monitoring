@@ -17,6 +17,7 @@ echo "Ensure the environment is clean"
 echo "============="
 make down-locally
 make stop-uss-mocks
+make stop-position-reporter
 
 function collect_logs() {
   echo "Collect local logs"
@@ -29,6 +30,7 @@ function cleanup() {
   echo "============="
   make stop-uss-mocks
   make down-locally
+  make stop-position-reporter
 }
 
 function on_exit() {
@@ -49,6 +51,7 @@ echo "Start mock system"
 echo "============="
 make start-locally
 make start-uss-mocks
+make start-position-reporter
 
 CONFIG_NAME=${CONFIG_NAME:-""}
 echo "Selecting configuration"

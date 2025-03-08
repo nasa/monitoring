@@ -22,6 +22,7 @@ v1:
           conflicting_flights: conflicting_flights
           invalid_flight_intents: invalid_flight_intents
           non_conflicting_flights: non_conflicting_flights
+          non_conflicting_flights_prc: non_conflicting_flights_prc
           dss: dss
           dss_instances: dss_instances
           mock_uss: mock_uss
@@ -29,6 +30,8 @@ v1:
           planning_area: planning_area
           problematically_big_area: problematically_big_area
           test_exclusions: test_exclusions
+          position_reporter: position_reporter
+          non_conflicting_flight_data: non_conflicting_flight_data
 
     # When a test run is executed, a "baseline signature" is computed uniquely identifying the "baseline" of the test,
     # usually excluding exactly what systems are participating in the test (the "environment").  This is a list of
@@ -42,6 +45,8 @@ v1:
       - v1.test_run.resources.resource_declarations.dss
       - v1.test_run.resources.resource_declarations.dss_instances
       - v1.test_run.resources.resource_declarations.mock_uss
+      - v1.test_run.resources.resource_declarations.position_reporter
+      - v1.test_run.resources.resource_declarations.flight_data
 
     # This block defines all the resources available in the resource pool.
     # Presumably all resources defined below would be used either
@@ -161,6 +166,14 @@ v1:
             participant_id: mock_uss
             mock_uss_base_url: http://scdsc.log.uss6.localutm
 
+        position_reporter:
+          resource_type: resources.position_reporting.PositionReporterResource
+          dependencies:
+            auth_adapter: utm_auth
+          specification:
+            participant_id: position_reporter
+            pos_base_url: http://cmsa.position_reporter.localutm
+
         # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         # ========== Environment ==========
         # =================================
@@ -268,6 +281,31 @@ v1:
             intent_collection:
               # Note that $refs are relative to the file with the $ref (this one, in this case)
               $ref: file://../../test_data/flight_intents/standard/non_conflicting.yaml
+            transformations:
+              - relative_translation:
+                  degrees_north: 32.7181
+                  degrees_east: -96.7587
+                  meters_up: 93
+
+        # Details of non-conflicting flights for position report-based nonconformance cmsa tests
+        non_conflicting_flights_prc:
+          resource_type: resources.flight_planning.FlightIntentsResource
+          specification:
+            intent_collection:
+              # Note that $refs are relative to the file with the $ref (this one, in this case)
+              $ref: file://../../test_data/flight_intents/standard/non_conflicting_prc.yaml
+            transformations:
+              - relative_translation:
+                  degrees_north: 32.7181
+                  degrees_east: -96.7587
+                  meters_up: 93
+
+        # Flight data for non-conflicting flights for cmsa test scenarios
+        non_conflicting_flight_data:
+          resource_type: resources.position_reporting.FlightDataResource
+          specification:
+            flight_data_collection:
+              $ref: file://../../test_data/flight_data/non_conflicting.yaml
             transformations:
               - relative_translation:
                   degrees_north: 32.7181

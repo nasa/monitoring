@@ -55,6 +55,8 @@ datefmt = "%Y-%m-%d:%H:%M:%S"
 # Configure the root logger
 logging.basicConfig(format=fmt, datefmt=datefmt, level=logging.INFO)
 
+POS_REP_LOG_DIR = "output/position_report_logs"
+
 AUTH_SPEC = "POS_REP_AUTH_SPEC"
 import_environment_variable(AUTH_SPEC)
 require_config_value(AUTH_SPEC)

@@ -75,6 +75,14 @@ start-uss-mocks:
 stop-uss-mocks:
 	monitoring/mock_uss/stop_all_local_mocks.sh
 
+.PHONY: start-position-reporter
+start-position-reporter:
+	monitoring/position_reporter/start_local_position_reporter.sh
+
+.PHONY: stop-position-reporter
+stop-position-reporter:
+	monitoring/position_reporter/stop_local_position_reporter.sh
+
 # The prepended dash ignores errors. This allows collecting logs even if some containers are missing.
 .PHONY: collect-local-logs
 collect-local-logs:

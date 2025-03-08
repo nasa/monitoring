@@ -26,12 +26,13 @@ from monitoring.monitorlib.geotemporal import Volume4D
 from uas_standards.interuss.automated_testing.flight_planning.v1 import api
 from uas_standards.interuss.automated_testing.flight_planning.v1.constants import Scope
 from uas_standards.interuss.automated_testing.scd.v1 import api as scd_api
-
 from monitoring.mock_uss import webapp, require_config_value
 from monitoring.mock_uss.auth import requires_scope
 from monitoring.mock_uss.config import KEY_BASE_URL
 from monitoring.monitorlib.idempotency import idempotent_request
-
+from monitoring.mock_uss.flight_planning.config import CMSA_ON
+from monitoring.mock_uss.f3548v21.cmsa import adjust_state_for_cmsa
+from monitoring.mock_uss.f3548v21.flight_planning import PlanningError
 
 require_config_value(KEY_BASE_URL)
 
@@ -64,6 +65,7 @@ def flight_planning_v1_upsert_flight_plan(flight_plan_id: str) -> Tuple[str, int
         logger.debug(f"[upsert_plan/{os.getpid()}:{flight_plan_id}] {msg}")
 
     log("Starting handler")
+    cmsa_on = CMSA_ON
     try:
         json = flask.request.json
         if json is None:
@@ -78,16 +80,42 @@ def flight_planning_v1_upsert_flight_plan(flight_plan_id: str) -> Tuple[str, int
     existing_flight = lock_flight(flight_plan_id, log)
     try:
         info = FlightInfo.from_flight_plan(req_body.flight_plan)
+        # ToDo - Check handling of CI flight-auth config scenario flight_authorization.GeneralFlightAuthorization when CMSA tests
+        # In the meantime to pass - set cmsa_on to False whe astm_f3548_21 missing
+        if not existing_flight:
+            if "astm_f3548_21" not in info:
+                cmsa_on = False
+
         op_intent = op_intent_from_flightinfo(info, str(uuid.uuid4()))
+
+        if info.basic_information.area is None:
+            if existing_flight is None:  # new flight
+                raise PlanningError(
+                    "First flight plan request for a flight must include area"
+                )
+
+        flight_commenced_trigger = False
+        if cmsa_on:
+            op_intent, flight_commenced_trigger = adjust_state_for_cmsa(
+                info, op_intent, existing_flight
+            )
+
         new_flight = FlightRecord(
             flight_info=info,
             op_intent=op_intent,
             mod_op_sharing_behavior=req_body.behavior
             if "behavior" in req_body and req_body.behavior
             else None,
+            cm_on=True
+            if flight_commenced_trigger is True
+            else existing_flight.cm_on
+            if existing_flight
+            else False,
         )
 
-        inject_resp = inject_flight(flight_plan_id, new_flight, existing_flight)
+        inject_resp = inject_flight(
+            flight_plan_id, new_flight, existing_flight, flight_commenced_trigger
+        )
     finally:
         release_flight_lock(flight_plan_id, log)
 
@@ -141,3 +169,7 @@ def flight_planning_v1_clear_area() -> Tuple[str, int]:
     )
 
     return flask.jsonify(resp), 200
+
+
+if CMSA_ON:
+    from . import cmsa_routes

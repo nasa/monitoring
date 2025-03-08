@@ -32,7 +32,8 @@ def adjust_state_for_cmsa(
     validate_flight_plan_for_cmsa(new_flight_info, old_record)
 
     if (
-        "operator_detected_nonconformance" in new_flight_info.astm_f3548_21
+        "astm_f3548_21" in new_flight_info
+        and "operator_detected_nonconformance" in new_flight_info.astm_f3548_21
         and new_flight_info.astm_f3548_21.operator_detected_nonconformance
     ):
         return op_intent, flight_commenced_trigger

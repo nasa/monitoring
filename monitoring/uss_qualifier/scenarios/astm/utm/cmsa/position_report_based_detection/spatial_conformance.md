@@ -1,11 +1,13 @@
 # Spatial conformance monitoring of positions by USS test scenario
 
 ## Description
-This test checks that the USS being tested validates the operational intents received as response to its GET request from another USS.
-mock_uss plans an operation designed to be relevant to (but not intersect) the operation tested_uss will plan, and provides the data that tested_uss GETs.
-tested_uss validates the GET response from mock_uss and accordingly plan its operation.
+This test scenario tests a USS that provide CMSA service with position-report detected conformance.
+On receiving commencement of flight notification the USS shall start conformance monitoring for that flight.
+And thereafter, on receiving the positions for the flight, the USS should transition an operational intent to Activated or NonConforming
+state, based on conforming or non-conforming positions.
 
-The primary requirement tested by this scenario is **[astm.f3548.v21.SCD0035](../../../../../requirements/astm/f3548/v21.md)** because a USS cannot verify its operational intent does not conflict when it cannot obtain valid details for that operational intent.
+The primary requirement tested by this scenario are **[astm.f3548.v21.CMSA0010](../../../../../requirements/astm/f3548/v21.md)**,
+**[astm.f3548.v21.CMSA0015](../../../../../requirements/astm/f3548/v21.md)** .
 
 This scenario assumes that the area used in the scenario is already clear of any pre-existing flights (using, for instance, PrepareFlightPlanners scenario).
 

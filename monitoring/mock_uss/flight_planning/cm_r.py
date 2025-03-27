@@ -13,9 +13,8 @@ from monitoring.mock_uss.auth import requires_scope
 from monitoring.monitorlib.idempotency import idempotent_request
 from .conformance.position_conformance_check import (
     check_position_conformance,
-    PositionReportError,
-    NoFlightPlanExistsError,
 )
+from .conformance import PositionReportError, NoFlightPlanExistsError
 
 
 @webapp.route("/flight_position_report/<flight_plan_id>", methods=["POST"])

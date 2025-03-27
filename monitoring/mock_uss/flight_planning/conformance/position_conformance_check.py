@@ -4,32 +4,22 @@ from uas_standards.interuss.automated_testing.flight_planning.v1.api import (
     PostFlightPositionRequest,
 )
 from uas_standards.astm.f3548.v21.api import OperationalIntentState
-from monitoring.mock_uss.flights.planning import (
-    get_flight_record,
-    lock_flight,
-    release_flight_lock,
-)
-from monitoring.monitorlib.geotemporal import Volume4DCollection, Point4D
-from monitoring.mock_uss.flights.database import FlightRecord, PositionRecord
-from monitoring.mock_uss.scd_injection.routes_injection import inject_flight
+
+from . import (v4c, p4d, gfr, lf, rfl, fr, inject,
+               PositionReportError as pre,
+               NoFlightPlanExistsError as nfpe, notify_user
+               )
+
 from monitoring.monitorlib.clients.flight_planning.planning import (
     PlanningActivityResult,
 )
 from monitoring.mock_uss.flights.database import db, PositionRecord
 
 
-class PositionReportError(Exception):
-    pass
-
-
-class NoFlightPlanExistsError(Exception):
-    pass
-
-
 def check_position_conformance(
     req: PostFlightPositionRequest, flight_plan_id: str, log: Callable[[str], None]
 ) -> bool:
-    existing_record = get_flight_record(flight_plan_id, log)
+    existing_record = gfr(flight_plan_id, log)
     if existing_record:
         if "cm_on" in existing_record and existing_record.cm_on:
             # ToDo - Check if we need to lock
@@ -39,11 +29,11 @@ def check_position_conformance(
                     position_report_id=req.position_report_id,
                 )
             existing_op_intent = existing_record.op_intent
-            v2 = Volume4DCollection.from_interuss_scd_api(
+            v2 = v4c.from_interuss_scd_api(
                 existing_op_intent.details.volumes
             )
             pt_in_vcol = v2.contains_pt(
-                Point4D.from_interuss_position_report(req.position_report)
+                p4d.from_interuss_position_report(req.position_report)
             )
             if (
                 existing_record.op_intent.reference.state
@@ -51,17 +41,17 @@ def check_position_conformance(
             ):
                 # CM is on and Op in Accepted state, activate the flight
                 try:
-                    lock_flight(flight_plan_id, log)
+                    lf(flight_plan_id, log)
                     op_intent = copy.deepcopy(existing_op_intent)
                     op_intent.reference.state = OperationalIntentState.Activated
-                    new_record = FlightRecord(
+                    new_record = fr(
                         flight_info=existing_record.flight_info,
                         op_intent=op_intent,
                         mod_op_sharing_behavior=existing_record.mod_op_sharing_behavior,
                         cm_on=existing_record.cm_on,
                     )
 
-                    response = inject_flight(
+                    response = inject(
                         flight_plan_id, new_record, existing_record, True
                     )
                     if response.activity_result == PlanningActivityResult.Completed:
@@ -81,13 +71,13 @@ def check_position_conformance(
                             f"on position id {req.position_report_id} for reasons {response.notes}",
                         )
                         op_intent.reference.state = OperationalIntentState.Activated
-                        new_record = FlightRecord(
+                        new_record = fr(
                             flight_info=existing_record.info,
                             op_intent=op_intent,
                             mod_op_sharing_behavior=existing_record.mod_op_sharing_behavior,
                             cm_on=existing_record.cm_on,
                         )
-                        res_nc = inject_flight(
+                        res_nc = inject(
                             flight_plan_id, new_record, existing_record, True
                         )
                         if res_nc.activity_result == PlanningActivityResult.Completed:
@@ -108,21 +98,17 @@ def check_position_conformance(
                         )
                         # Notify user of response of transitioning to new state of the flight
                 finally:
-                    release_flight_lock(flight_plan_id, log)
+                    rfl(flight_plan_id, log)
                 return pt_in_vcol
         else:
-            raise PositionReportError(
+            raise pre(
                 "Conformance monitoring is not on for flight {flight_plan_id}. Please check if commencement of "
                 "flight was notified."
             )
     else:
-        raise NoFlightPlanExistsError(
+        raise nfpe(
             "No record exist for flight plan {flight_plan_id}. "
             "Check if the flight plan was created, or if the flight has ended."
         )
 
 
-def notify_user(flight_plan_id: str, msg: str):
-    # ToDo This can be sent as a notification to user. But check if that is a req
-    # Currently printing it
-    print(f"Notification to user of {flight_plan_id} - {msg}")

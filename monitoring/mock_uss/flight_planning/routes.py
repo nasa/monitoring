@@ -169,4 +169,4 @@ def flight_planning_v1_clear_area() -> Tuple[str, int]:
 
 
 if CMSA_ON:
-    from . import cmsa_routes
+    from . import cm_r

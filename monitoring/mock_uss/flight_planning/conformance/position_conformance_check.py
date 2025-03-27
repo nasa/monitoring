@@ -5,10 +5,12 @@ from uas_standards.interuss.automated_testing.flight_planning.v1.api import (
 )
 from uas_standards.astm.f3548.v21.api import OperationalIntentState
 
-from . import (v4c, p4d, gfr, lf, rfl, fr, inject,
-               PositionReportError as pre,
-               NoFlightPlanExistsError as nfpe, notify_user
-               )
+from . import v4c, p4d, gfr, lf, rfl, fr, inject
+from . import (
+    PositionReportError as PRE,
+    NoFlightPlanExistsError as NFPE,
+    notify_user
+)
 
 from monitoring.monitorlib.clients.flight_planning.planning import (
     PlanningActivityResult,
@@ -22,7 +24,6 @@ def check_position_conformance(
     existing_record = gfr(flight_plan_id, log)
     if existing_record:
         if "cm_on" in existing_record and existing_record.cm_on:
-            # ToDo - Check if we need to lock
             with db as tx:
                 tx.flight_position[flight_plan_id] = PositionRecord(
                     position_report=req.position_report,
@@ -61,10 +62,6 @@ def check_position_conformance(
                             f"on position id {req.position_report_id}",
                         )
                     elif response.activity_result == PlanningActivityResult.Rejected:
-                        # ToDo - check the correct behavior
-                        # Figure out what happens when activation fails on first position
-                        # Should we stop accept the future positions, as subsequent positions would fail to
-                        # Or change to nonconforming state. Even though conforming in vol4d but not UTM state
                         notify_user(
                             flight_plan_id,
                             f"Transition rejected to {op_intent.reference.state} "
@@ -101,12 +98,12 @@ def check_position_conformance(
                     rfl(flight_plan_id, log)
                 return pt_in_vcol
         else:
-            raise pre(
+            raise PRE(
                 "Conformance monitoring is not on for flight {flight_plan_id}. Please check if commencement of "
                 "flight was notified."
             )
     else:
-        raise nfpe(
+        raise NFPE(
             "No record exist for flight plan {flight_plan_id}. "
             "Check if the flight plan was created, or if the flight has ended."
         )
